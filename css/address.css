@@ -1,0 +1,83 @@
+.mui-icon {
+	color: #999;
+}
+
+.sort-id {
+	display: none;
+}
+
+.address-elem {
+	height: 90px;
+}
+
+.mui-table-view-cell {
+	padding: 0;
+}
+
+.mui-table-view {
+	margin-top: 0!important;
+}
+
+.mui-radio label {
+	width: auto;
+}
+
+.person {
+	font-size: 18px;
+	position: absolute;
+	top: 15px;
+	left: 15px
+}
+
+.phonenum {
+	position: absolute;
+	right: 30px;
+	top: 15px;
+}
+
+.address {
+	position: absolute;
+	left: 15px;
+	top: 40px;
+	font-size: 13px;
+	color: #999;
+}
+
+.address-setting {
+	height: 35px;
+	line-height: 35px;
+	font-size: 15px;
+}
+
+.address-setting i {
+	color: #999;
+}
+
+.editaddress {
+	float: right;
+	margin-right: 15px;
+}
+
+label {
+	color: #999;
+}
+
+#pickcity {
+	border: 0px;
+	float: left;
+	width: 60%;
+	height: 40px;
+	text-align: left;
+	padding: 10px 0;
+}
+
+.savearea {
+	width: 100%;
+	text-align: center;
+	margin-top: 15px;
+}
+
+#save {
+	margin: 0 auto;
+	width: 80%;
+}

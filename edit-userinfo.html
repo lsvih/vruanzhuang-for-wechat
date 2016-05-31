@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+		<meta name="format-detection" content="telephone=no">
+		<meta content="email=no" name="format-detection" />
+
+		<script type="text/javascript" src="js/global.js"></script>
+		<script type="text/javascript" src="js/mui.min.js"></script>
+		<script type="text/javascript" src="js/mui.picker.js"></script>
+		<script type="text/javascript" src="js/mui.poppicker.js"></script>
+		
+		<link rel="stylesheet" href="css/mui.min.css" />
+		<link rel="stylesheet" href="css/app.css" />
+		<link rel="stylesheet" href="css/mui.picker.css" />
+		<link rel="stylesheet" href="css/mui.poppicker.css" />
+		<link rel="stylesheet" href="css/usercenter.css" />
+		<title>微软装</title>
+	</head>
+
+	<body>
+		<div id="load">
+			<div class="loading"></div>
+			<div class="loading-text"><img src="images/load.gif" width="25px">加载中，请稍候...</div>
+		</div>
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title">个人信息</h1>
+		</header>
+
+		<div class="mui-content">
+			<ul id="list" class="mui-table-view mui-table-view-chevron">
+				<li class="mui-table-view-cell" id="head" style="line-height: 45px;">
+					<a class="mui-navigate-right" href="#picture"><span class="mui-badge"><img id="head-img1" src="images/default.png" width="45px" height="45px"></span>
+						头像
+					</a>
+				</li>
+				<li class="mui-table-view-cell">
+					<a id="name" class="mui-navigate-right" href="#"><span id="showname" class="mui-badge" style="">...</span>
+						用户名
+					</a>
+				</li>
+				<li class="mui-table-view-cell">
+					<a id="sex" class="mui-navigate-right" href="#"><span id="showsex" class="mui-badge" >...</span>
+						性别
+					</a>
+				</li>
+				<li class="mui-table-view-cell">
+					<a id="phone" class="mui-navigate-right" href="#"><span id="phonenum" class="mui-badge" >...</span>
+						手机
+					</a>
+				</li>
+				<li class="mui-table-view-cell">
+					<a id="address" class="mui-navigate-right" href="manage-address.html">
+						地址管理
+					</a>
+				</li>
+
+				<li class="mui-table-view-cell">
+					<a class="mui-navigate-right" href="edit-password.html"><span class="mui-badge" >修改</span>
+						登录密码
+					</a>
+				</li>
+
+				<li class="mui-table-view-cell">
+					<a id="loginout" class="mui-navigate-right" href="#">
+						退出登陆
+					</a>
+				</li>
+			</ul>
+		</div>
+
+	</body>
+	<script>
+		mui.init();
+		jsonuserinfo = JSON.parse(localStorage.userinfo);
+		(function($, doc) {
+			//性别
+			$.ready(function() {
+				if (!jsonuserinfo.fullname) {
+					document.getElementById("showname").innerHTML = "立即填写";
+				} else {
+					document.getElementById("showname").innerHTML = jsonuserinfo.fullname;
+				}
+				switch (jsonuserinfo.sex) {
+					case 0:
+						document.getElementById("showsex").innerHTML = "男";
+						break;
+					case 1:
+						document.getElementById("showsex").innerHTML = "女";
+						break;
+					default:
+						document.getElementById("showsex").innerHTML = "未知";
+				}
+				document.getElementById("phonenum").innerHTML = jsonuserinfo.mobile;
+				var sexPicker = new $.PopPicker();
+				sexPicker.setData([{
+					value: '1',
+					text: '男'
+				}, {
+					value: '2',
+					text: '女'
+				}]);
+				var piker = document.getElementById('sex');
+				var userResult = document.getElementById('showsex');
+				piker.addEventListener('tap', function(event) {
+					sexPicker.show(function(items) {
+						if (items[0].value == 1) {
+							editsex = 0;
+						} //男
+						else {
+							editsex = 1;
+						} //女
+						startload();
+						mui.ajax(appurl + '/users/' + jsonuserinfo.id + '?access-token=' + jsonuserinfo.access_token, {
+							data: {
+								'sex': editsex
+							},
+							dataType: 'json',
+							type: 'put',
+							timeout: 6000,
+							success: function(data) {
+								if (data.success == true) {
+									mui.toast("修改成功");
+									jsonuserinfo.sex = editsex;
+									localStorage.userinfo = JSON.stringify(jsonuserinfo);
+									userResult.innerText = items[0].text;
+									stopload();
+								} else {
+									mui.alert(data.message);
+									stopload();
+								}
+							},
+							error: function(xhr, textStatus, errorThrown) {
+								mui.alert("网络连接失败，请稍候再试");
+								stopload();
+							}
+						});
+					});
+				}, false);
+			});
+		})(mui);
+		document.getElementById("name").addEventListener('tap', function(e) {
+			e.detail.gesture.preventDefault();
+			var btnArray = ['取消', '确定'];
+			mui.prompt('请输入您的用户名：', '', '修改用户名', btnArray, function(e) {
+				if (e.index == 1) {
+					if (!e.value) {
+						mui.alert("请输入正确的用户名");
+						return false;
+					}
+					//新的用户名为e.value
+					//修改用户名的ajax过程
+					startload();
+					mui.ajax(appurl + '/users/' + jsonuserinfo.id + '?access-token=' + jsonuserinfo.access_token, {
+						data: {
+							'id': jsonuserinfo.id,
+							'fullname': e.value
+						},
+						dataType: 'json',
+						type: 'put',
+						timeout: 6000,
+						success: function(data) {
+							if (data.success == true) {
+								mui.toast("修改成功");
+								jsonuserinfo.fullname = e.value;
+								localStorage.userinfo = JSON.stringify(jsonuserinfo);
+								document.getElementById("showname").innerHTML = e.value;
+								stopload();
+							} else {
+								mui.alert(data.message);
+								stopload();
+							}
+						},
+						error: function(xhr, textStatus, errorThrown) {
+							mui.alert("网络连接失败，请稍候再试");
+							stopload();
+						}
+					});
+				} else {
+					return false; //取消
+				}
+			})
+		});
+		//		document.getElementById("phone").addEventListener('tap', function(e) {
+		//			window.location.href = "change-phonenumber.html"
+		//		});
+		document.getElementById("loginout").addEventListener('tap', function(e) {
+			localStorage.removeItem("userinfo");
+			localStorage.removeItem("alladdress");
+			localStorage.removeItem("collectpic");
+			window.location.href = "index.html"
+		});
+	</script>
+
+</html>

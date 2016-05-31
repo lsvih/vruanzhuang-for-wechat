@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+		<meta name="format-detection" content="telephone=no">
+		<meta content="email=no" name="format-detection" />
+		<script type="text/javascript" src="js/app.js"></script>
+		<script type="text/javascript" src="js/global.js"></script>
+		<script type="text/javascript" src="js/mui.min.js"></script>
+		<script src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
+		<link rel="stylesheet" href="css/mui.min.css" />
+		<link rel="stylesheet" href="css/app.css" />
+		<title>微软装</title>
+	</head>
+
+	<body>
+		<div id="load">
+			<div class="loading"></div>
+			<div class="loading-text"><img src="images/load.gif" width="25px">加载中，请稍候...</div>
+		</div>
+	</body>
+	<script>
+		startload()
+		var code = GetRequest()["code"];
+		var payid = GetRequest()["state"];
+		mui.ajax(appurl + '/jspackage?access-token=' + JSON.parse(localStorage.userinfo).access_token, {
+			data: {
+				this_url: encodeURIComponent(location.href.split('#')[0])
+			},
+			dataType: 'json',
+			type: 'get',
+			timeout: 6000,
+			success: function(data) {
+				configjson = data.data;
+				configjson.debug = false;
+				configjson.jsApiList = ['chooseWXPay'];
+				console.log(JSON.stringify(configjson))
+				wx.config(
+					configjson
+				);
+				wx.error(function(res) {
+					wx.config(
+						configjson
+					);
+				});
+				wx.ready(function() {
+					onBridgeReady();
+				});
+			},
+			error: function(xhr, type, errorThrown, message) {
+				alert("网络连接失败，请稍候再试");
+				location.href = 'myorder.html'
+				stopload();
+			}
+		});
+
+		function onBridgeReady() {
+			mui.ajax(appurl + '/payments/pay/' + payid + '?access-token=' + JSON.parse(localStorage.userinfo).access_token, {
+				data: {
+					code: code
+				},
+				dataType: 'json',
+				type: 'get',
+				timeout: 6000,
+				success: function(data) {
+					console.log(JSON.stringify(data))
+					onwxpay();
+					function onwxpay(){
+					WeixinJSBridge.invoke(
+						'getBrandWCPayRequest', data.data,
+						function(res) {
+							if (res.err_msg == "get_brand_wcpay_request:ok") {
+								alert("支付成功！");
+								mui.ajax(appurl + '/orders/' + localStorage.temppayorderid + '?access-token=' + JSON.parse(localStorage.userinfo).access_token, {
+									data: {
+										'status': '3',
+									},
+									dataType: 'json',
+									type: 'put',
+									timeout: 6000,
+									success: function(data) {
+										if (data.success == true) {
+											location.href = 'myorder.html?type=3'
+										}
+									},
+									error: function(xhr, type, errorThrown, message) {
+										alert("网络连接失败，请稍候再试!");
+										location.href = 'myorder.html?type=2'
+										stopload();
+									}
+								});
+							} else {
+								stopload();
+								var btnArray = ['确认', '取消'];
+								mui.confirm('支付失败,是否重试？', '微软装', btnArray, function(e) {
+									if (e.index == 0) {
+										onwxpay();
+									} else {
+										location.href = 'myorder.html?type=2'
+									}
+								});
+								
+							}
+						}
+					);}
+				},
+				error: function(xhr, type, errorThrown, message) {
+					alert("网络连接失败，请稍候再试");
+					location.href = 'myorder.html?type=2'
+					stopload();
+				}
+			});
+		}
+	</script>
+
+</html>

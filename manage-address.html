@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+		<meta name="format-detection" content="telephone=no">
+		<meta content="email=no" name="format-detection" />
+		<script type="text/javascript" src="js/vue.js"></script>
+		<script type="text/javascript" src="js/app.js"></script>
+		<script type="text/javascript" src="js/global.js"></script>
+		<script type="text/javascript" src="js/mui.min.js"></script>
+		
+		<link rel="stylesheet" href="css/mui.min.css" />
+		<link rel="stylesheet" href="css/app.css" />
+		<link rel="stylesheet" href="css/address.css" />
+		<title>微软装</title>
+	</head>
+
+	<body>
+		<div id="load">
+			<div class="loading"></div>
+			<div class="loading-text"><img src="images/load.gif" width="25px">加载中，请稍候...</div>
+		</div>
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title">地址管理</h1>
+		</header>
+
+		<div class="mui-content">
+			<ul id="address" class="mui-table-view hidden">
+				<div v-for="address in address">
+					<div class="sort-id">{{ $index }}</div>
+					<li class="mui-table-view-cell">
+						<div class="address-elem">
+							<div class="person">{{address.person}}</div>
+							<div class="phonenum">{{address.phonenum}}</div>
+							<div class="address"><span class="province">{{address.province}}</span><span class="city">{{address.city}}</span><span class="county">{{address.county}}</span><span class="detailed-address">{{address.detailedaddress}}</span></div>
+						</div>
+					</li>
+					<div class="address-setting  mui-radio mui-left">
+						<input name="checkbox" type="radio" class="checkbox" v-model="selected" v-bind:value="address.id" v-on:click="setdefault($index)">
+						<label>设为默认</label>
+						<span class="editaddress"><i class="iconfont icon-bianji"  v-on:click="edit($index)">编辑</i>&nbsp;&nbsp;&nbsp;
+					<i class="iconfont icon-shanchu" v-on:click="del(address,$index)">删除</i></span>
+					</div>
+					<div class="blank"></div>
+				</div>
+			</ul>
+		</div>
+		<div class="savearea"><button class="mui-btn mui-btn-danger" id="save" onclick="addaddress()">+新增地址</button></div>
+
+	</body>
+	<script>
+		mui.init();
+		if (!localStorage.alladdress) {
+			var alladdress = {
+				"selected": null,
+				"address": []
+			}
+			localStorage.alladdress = JSON.stringify(alladdress);
+			startload();
+			mui.ajax(appurl + '/delivery-addresses?access-token=' + JSON.parse(localStorage.userinfo).access_token +'&and[userid]=' +JSON.parse(localStorage.userinfo).id, {
+				data: {},
+				dataType: 'json',
+				type: 'get',
+				timeout: 6000,
+				success: function(data) {
+					console.log(JSON.stringify(data))
+					if (data.success == true) {
+						for (i = 0; i < data.data.items.length; i++) {
+							var jsonadd = '{"person":"' + data.data.items[i].consignee + '","phonenum": "' + data.data.items[i].mobile + '","postcode": "' + data.data.items[i].postcode + '","province": "' + data.data.items[i].province + '","city": "' + data.data.items[i].city + '","county": "' + data.data.items[i].county + '","detailedaddress": "' + data.data.items[i].address + '","id": "' + data.data.items[i].id + '"}';
+							jsonadd = JSON.parse(jsonadd);
+							alladdress.address.push(jsonadd);
+						}
+						for (i = 0; i < data.data.items.length; i++) {
+							if (data.data.items[i].is_default == 1) {
+								alladdress.selected = data.data.items[i].id;
+								break;
+							}
+						}
+						localStorage.alladdress = JSON.stringify(alladdress);
+						document.getElementById("address").style.display = 'block';
+						stopload();
+					} else {
+						mui.alert("获取地址列表失败，请稍候再试");
+						stopload();
+					}
+				},
+				error: function(xhr, textStatus, errorThrown) {
+					mui.alert("网络连接失败，请稍候再试");
+					stopload();
+				}
+			});
+		} else {
+			alladdress = JSON.parse(localStorage.alladdress);
+			document.getElementById("address").style.display = 'block';
+		}
+		var muid;
+		lastdefault = alladdress.selected;
+		var address = new Vue({
+			el: '#address',
+			data: alladdress,
+			methods: {
+				del: function(d, e) {
+					if (window.confirm('是否从删除此地址？')) {
+						k = 0;
+						startload();
+						mui.ajax(appurl + '/delivery-addresses/' + alladdress.address[e].id + '?access-token=' + JSON.parse(localStorage.userinfo).access_token, {
+							data: {},
+							dataType: 'json',
+							type: 'delete',
+							timeout: 6000,
+							success: function(data) {
+								if (data.success == true) {
+									stopload();
+									k = 1;
+								} else {
+									mui.alert("删除地址失败，请稍候再试");
+									stopload();
+									return false
+								}
+							},
+							error: function(xhr, textStatus, errorThrown) {
+								mui.alert("删除地址失败，请稍候再试");
+								stopload();
+								return false;
+							}
+						});
+						if (k) {
+							this.address.$remove(d);
+							localStorage.alladdress = JSON.stringify(alladdress);
+						}
+					}
+				},
+				edit: function(d) {
+					editaddress(d)
+				},
+				setdefault: function(k) {
+					startload();
+					var newdefault = alladdress.address[k].id;
+					if (!lastdefault) {
+						mui.ajax(appurl + '/delivery-addresses/' + newdefault + '?access-token=' + JSON.parse(localStorage.userinfo).access_token, {
+							data: {
+								'is_default': 1
+							},
+							dataType: 'json',
+							type: 'put',
+							timeout: 6000,
+							success: function(data) {
+								if (data.success == true) {
+									stopload();
+									mui.toast("修改默认地址成功");
+									lastdefault = newdefault;
+									alladdress.selected = newdefault;
+									localStorage.alladdress = JSON.stringify(alladdress)
+								} else {
+									mui.alert("修改默认地址失败，请稍候再试");
+									stopload();
+									alladdress.selected = lastdefault;
+								}
+							},
+							error: function(xhr, textStatus, errorThrown) {
+								mui.alert("网络连接失败，请稍候再试");
+								stopload();
+								alladdress.selected = lastdefault;
+							}
+						});
+					} else {
+						mui.ajax(appurl + '/delivery-addresses/' + lastdefault + '?access-token=' + JSON.parse(localStorage.userinfo).access_token, {
+							data: {
+								'is_default': 0
+							},
+							dataType: 'json',
+							type: 'put',
+							timeout: 6000,
+							success: function(data) {
+								if (data.success == true) {
+									mui.ajax(appurl + '/delivery-addresses/' + newdefault + '?access-token=' + JSON.parse(localStorage.userinfo).access_token, {
+										data: {
+											'is_default': 1
+										},
+										dataType: 'json',
+										type: 'put',
+										timeout: 6000,
+										success: function(data) {
+											if (data.success == true) {
+												stopload();
+												mui.toast("修改默认地址成功");
+												lastdefault = newdefault;
+												alladdress.selected = newdefault;
+												localStorage.alladdress = JSON.stringify(alladdress)
+											} else {
+												mui.alert("修改默认地址失败，请稍候再试");
+												stopload();
+												alladdress.selected = lastdefault;
+											}
+										},
+										error: function(xhr, textStatus, errorThrown) {
+											mui.alert("网络连接失败，请稍候再试");
+											stopload();
+											alladdress.selected = lastdefault;
+										}
+									});
+								} else {
+									mui.alert("修改默认地址失败，请稍候再试");
+									stopload();
+									alladdress.selected = lastdefault;
+								}
+							},
+							error: function(xhr, textStatus, errorThrown) {
+								mui.alert("网络连接失败，请稍候再试");
+								stopload();
+								alladdress.selected = lastdefault;
+							}
+						});
+					}
+				}
+			}
+		})
+
+		function editaddress(e) {
+			window.location.href = "edit-address.html?address=" + e;
+		}
+
+		function addaddress() {
+			window.location.href = "add-address.html";
+		}
+	</script>
+
+</html>

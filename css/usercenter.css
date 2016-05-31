@@ -1,0 +1,39 @@
+.mui-table-view-cell {
+	font-size: 13px;
+}
+
+i {
+	margin-right: 5px;
+	font-size: 25px!important;
+	color: #9a9a9a;
+	vertical-align: middle;
+}
+
+.user-main {
+	height: 140px;
+	background-image: url(../images/main-bj.png);
+	position: relative;
+	background-size: 100% auto;
+	color: #999;
+	font-size: 13px;
+	text-align: center;
+}
+
+.user-photo {
+	border: 1px solid#F0F2F1;
+	border-radius: 33px;
+	height: 66px;
+	width: 66px;
+	position: absolute;
+	top: 10px;
+	left: 50%;
+	margin-left: -33px;
+	overflow: hidden;
+}
+
+.user-name {
+	padding-top: 90px;
+}
+.mui-badge{
+	background: #fff!important;color: #000!important;
+}

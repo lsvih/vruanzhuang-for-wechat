@@ -1,0 +1,40 @@
+[0417/101615:ERROR:proxy_service_factory.cc(105)] Cannot use V8 Proxy resolver in single process mode.
+[0417/142541:ERROR:renderer_main.cc(227)] Running without renderer sandbox
+[0417/142744:INFO:CONSOLE(1)] "Uncaught SyntaxError: Unexpected token u", source: http://127.0.0.1:8020/vrz/myorder.html (1)
+[0417/142744:INFO:CONSOLE(1)] "Uncaught SyntaxError: Unexpected token u", source: http://127.0.0.1:8020/vrz/myorder.html?type=1 (1)
+[0417/142744:INFO:CONSOLE(1)] "Uncaught TypeError: Cannot read property 'classList' of null", source: http://127.0.0.1:8020/vrz/js/mui.min.js (1)
+[0418/151348:ERROR:gpu_info_collector_win.cc(103)] Can't retrieve a valid WinSAT assessment.
+[0418/151348:ERROR:proxy_service_factory.cc(105)] Cannot use V8 Proxy resolver in single process mode.
+[0418/151348:ERROR:command_buffer_proxy_impl.cc(156)] Failed to initialize command buffer service.
+[0418/151348:ERROR:webgraphicscontext3d_command_buffer_impl.cc(394)] CommandBufferProxy::Initialize failed.
+[0418/151348:ERROR:webgraphicscontext3d_command_buffer_impl.cc(413)] Failed to initialize command buffer.
+[0418/151348:ERROR:command_buffer_proxy_impl.cc(156)] Failed to initialize command buffer service.
+[0418/151348:ERROR:webgraphicscontext3d_command_buffer_impl.cc(394)] CommandBufferProxy::Initialize failed.
+[0418/151348:ERROR:webgraphicscontext3d_command_buffer_impl.cc(413)] Failed to initialize command buffer.
+[0418/151348:ERROR:command_buffer_proxy_impl.cc(156)] Failed to initialize command buffer service.
+[0418/151348:ERROR:webgraphicscontext3d_command_buffer_impl.cc(394)] CommandBufferProxy::Initialize failed.
+[0418/151348:ERROR:webgraphicscontext3d_command_buffer_impl.cc(413)] Failed to initialize command buffer.
+[0418/151348:ERROR:command_buffer_proxy_impl.cc(156)] Failed to initialize command buffer service.
+[0418/151348:ERROR:webgraphicscontext3d_command_buffer_impl.cc(394)] CommandBufferProxy::Initialize failed.
+[0418/151348:ERROR:webgraphicscontext3d_command_buffer_impl.cc(413)] Failed to initialize command buffer.
+[0418/151348:ERROR:command_buffer_proxy_impl.cc(156)] Failed to initialize command buffer service.
+[0418/151348:ERROR:webgraphicscontext3d_command_buffer_impl.cc(394)] CommandBufferProxy::Initialize failed.
+[0418/151348:ERROR:webgraphicscontext3d_command_buffer_impl.cc(413)] Failed to initialize command buffer.
+[0418/151348:ERROR:command_buffer_proxy_impl.cc(156)] Failed to initialize command buffer service.
+[0418/151348:ERROR:webgraphicscontext3d_command_buffer_impl.cc(394)] CommandBufferProxy::Initialize failed.
+[0418/151348:ERROR:webgraphicscontext3d_command_buffer_impl.cc(413)] Failed to initialize command buffer.
+[0418/151348:ERROR:command_buffer_proxy_impl.cc(156)] Failed to initialize command buffer service.
+[0418/151348:ERROR:webgraphicscontext3d_command_buffer_impl.cc(394)] CommandBufferProxy::Initialize failed.
+[0418/151348:ERROR:webgraphicscontext3d_command_buffer_impl.cc(413)] Failed to initialize command buffer.
+[0418/151348:ERROR:command_buffer_proxy_impl.cc(156)] Failed to initialize command buffer service.
+[0418/151348:ERROR:webgraphicscontext3d_command_buffer_impl.cc(394)] CommandBufferProxy::Initialize failed.
+[0418/151348:ERROR:webgraphicscontext3d_command_buffer_impl.cc(413)] Failed to initialize command buffer.
+[0418/151350:ERROR:gpu_info_collector_win.cc(103)] Can't retrieve a valid WinSAT assessment.
+[0418/151350:ERROR:renderer_main.cc(227)] Running without renderer sandbox
+[0418/151350:ERROR:ipc_channel_win.cc(405)] pipe error: 232
+[0418/151350:ERROR:ipc_channel_win.cc(405)] pipe error: 232
+[0418/151748:ERROR:renderer_main.cc(227)] Running without renderer sandbox
+[0418/151748:INFO:CONSOLE(1)] "Uncaught TypeError: Cannot read property 'classList' of null", source: http://127.0.0.1:8020/vrz/js/mui.min.js (1)
+[0418/151947:ERROR:renderer_main.cc(227)] Running without renderer sandbox
+[0418/154023:ERROR:gpu_info_collector_win.cc(103)] Can't retrieve a valid WinSAT assessment.
+[0418/154023:ERROR:proxy_service_factory.cc(105)] Cannot use V8 Proxy resolver in single process mode.

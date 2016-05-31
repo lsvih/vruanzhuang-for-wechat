@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+		<meta name="format-detection" content="telephone=no">
+		<meta content="email=no" name="format-detection" />
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+				<script type="text/javascript" src="js/app.js"></script>
+		<script type="text/javascript" src="js/global.js" ></script>
+		<script type="text/javascript" src="js/mui.min.js"></script>
+		<script type="text/javascript" src="js/mui.zoom.js"></script>
+		<script type="text/javascript" src="js/mui.previewimage.normaltype.js"></script>
+		
+		<link rel="stylesheet" href="css/mui.min.css" />
+		<link rel="stylesheet" href="css/app.css" />
+		<link rel="stylesheet" href="css/product.css" />
+		<link rel="stylesheet" href="css/order.css" />
+
+		<title>微软装</title>
+	</head>
+
+	<body onresize="javascript:adaptive();">
+		<div id="load">
+			<div class="loading"></div>
+			<div class="loading-text"><img src="images/load.gif" width="25px">加载中，请稍候...</div>
+		</div>
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<a class="iconfont icon-gouwuche icon-left-nav mui-icon mui-pull-right" href="cart.html"></a>
+			<h1 class="mui-title"></h1>
+		</header>
+		<div class="mui-content">
+			<div class="innerdiv"><img id="cover" src="images/default-1.png">
+			</div>
+			<div id="name" class="name">...</div>
+			<div class="pri"><span id="pri">...</span>元</div>
+			<button id="addcrat" class="mui-btn-red mui-btn-block" onclick="addtocart()" disabled><i class="iconfont icon-gouwuche"></i>正在加载，请稍等...</button>
+			<div>
+				<div id="segmentedControl" class="mui-segmented-control">
+					<a id="class1" class="mui-control-item" href="#item1">
+				商品详情
+			</a>
+					<a id="class2" class="mui-control-item" href="#item2">
+				企业介绍
+			</a>
+					<a id="class3" class="mui-control-item" href="#item3">
+				买家需知
+			</a>
+					<a id="class4" class="mui-control-item" href="#item4">
+				常见问题
+			</a>
+				</div>
+			</div>
+			<div id="item1" class="mui-control-content">
+				<div class="dv_prdouctDetail">
+					<div class="header">商品详情:</div>
+					<p>
+						<span id="SmainMaterial">主材质：<span id="mainMaterial"></span><br></span>
+						<span id="SviceMaterial">副材质：<span id="viceMaterial"></span><br></span>
+						<span id="Sfabric">面料：<span id="fabric"></span><br></span>
+						<span id="Spaint">油漆：<span id="paint"></span><br></span>
+						<span id="Sshape">形状：<span id="shape"></span><br></span>
+						<span id="Sinstallation">安装方式：<span id="installation"></span><br></span>
+						<span id="Scolor">颜色：<span id="color"></span><br></span>
+						<span id="Ssize">尺寸：<span id="size"></span><br></span>
+						<span id="SspecialArts">特殊工艺：<span id="specialArts"></span><br></span>
+						<span id="SisHaveLight">是否含灯源：<span id="isHaveLight"></span><br></span>
+						<span id="SlightSourceType">光源类型：<span id="lightSourceType"></span><br></span>
+						<span id="Svoltage">电压：<span id="voltage"></span><br></span>
+						<span id="Sparts">配件：<span id="parts"></span><br></span>
+						<span id="SisHaveBedSide">是否包含床头柜：<span id="isHaveBedSide"></span><br></span>
+						<span id="SisHaveBedding">是否包含床品：<span id="isHaveBedding"></span><br></span>
+						<span id="Sdescription">简介： <span id="description"></span><br></span>
+
+					</p>
+				</div>
+			</div>
+			<div id="item2" class="mui-control-content">
+				<div class="dv_prdouctDetail">
+					<div class="header">公司简介:</div>
+					<p>
+						北京山禾金缘艺术设计股份有限公司是一家涉及总体规划设计、建筑设计、景观设计、室内设计、室内配饰设计等领域的综合性设计机构。公司成立以来业务版图已从北京扩展到上海，广州，深圳，等国内十多个城市。
+					</p>
+					<p>
+						公司核心设计团队均出自国内一流设计院校，公司不断整合专业院校尖端设计人才，以国内及国际权威机构为至高点，形成一个具有国际水准的精英设计团队。团队构成分为建筑景观、室内两大板块。公司一路走来获得业界众多好评。
+					</p>
+					<div class="header">公司荣誉:</div>
+					<p>北京市建筑装饰协会陈设艺术专业委员会会长单位<br> 中国室内装饰协会会员
+						<br> 北京室内装饰协会绿色装饰企业
+					</p>
+					<div class="header">成功案例:</div>
+					<p>碧水庄园<br> 东山墅
+						<br> 香山亲琴
+						<br> 颐和园著
+					</p>
+					<div class="header">合作伙伴:</div>
+					<div>
+						<img src="images/logo-list.jpg" width="100%" height="auto%">
+					</div>
+
+					<div class="header">品质保障:</div>
+
+					<div class="header">环保</div>
+					<p>
+						微软装使用的全部产品品牌均为一线知名品牌，相关产品均符合国家环保和质量标准。
+					</p>
+					<div class="header">木质</div>
+					<p>
+						实木家具采用水曲柳、白橡木、胡桃木等百年成树的高档硬木，副材质选用俄罗斯松木或东北落叶松、杉木等抗压度强、不易变形木材中密度纤维板取材北美针叶林，生长周期长、硬度好 、密度高中、不易变形，经消毒甲醛处理，释放均达到或优于环保水平&lt;=1.5mg/L，符合GB18584-2001E1。
+					</p>
+					<div class="header">面料</div>
+					<p>
+						窗帘等面料均选用棉麻系列，或在耐磨定型部分采用涤棉、涤麻混纺面料，环保、软和、透气、自然以及出色的织物纹理感是微软装对于面料质地的追求，采用活性印染等工艺则保证环保的同时加强了色彩的表现力。
+					</p>
+					<div class="header">油漆</div>
+					<p>
+						经过多层涂装，硬度、光亮度、防潮性和持久性保证PU封底，底漆保证木材与外界阻隔，强化硬度和防潮性，三成PE白底，光润丰厚，耐磨木器漆喷绘后再经过研磨、对色、修色后上PU面漆，木器漆均选用宝莉、华润、三棵树等十大品牌，符合GB18584-2001标准，符合人体健康、环保需求。
+					</p>
+					<div class="header">灯具</div>
+					<p>
+						选自最主要的灯具出口基地中山古镇，精选设计师原创设计的的款型，精湛的出口工艺、科技导光技术，全部达到严格的国际标准要求和3C安全认证。
+					</p>
+
+				</div>
+			</div>
+			<div id="item3" class="mui-control-content">
+				<div class="dv_prdouctDetail">
+					<div class="header">源于发货</div>
+					<p>
+						家具具有一定的生产周期且不同种类产品会有较大差异，到货周期会常有浮动，如有断货情况我们会及时与您联系，以客服通知为准！
+					</p>
+					<div class="header">产品色差</div>
+					<p>
+						产品图片及样板间图片为标准光源实物实景拍摄，由于外界光线、拍摄环境、显示器参数等因素影响，实物和您看到的图片可能会有色差，请以实物为准。
+					</p>
+					<div class="header">定制说明</div>
+					<p>
+						如客户有定制产品需求，家具类商品定制周期为30-45天，窗帘\地毯商品定制周期在15-20天左右，当您下单付款后，订单即生效，进入工厂生产流程，若因特殊原因需要不能更改订单，请与在线客服联系。
+					</p>
+					<div class="header">配送周期</div>
+					<p>
+						大件家具及预订商品需要30天以上，小件商品一般在3-7个工作日内发送，详情可咨询客服。
+					</p>
+					<div class="header">保修期</div>
+					<p>
+						微软装的所有软装产品保修期为1年。
+					</p>
+					<div class="header">货物验收</div>
+					<p>
+						产品到货时(或在物流公司及提货点取货时)，请务必当面检查产品的包装及核对发运件数：<br> 1）包装破损，请不要在货运单上签字，立即与微软装的在线客服联系。 <br> 2）打开包装后检查商品及数量是否与订单(发运单) 相符。 <br> 3）请当面检查产品状态，是否有破损等状况,如有问题直接拒收。 <br> 4）到货后（货到提货点通知提货次日起） 7天内为售后保障期。您在包装完好的情况下正常收货后发现商品质量问题，可以联系微软装客服进行处理。 <br> 5）如有问题，请拍摄以下照片做好证据：产品破损部位、产品包装上的产品型号、购物清单。第一时间上传给微软装网站客服，微软装客服会在3个工作日内给您回复，并协助处理。
+						<br> 注意：如因物流原因造成的损坏，而您已在物流单上签收，即等于您认可了商品已经安全到达，该类损坏所产生的后续补件或维修费用将由客户自行承担。
+					</p>
+					<div class="header">免费安装</div>
+					<p>
+						卖家承诺提供送货上门并安装服务的条件如下：<br> 1)买家购买商品时填写的收货地址在卖家承诺提供送货、上门并安装的区域内。
+						<br> 2) "免费配送安装"服务仅限于室内操作，不提供高空作业、吊装等室外作业。<br> 3)由于家装商品属特殊运输，如遇不可抗力因素（如，道路受阻、天气原因等）时，将合理顺延时间。在卖家提前与买家沟通和告知的情况下，买家不能以该理由拒收。
+						<br> 4)买家收货地址所在建筑物本身及其所在环境, 在无需配送者提供除搬运外的其他服务的情况下（如入户大门、楼道、电梯等的宽度和高度可以搬运，楼道内无杂物等），可将货物搬运至收货地址。如遇其他情况产生的额外费用由买家自行承担。<br> 5)买家如需更改收货地址，且更改后的地址超出卖家承诺提供“免费配送安装”服务的区域，由此导致的额外费用，由买家承担。
+						<br> 6)为保障买家自身权益，请买家向配送者索要额外支付费用的收据或发票，作为费用支出的凭证。
+						<br> 7)因天气、交通管制等不可抗力因素导致无法送货上门，买家可与配送者预约再次配送的时间。
+						<br>
+					</p>
+
+					<div class="header">退换货规定</div>
+					<p>
+						客户自签收之日起7日内可无理由退换货，如产品无质量问题相关包装物流费用由卖家承担。礼品、赠品、定制品及附属类配件产品、影响二次销售的产品不在退换范围之内。产品调换的再次到货时间双方协商，以产品生产周期为准。
+
+					</p>
+				</div>
+			</div>
+			<div id="item4" class="mui-control-content">
+				<div class="dv_tab_content" ng-show="li_active==3">
+					<div class="dv_prdouctDetail">
+						<div class="header">购买整套样板间元购物单件商品有什么不同？</div>
+						<p>一套样板间通常包含几件或几十件产品，购买整套样板间商品即购买其中所有商品。样板间是设计师对不同商品进行搭配组合后呈现的效果，设计师的专业设计通常会营造出更加漂亮、舒适的家居环境，购买整套样板间也可以免去重复挑选的麻烦。</p>
+						<div class="header">能不能只购买样板间中的某件商品？</div>
+						<p>可以的。您可以在页面上看到每套样板间中所包含的商品，以及每件商品的价格，您可以根据自己的需要选择要购买的单品及件数，进行单独结算。</p>
+						<div class="header">我能更换样板间里的商品吗？</div>
+						<p>可以的，如果您对样板间里的个别商品不满意，您可以把自己喜欢的方案加入智能搭配，更换、删除个别商品，保存自己搭配的样板间，进行结算。</p>
+						<div class="header">我拿到的商品确实有问题，该怎么退啊？</div>
+						<p>
+							当您收到选购的商品，质量确实有异议的（无论是物流的问题还是本身的质量问题），可以在通知提货起7天内提出具体异议，微软装确认后将尽快为您做退换补服务。
+						</p>
+						<p>注：特价促销商品、定制产品、组装家具不能退换货。</p>
+						<div class="header">怎样在微软装购买商品？</div>
+						<p>您只需要花十秒钟时间注册成为会员，即可在微软装平台购买您中意的商品：注册会员&gt;&gt;&gt;挑选商品，加入购物车&gt;&gt;&gt;确认购买&gt;&gt;&gt;提交订单&gt;&gt;&gt;付款&gt;&gt;&gt;确认收货&gt;&gt;&gt;评价商品</p>
+					</div>
+				</div>
+			</div>
+		</div>
+
+	</body>
+	<script>
+		var id = GetRequest()["id"];
+		mui.ready(function() {
+			startload();
+			mui.ajax(appurl + '/products/' + id + '?expand=product.productImages', {
+				data: {},
+				dataType: 'json',
+				type: 'get',
+				timeout: 6000,
+				success: function(data) {
+					if (data.success == true) {
+						document.getElementById("cover").src = serverurl + '/vrz/uploads/' + data.data.productImages[0].icon_img;
+						document.getElementById("addcrat").innerHTML = '<i class="iconfont icon-gouwuche"></i>加入购物车';
+						document.getElementById("addcrat").disabled = "";
+						document.getElementById("name").innerHTML = data.data.name;
+						document.getElementById("pri").innerHTML = data.data.unit_price;
+						if (!data.data.size) {
+							document.getElementById("Ssize").style.display = "none";
+						} else {
+							document.getElementById("size").innerHTML = data.data.size;
+						}
+						if (!data.data.main_material) {
+							document.getElementById("SmainMaterial").style.display = "none";
+						} else {
+							document.getElementById("mainMaterial").innerHTML = data.data.main_material;
+						}
+						if (!data.data.vice_material) {
+							document.getElementById("SviceMaterial").style.display = "none";
+						} else {
+							document.getElementById("viceMaterial").innerHTML = data.data.vice_material;
+						}
+						if (!data.data.fabric) {
+							document.getElementById("Sfabric").style.display = "none";
+						} else {
+							document.getElementById("fabric").innerHTML = data.data.fabric;
+						}
+						if (!data.data.paint) {
+							document.getElementById("Spaint").style.display = "none";
+						} else {
+							document.getElementById("paint").innerHTML = data.data.paint;
+						}
+						if (!data.data.shape) {
+							document.getElementById("Sshape").style.display = "none";
+						} else {
+							document.getElementById("shape").innerHTML = data.data.shape;
+						}
+						if (!data.data.installation) {
+							document.getElementById("Sinstallation").style.display = "none";
+						} else {
+							document.getElementById("installation").innerHTML = data.data.installation;
+						}
+						if (!data.data.color) {
+							document.getElementById("Scolor").style.display = "none";
+						} else {
+							document.getElementById("color").innerHTML = data.data.color;
+						}
+						if (!data.data.special_arts) {
+							document.getElementById("SspecialArts").style.display = "none";
+						} else {
+							document.getElementById("specialArts").innerHTML = data.data.special_arts;
+						}
+						if (!data.data.light_source_type) {
+							document.getElementById("SlightSourceType").style.display = "none";
+						} else {
+							document.getElementById("lightSourceType").innerHTML = data.data.light_source_type;
+						}
+						if (!data.data.voltage) {
+							document.getElementById("Svoltage").style.display = "none";
+						} else {
+							document.getElementById("voltage").innerHTML = data.data.voltage;
+						}
+						if (!data.data.parts) {
+							document.getElementById("Sparts").style.display = "none";
+						} else {
+							document.getElementById("parts").innerHTML = data.data.parts;
+						}
+						if (!data.data.have_light) {
+							document.getElementById("SisHaveLight").style.display = "none";
+						} else {
+							document.getElementById("SisHaveLight").innerHTML = data.data.have_light;
+						}
+						if (!data.data.have_bedside) {
+							document.getElementById("SisHaveBedSide").style.display = "none";
+						} else {
+							document.getElementById("isHaveBedSide").innerHTML = data.data.have_bedside;
+						}
+						if (!data.data.have_bedding) {
+							document.getElementById("SisHaveBedding").style.display = "none";
+						} else {
+							document.getElementById("isHaveBedding").innerHTML = data.data.have_bedding;
+						}
+						if (!data.data.intro) {
+							document.getElementById("Sdescription").style.display = "none";
+						} else {
+							document.getElementById("description").innerHTML = data.data.intro;
+						}
+						stopload();
+					} else {
+						mui.alert(data.message);
+						stopload();
+					}
+				},
+				error: function(xhr, type, errorThrown, message) {
+					mui.alert("网络连接失败，请稍候再试");
+					stopload();
+				}
+			});
+			document.getElementById('class1').className = "mui-control-item mui-active";
+			document.getElementById('item1').className = "mui-control-content mui-active";
+		})
+
+		function adaptive() {
+			cases = document.getElementsByClassName("innerdiv");
+			goods = document.getElementsByClassName("goods");
+			bodywideth = document.body.clientWidth;
+			document.getElementsByClassName("mui-content")[0].style.width = bodywideth;
+			for (i = 0; i < cases.length; i++) {
+				cases[i].style.width = bodywideth + 'px';
+				cases[i].style.height = bodywideth * 0.56 + 'px';
+			}
+			for (i = 0; i < goods.length; i++) {
+				goods[i].style.width = bodywideth * 0.48 + 'px';
+				goods[i].style.height = bodywideth * 0.48 + 'px';
+				if (i % 2) {
+					goods[i].style.marginLeft = bodywideth * 0.02 + 'px';
+				}
+			}
+		}
+
+		function addtocart() {
+			cart('product',id,document.getElementById("name").innerHTML,1,document.getElementById("pri").innerHTML,document.getElementById("cover").src);
+		}
+
+	</script>
+
+</html>

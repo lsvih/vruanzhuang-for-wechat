@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+		<meta name="format-detection" content="telephone=no">
+		<meta content="email=no" name="format-detection" />
+		<script type="text/javascript" src="js/app.js"></script>
+		<script type="text/javascript" src="js/global.js"></script>
+		<script type="text/javascript" src="js/mui.min.js"></script>
+		<link rel="stylesheet" href="css/mui.min.css" />
+		<link rel="stylesheet" href="css/app.css" />
+		<link rel="stylesheet" href="css/match.css" />
+		<title>微软装</title>
+	</head>
+
+	<body onresize="javascript:adaptive();">
+		<div id="load">
+			<div class="loading"></div>
+			<div class="loading-text"><img src="images/load.gif" width="25px">加载中，请稍候...</div>
+		</div>
+
+		
+			<div id="slider" class="mui-slider">
+				<div class="mui-slider-group">
+					<div class="mui-slider-item mui-active" style="z-index: 13;">
+						<img src="images/match/yj.jpg" class="1" id="1" onclick="selecttype(this)">
+					</div>
+					<div class="mui-slider-item" style="z-index: 12;">
+						<img src="images/match/lj.jpg" class="1" id="2" onclick="selecttype(this)">
+					</div>
+					<div class="mui-slider-item" style="z-index: 11;">
+
+						<img src="images/match/sj.jpg" class="1" id="3" onclick="selecttype(this)">
+					</div>
+					<div class="mui-slider-item" style="z-index: 10;">
+						<img src="images/match/fs.jpg" class="1" id="4" onclick="selecttype(this)">
+					</div>
+					<div class="mui-slider-item" style="z-index: 9;">
+						<img src="images/match/bs.jpg" class="1" id="5" onclick="selecttype(this)">
+					</div>
+
+				</div>
+			</div>
+			<div class="choose">请选择你家的
+				<div style="font-size: 23px;line-height: 37px;">家居户型</div>
+				<div class="next" onclick="next()">
+					下一步
+				</div>
+			</div>
+
+	
+
+	</body>
+	<script>
+		mui.ready(function() {
+			localStorage.removeItem('selectedtype')
+			adaptive();
+			document.querySelector('.mui-slider').addEventListener('slide', function(event) {
+				adaptive();
+			});
+		})
+
+		function adaptive() {
+			item = document.getElementsByClassName("mui-slider-group")[0].getElementsByClassName("mui-slider-item");
+			img = document.getElementsByClassName("mui-slider-group")[0].getElementsByTagName("img");
+			itemWidth = window.innerWidth;
+			for (i = 0; i < item.length; i++) {
+				item[i].style.height = itemWidth * 0.5 + 'px';
+				item[i].style.width = itemWidth * 0.5 + 'px';
+				item[i].style.marginRight = itemWidth * 0.15 + 'px';
+			}
+			for (i = 0; i < img.length; i++) {
+				img[i].style.height = itemWidth * 0.5 + 'px';
+				img[i].style.width = itemWidth * 0.5 + 'px';
+				img[i].style.marginLeft = itemWidth * 0.25 + 'px';
+				img[i].style.marginLeft = itemWidth * 0.25 + 'px';
+			}
+		}
+
+		function selecttype(e) {
+			if (e.className == 2) {
+				e.className = 1;
+				e.src = e.src.substring(0, e.src.length - 6) + '.jpg';
+			} else {
+				items = document.getElementsByClassName('mui-slider-item');
+				for (i = 0; i < items.length; i++) {
+					if (items[i].getElementsByTagName('img')[0].className == 2) {
+						items[i].getElementsByTagName('img')[0].className = 1;
+						items[i].getElementsByTagName('img')[0].src = items[i].getElementsByTagName('img')[0].src.substring(0, items[i].getElementsByTagName('img')[0].src.length - 6) + '.jpg';
+					}
+				}
+				e.src = e.src.substring(0, e.src.length - 4) + '-a.jpg';
+				e.className = 2;
+			}
+		}
+
+		function next() {
+			selected = document.getElementsByClassName('2');
+			for (i = 0; i < selected.length; i++) {
+				localStorage.selectedtype =selected[i].id;
+			}
+			if(!localStorage.selectedtype){
+				alert('请选择您的家居户型!');
+				return false;
+			}
+			location.href = 'myscheme.html'
+		}
+	</script>
+
+</html>

@@ -1,0 +1,227 @@
+.mui-segmented-control {
+	border: none;
+}
+
+.mui-table-view {
+	color: #9A9A9A;
+}
+
+.mui-segmented-control .mui-control-item {
+	color: #000;
+	border-color: #fff;
+	background-color: #fff
+}
+
+.mui-segmented-control .mui-control-item.mui-active {
+	background-color: #fff;
+	border-bottom: 2px solid#DF1A17;
+}
+
+.mui-table-view-cell {
+	padding: 10px 0 15px 15px;
+	font-size: 13px;
+	color: #9A9A9A!important;
+}
+
+.mui-table-view-cell.mui-active {
+	background-color: #fff;
+}
+
+.mui-icon {
+	color: #999;
+}
+
+.mui-bar {
+	border: 0;
+}
+
+.blank {
+	background-color: #F1F1F1;
+	height: 5px;
+	width: 100%;
+}
+.bigblank {
+	background-color: #F1F1F1;
+	height: 50px;
+	width: 100%;
+}
+.items {
+	height: 130px;
+	width: 100%;
+	overflow: scroll;
+	overflow-y: hidden;
+}
+
+.order-state {
+	display: none;
+}
+
+.lineimg {
+	width: 2000px;
+}
+
+.mui-table-view-cell.mui-active {
+	color: #9A9A9A;
+}
+
+.item img {
+	height: 100px;
+	width: 100px;
+}
+
+.item {
+	float: left;
+	display: inline;
+
+	margin-right: 10px;
+}
+
+.scheme-item img {
+	height: 100px;
+	width: 180px;
+}
+
+.scheme-item {
+	float: left;
+	display: inline;
+
+	margin-right: 10px;
+}
+
+
+.iteminner {
+	width: 100%;
+	height: 110px;
+	overflow: hidden;
+	margin-top: 15px;
+}
+
+.note {
+	font-size: 12px;
+}
+
+.price {
+	color: #DF1A17;
+}
+
+.sendprice {
+	color: #DF1A17;
+}
+
+.btn-area {
+	height: 50px;
+}
+
+.btn {
+	width: 100px;
+	height: 23px;
+	line-height: 20px;
+	font-size: 13px;
+	text-align: center;
+	border-radius: 5px;
+	position: relative;
+	float: right;
+	border: 1px solid#B2B2B2;
+	margin-top: 15px;
+	margin-right: 20px;
+}
+
+.innavfor2 {
+	width: 50%;
+	height: 40px;
+	position: fixed;
+	bottom: 0;
+	background-color: #fff;
+	border: 1px solid#CCCCCC;
+	text-align: center;
+	line-height: 40px;
+	color: #000;
+}
+
+.innavfor2.pay {
+	right: 0!important;
+	color: #fff;
+}
+
+.innavfor2.active {
+	background-color: #df1a17;
+}
+
+.orderinfo {
+	margin: 10px;
+	padding: 10px 0 15px 15px;
+	font-size: 13px;
+}
+
+.listimg {
+	width: 112px;
+	height: 112px;
+	border: 1px solid#CCCCCC;
+}
+
+.listimg img {
+	width: 110px;
+	height: 110px;
+}
+
+.listname {
+	position: absolute;
+	top: 10px;
+	left: 140px;
+	font-size: 17px;
+}
+
+.listprice {
+	color: #df1a17;
+	position: absolute;
+	bottom: 10px;
+	left: 140px;
+	font-size: 17px;
+}
+
+.listnum {
+	position: absolute;
+	right: 10px;
+	bottom: 10px;
+}
+
+.mui-content>.mui-table-view:first-child {
+	margin: 0;
+}
+
+.infonum {
+	text-align: right;
+	margin-right: 5px;
+}
+
+.info {
+	width: 100px;
+}
+
+body {
+	background-color: #F1F1F1!important;
+	height: 100%;
+}
+
+.paymode {
+	height: 22px;
+	font-size: 14px;
+	line-height: 22px;
+	padding-left: 20px;
+}
+
+.infopad {
+	width: 100%;
+	height: 40px;
+	position: fixed;
+	bottom: 50px;
+	border-top: 1px solid#eee;
+}
+
+
+.paym {
+	margin: 10px 15px!important;
+}
+.mui-table-view-radio .mui-table-view-cell {
+	height: 60px!important;
+}

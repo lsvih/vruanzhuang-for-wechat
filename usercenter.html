@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+		<meta name="format-detection" content="telephone=no">
+		<meta content="email=no" name="format-detection" />
+				<script type="text/javascript" src="js/app.js"></script>
+		<script type="text/javascript" src="js/global.js" ></script>
+		<script type="text/javascript" src="js/mui.min.js"></script>
+		<script type="text/javascript" src="js/iflogin.js?url=usercenter.html"></script>
+		
+		<link rel="stylesheet" href="css/mui.min.css" />
+		<link rel="stylesheet" href="css/app.css" />
+		<link rel="stylesheet" href="css/usercenter.css" />
+		<title>微软装</title>
+	</head>
+
+	<body>
+		<div id="load">
+			<div class="loading"></div>
+			<div class="loading-text"><img src="images/load.gif" width="25px">加载中，请稍候...</div>
+		</div>
+		<header class="mui-bar mui-bar-nav">
+			<h1 class="mui-title">我</h1>
+		</header>
+
+		<div class="mui-content">
+			<div class="user-main" onclick="window.location.href='edit-userinfo.html'">
+				<div class="user-photo"><img src="images/default.png" height="66px" width="66px"></div>
+				<div class="user-name" id="username">...</div>
+				<!--<div class="user-info">资料完成度(<span>40</span>%)</div>-->
+			</div>
+			<ul id="list" class="mui-table-view mui-table-view-chevron">
+				<li class="mui-table-view-cell">
+					<a class='mui-navigate-right' href="cart.html">
+						<i class="iconfont icon-gouwuche"></i>购物车(<span id="cartcount">0</span>)</a>
+				</li>
+				<li class="mui-table-view-cell">
+					<a class='mui-navigate-right' href="myorder.html">
+						<i class="iconfont icon-dingdan"></i>我的订单</a>
+				</li>
+			</ul>
+			<div style="height: 5px;background-color: #f1f1f1;"></div>
+			<ul id="list" class="mui-table-view mui-table-view-chevron">
+				<li class="mui-table-view-cell">
+					<a class='mui-navigate-right' href="edit-userinfo.html">
+						<i class="iconfont icon-grxx"></i>个人信息</a>
+				</li>
+				<!--<li class="mui-table-view-cell">
+					<a class='mui-navigate-right' href="#">
+						<i class="iconfont icon-wdsc"></i>我的收藏</a>
+				</li>-->
+				<li class="mui-table-view-cell">
+					<a class='mui-navigate-right' href="about.html">
+						<i class="iconfont icon-gywm"></i>关于我们</a>
+				</li>
+				<li class="mui-table-view-cell">
+					<a class='mui-navigate-right' href="tel:4000945080">
+						<i class="iconfont icon-kfzx"></i>客户中心</a>
+				</li>
+			</ul>
+		</div>
+
+	</body>
+	<script>
+		mui.init();
+		countcart();
+		if(!JSON.parse(localStorage.userinfo).fullname){
+			document.getElementById("username").innerHTML = "请设置昵称";
+		}
+		else{
+			document.getElementById("username").innerHTML = JSON.parse(localStorage.userinfo).fullname;
+		}
+		
+		function countcart() {
+			var cartJson = JSON.parse(localStorage.getItem("cart"));
+			var j = 0;
+			for (var i = 0; i < cartJson.goods.length; i++) {
+				if (cartJson.goods[i] != null && cartJson.goods[i] != '') {
+					j++;
+				}
+			}
+			document.getElementById("cartcount").innerHTML = j;
+		}
+		mui('.mui-bar-tab').on('tap', 'a', function(e) {
+			startload();
+			var targetTab = this.getAttribute('href');
+			window.location.href = targetTab;
+		});
+	</script>
+
+</html>

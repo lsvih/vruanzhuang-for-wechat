@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<meta http-equiv="pragram" content="no-cache">
+		<meta name="viewport" content="initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+		<meta name="format-detection" content="telephone=no">
+		<meta content="email=no" name="format-detection" />
+		<script type="text/javascript" src="js/vue.js"></script>
+		<script type="text/javascript" src="js/app.js"></script>
+		<script type="text/javascript" src="js/global.js"></script>
+		<script type="text/javascript" src="js/mui.min.js"></script>
+		<script type="text/javascript" src="js/iflogin.js?url=cart.html"></script>
+
+		<link rel="stylesheet" href="css/mui.min.css" />
+		<link rel="stylesheet" href="css/app.css" />
+		<link rel="stylesheet" href="css/cart.css" />
+		<title>微软装</title>
+	</head>
+
+	<body>
+		<div id="load">
+			<div class="loading"></div>
+			<div class="loading-text"><img src="images/load.gif" width="25px">加载中，请稍候...</div>
+		</div>
+		<header class="mui-bar mui-bar-nav">
+			<h1 class="mui-title">我的购物车</h1>
+		</header>
+		<nav class="mui-bar pay">
+			<div class="mui-input-row mui-checkbox mui-left">
+				<label>全选</label>
+				<input class="checkbox" type="checkbox" id="selectAll">
+
+			</div>
+			<div class="allPrice">合计:<span id="allPrice">￥0</span></div>
+			<div class="node">不含运费</div>
+			<div class="checkout" onclick="checkout()">结算(<span id="count">0</span>)</div>
+		</nav>
+
+		<div class="mui-content">
+			<div id="nodata"><span>暂无数据</span></div>
+			<ul id="cart" class="mui-table-view">
+				<li class="mui-table-view-cell" v-for="goods in goods">
+					<div class="mui-slider-right mui-disabled">
+						<a class="delete mui-btn mui-btn-red">删除</a>
+					</div>
+					<div class="mui-slider-handle mui-checkbox mui-left">
+						<div class="cart-type">{{ goods.type }}</div>
+						<div class="cart-id">{{ goods.id }}</div>
+						<div class="sort-id">{{ $index }}</div>
+						<input name="checkbox" value="{{ goods.id }}" type="checkbox" class="checkbox">
+						<div class="cart-img" onclick="previewthis(this)"><img v-bind:src="goods.img_src"></div>
+						<div class="cart-name">{{ goods.name }}</div>
+						<div class="cart-price">￥<span class="price">{{ goods.price }}</span></div>
+						<div class="mui-numbox" data-numbox-min='1'>
+							<button class="mui-btn mui-btn-numbox-minus" type="button" onclick="valueChange(this)">-</button>
+							<input class="mui-input-numbox" type="number" value="{{ goods.num }}" onchange="valueChange(this)" />
+							<button class="mui-btn mui-btn-numbox-plus" type="button" onclick="valueChange(this)">+</button>
+						</div>
+					</div>
+					<div class="blank"></div>
+				</li>
+
+			</ul>
+		</div>
+
+	</body>
+	<script>
+		mui.init();
+		(function($) {
+			$('#cart').on('tap', '.delete', function(event) {
+				var elem = this;
+				var li = elem.parentNode.parentNode;
+				mui.confirm('是否从购物车中删除该商品？', '微软装', btnArray, function(e) {
+					if (e.index == 0) {
+						del(li);
+						li.parentNode.removeChild(li);
+						selectChange();
+					} else {
+						setTimeout(function() {
+							$.swipeoutClose(li);
+						}, 0);
+					}
+				});
+			});
+			var btnArray = ['确认', '取消'];
+		})(mui);
+		Vue.filter('picurl', function(value, url) {
+			return serverurl + url + value
+		})
+		var cart = new Vue({
+			el: '#cart',
+			data: JSON.parse(localStorage.cart)
+		})
+		mui('.pay').on('change', 'input', function() {
+			var value = this.checked;
+			var chk = document.getElementsByName("checkbox")
+			for (var i = 0; i < chk.length; i++) {
+				chk[i].checked = value;
+			}
+			selectChange();
+		});
+		mui('.mui-slider-handle').on('change', 'input', function() {
+			selectChange();
+		});
+
+		function del(e) {
+			var delId = e.getElementsByClassName("mui-slider-handle")[0].getElementsByClassName("cart-id")[0].innerHTML;
+			var cartJson = JSON.parse(localStorage.getItem("cart"));
+			for (i = 0; i < cartJson.goods.length; i++) {
+				if (cartJson.goods[i].id == delId) {
+					cartJson.goods.splice(i, 1)
+					break;
+				}
+			}
+			localStorage.cart = JSON.stringify(cartJson);
+			return true;
+		}
+
+		function valueChange(e) {
+			var changeId = e.parentNode.parentNode.getElementsByClassName("sort-id")[0].innerHTML;
+			var changeNum = e.parentNode.getElementsByTagName("input")[0].value;
+			var cartJson = JSON.parse(localStorage.getItem("cart"));
+			cartJson.goods[changeId].num = changeNum;
+			localStorage.cart = JSON.stringify(cartJson);
+		}
+
+		function selectChange() {
+			var value = this.checked;
+			var chk = document.getElementsByName("checkbox")
+			var j = 0;
+			var count = 0;
+			for (var i = 0; i < chk.length; i++) {
+				if (chk[i].checked) {
+					j++;
+					a = chk[i].parentNode.getElementsByClassName("cart-price")[0].getElementsByTagName("span")[0].innerHTML;
+					b = chk[i].parentNode.getElementsByClassName("mui-numbox")[0].getElementsByTagName("input")[0].value;
+					count = Number(a) * Number(b) + Number(count);
+				}
+			}
+			if (j) {
+				document.getElementById("count").parentNode.style.backgroundColor = "#c51919";
+			} else {
+				document.getElementById("count").parentNode.style.backgroundColor = "gray"
+			}
+			document.getElementById("count").innerHTML = j;
+			document.getElementById("allPrice").innerHTML = "￥" + count;
+		}
+
+		function checkout() {
+			var count = document.getElementById("count").innerHTML;
+			var chk = document.getElementsByName("checkbox");
+			if (count == 0) {
+				mui.toast("请选择商品结算");
+			} else {
+				var b = new Array(count);
+				var j = 0;
+				for (var i = 0; i < chk.length; i++) {
+					if (chk[i].checked) {
+						a = chk[i].parentNode.getElementsByClassName("sort-id")[0].innerHTML;
+						b[j] = JSON.parse(localStorage.cart).goods[a];
+						j++;
+					}
+				}
+				console.log(JSON.stringify(b))
+				localStorage.temporder = JSON.stringify(b);
+				startload();
+				mui.ajax(appurl + '/orders?access-token=' + JSON.parse(localStorage.userinfo).access_token, {
+					data: {
+						'user_id': JSON.parse(localStorage.userinfo).id
+					},
+					dataType: 'json',
+					type: 'post',
+					timeout: 6000,
+					success: function(data) {
+						if (data.success == true) {
+							orderid = data.data.id;
+							checkcart = JSON.parse(localStorage.temporder);
+							goodslen = checkcart.length;
+							for (i = 0; i < goodslen; i++) {
+								if (JSON.parse(localStorage.temporder)[i].type == 'product') {
+									mui.ajax(appurl + '/order-products?access-token=' + JSON.parse(localStorage.userinfo).access_token, {
+										data: {
+											'order_id': orderid,
+											'product_id': JSON.parse(localStorage.temporder)[i].id,
+											'purchase_num': JSON.parse(localStorage.temporder)[i].num
+										},
+										dataType: 'json',
+										type: 'post',
+										timeout: 6000,
+										success: function(data) {
+											if (data.success == true) {}
+										},
+										error: function(xhr, type, errorThrown, message) {
+											mui.alert("网络连接失败，请稍候再试");
+											stopload();
+										}
+									});
+								}
+								if (JSON.parse(localStorage.temporder)[i].type == 'scheme') {
+									mui.ajax(appurl + '/order-schemes?access-token=' + JSON.parse(localStorage.userinfo).access_token, {
+										data: {
+											'order_id': orderid,
+											'scheme_id': JSON.parse(localStorage.temporder)[i].id,
+											'purchase_num': JSON.parse(localStorage.temporder)[i].num
+										},
+										dataType: 'json',
+										type: 'post',
+										timeout: 6000,
+										success: function(data) {
+											if (data.success == true) {
+												console.log(JSON.stringify(data.data))
+											}
+										},
+										error: function(xhr, type, errorThrown, message) {
+											mui.alert("网络连接失败，请稍候再试");
+											stopload();
+										}
+									});
+								}
+							}
+							sleep(500)
+							mui.ajax(appurl + '/orders/' + orderid + '?access-token=' + JSON.parse(localStorage.userinfo).access_token, {
+								data: {
+									'status': '1',
+								},
+								dataType: 'json',
+								type: 'put',
+								timeout: 6000,
+								success: function(data) {
+									if (data.success == true) {
+										localStorage.temporder = JSON.stringify(data.data);
+										window.location.href = 'orderinfo-calculated.html?orderid=' + data.data.id;
+									}
+								},
+								error: function(xhr, type, errorThrown, message) {
+									mui.alert("网络连接失败，请稍候再试");
+									stopload();
+								}
+							});
+						} else {
+							mui.alert(data.message);
+							stopload();
+						}
+					},
+					error: function(xhr, type, errorThrown, message) {
+						mui.alert("网络连接失败，请稍候再试");
+						stopload();
+					}
+				});
+			}
+		}
+		function previewthis(e){
+			type = e.parentNode.getElementsByClassName("cart-type")[0].innerHTML;
+			id = e.parentNode.getElementsByClassName("cart-id")[0].innerHTML;
+			if(type == 'scheme'){
+				window.location.href = 'preview-schemes.html?id=' + id
+			}
+			if(type == 'product'){
+				window.location.href = 'preview-product.html?id=' + id
+			}
+		}
+		mui('.mui-bar-tab').on('tap', 'a', function(e) {
+			var targetTab = this.getAttribute('href');
+			window.location.href = targetTab;
+		});
+		
+	</script>
+
+</html>

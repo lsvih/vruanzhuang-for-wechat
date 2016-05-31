@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+		<meta name="format-detection" content="telephone=no">
+		<meta content="email=no" name="format-detection" />
+				<script type="text/javascript" src="js/app.js"></script>
+		<script type="text/javascript" src="js/global.js" ></script>
+		<script type="text/javascript" src="js/mui.min.js"></script>
+		<script type="text/javascript" src="js/mui.lazyload.js"></script>
+		<script type="text/javascript" src="js/mui.lazyload.img.js"></script>
+		<script type="text/javascript" src="js/mui.zoom.js"></script>
+		<script type="text/javascript" src="js/mui.previewimage.js"></script>
+		
+		<link rel="stylesheet" href="css/mui.min.css" />
+		<link rel="stylesheet" href="css/app.css" />
+		<link rel="stylesheet" href="css/picture.css" />
+		<title>微软装</title>
+	</head>
+	<div id="load">
+		<div class="loading"></div>
+		<div class="loading-text"><img src="images/load.gif" width="25px">加载中，请稍候...</div>
+	</div>
+
+	<body onresize="javascript:adaptive();">
+
+		<header class="mui-bar mui-bar-nav">
+			<h1 class="mui-title">精美图片</h1>
+		</header>
+		<nav class="mui-bar select"><span id="key1" class="menu right-boder" onclick="Key1()">风格<i class="iconfont icon-zuojiantou"></i></span><span id="key2" class="menu right-boder" onclick="Key2()">空间<i class="iconfont icon-zuojiantou"></i></span><span id="key3" class="menu" onclick="Key3()">颜色<i class="iconfont icon-zuojiantou"></i></span></nav>
+		<div class="tab">
+			<div class="tab1"><span onclick="selectclass(1,-1)">不限</span><span onclick="selectclass(1,0)">现代</span><span onclick="selectclass(1,1)">欧式</span><span onclick="selectclass(1,2)">欧式</span><span onclick="selectclass(1,3)">中式</span><span onclick="selectclass(1,4)">田园</span>
+				<span onclick="selectclass(1,5)">日式</span>
+				<span onclick="selectclass(1,6)">美式</span>
+				<!--<span onclick="selectclass(1,7)">东南亚</span>--><span onclick="selectclass(1,8)">新古典</span><span onclick="selectclass(1,9)">地中海</span><span onclick="selectclass(1,10)">其他</span></div>
+			<div class="tab2"><span onclick="selectclass(2,-1)">不限</span><span onclick="selectclass(2,0)">客厅</span><span onclick="selectclass(2,1)">餐厅</span><span onclick="selectclass(2,2)">卧室</span><span onclick="selectclass(2,3)">书房</span><span onclick="selectclass(2,4)">女孩房</span>
+				<span onclick="selectclass(2,5)">男孩房</span>
+				<span onclick="selectclass(2,6)">茶室</span><span onclick="selectclass(2,7)">其他</span></div>
+			<div class="tab3"><span onclick="selectclass(3,-1)">不限</span><span onclick="selectclass(3,0)">米色</span><span onclick="selectclass(3,1)">白色</span><span onclick="selectclass(3,2)">咖色</span><span onclick="selectclass(3,3)">蓝色</span><span onclick="selectclass(3,4)">绿色</span>
+				<span onclick="selectclass(3,5)">粉色</span>
+				<span onclick="selectclass(3,6)">红色</span><span onclick="selectclass(3,7)">紫色</span><span onclick="selectclass(3,8)">黄色</span><span onclick="selectclass(3,9)">灰色</span><span onclick="selectclass(3,10)">其他</span></div>
+		</div>
+		<nav class="mui-bar mui-bar-tab">
+			<a class="mui-tab-item" href="index.html">
+				<span class="mui-icon tab-bar__icon iconfont icon-icon1 ng-scope"></span>
+				<span class="mui-tab-label">首页</span>
+			</a>
+			<a class="mui-tab-item" href="match.html">
+				<span class="mui-icon tab-bar__icon iconfont icon-icon2 ng-scope"></span>
+				<span class="mui-tab-label">智能搭配</span>
+			</a>
+			<a class="mui-tab-item  mui-active" href="pictures.html">
+				<span class="mui-icon tab-bar__icon iconfont icon-icon3 ng-scope"></span>
+				<span class="mui-tab-label">精美图片</span>
+			</a>
+			<a class="mui-tab-item" href="cart.html">
+				<span class="mui-icon tab-bar__icon tab-bar__icon iconfont icon-gouwuche ng-scope"></span>
+				<span class="mui-tab-label">购物车</span>
+			</a>
+			<a class="mui-tab-item" href="usercenter.html">
+				<span class="mui-icon tab-bar__icon iconfont icon-icon4 ng-scope"></span>
+				<span class="mui-tab-label">我的</span>
+			</a>
+		</nav>
+		<div class="mui-content">
+			<div id="nodata"><span>暂无数据</span></div>
+			<div id="list" class="pictures">
+			</div>
+		</div>
+
+	</body>
+	<script>
+		startload();
+		var Data = new Array;
+		var pics = new Array;
+		if (!localStorage.collectpic) {
+			localStorage.collectpic = JSON.stringify(new Array);
+		} else {
+			like = JSON.parse(localStorage.collectpic);
+		}
+		mui.ready(function() {
+			mui.ajax(appurl + '/photoshoots', {
+				data: {},
+				dataType: 'json',
+				type: 'get',
+				timeout: 6000,
+				success: function(data) {
+					if (data.success == true) {
+						for (i = 0; i < data.data.items.length; i++) {
+							imgsrc = data.data.items[i].icon_img;
+							
+							Data[i] = '{"id":' + data.data.items[i].id + ',"key1":' + data.data.items[i].style + ',"key2": ' + data.data.items[i].type + ',"key3":' + data.data.items[i].tone + ',"preview":"' +data.data.items[i].icon_img + '","src":"' + data.data.items[i].icon_img + '"}';
+							Data[i] = JSON.parse(Data[i]);
+						}
+						pics = Data;
+						lazyload();
+						mui.previewImage();
+						adaptive();
+						stopload();
+					} else {
+						mui.alert("获取图片失败，请稍候再试");
+						stopload();
+						return false
+					}
+				},
+				error: function(xhr, textStatus, errorThrown) {
+					mui.alert("网络连接失败，请稍候再试");
+					stopload();
+				}
+			});
+		});
+
+		function lazyload() {
+			document.getElementById("nodata").style.display = "none";
+			if (pics.length == 0) {
+				document.getElementById("nodata").style.display = "block";
+				return false;
+			}
+			var createFragment = function(count) {
+				var fragment = document.createDocumentFragment();
+				var span;
+				for (var i = 0; i < count; i++) {
+					div = document.createElement('div');
+					if (i % 2) {
+						div.className = 'pics blankborder';
+					} else {
+						div.className = 'pics mui-pull-left';
+					}
+					div.innerHTML = '<img data-lazyload="'  + serverurl + '/vrz/uploads/thumbs/m-' + pics[i].preview + '?version=' + Math.random() * 1000 + '" data-preview-src="'  + serverurl + '/vrz/uploads/l-' + pics[i].src + '?version=' + Math.random() * 1000 + '" data-preview-group="1">';
+					fragment.appendChild(div);
+				}
+				return fragment;
+			};
+			(function($) {
+				var list = document.getElementById("list");
+				list.appendChild(createFragment(pics.length));
+				$(document).imageLazyload({
+					placeholder: 'images/default.png'
+				});
+				adaptive();
+			})(mui);
+		}
+
+		function adaptive() {
+			cases = document.getElementsByClassName("pics");
+			casesHeight = cases[0].scrollWidth;
+			for (i = 0; i < cases.length; i++) {
+				cases[i].style.height = casesHeight + 'px';
+			}
+		}
+
+		function ifLike() {
+			picid = document.getElementsByClassName("mui-preview-indicator")[0].innerHTML.split("/")[0];
+			var elem = document.getElementsByName("like")[0];
+			if (~(like.imgid).indexOf(pics[picid - 1].id)) {
+				elem.className = "love mui-pull-right iconfont icon-wdsc2  mui-active"
+			} else {
+				elem.className = "love mui-pull-right iconfont icon-wdsc "
+			}
+		}
+
+		function iLike() {
+			if (!localStorage.userinfo) {
+				window.location.href = 'login.html?lastpage=pictures.html'
+			} else {
+				picid = document.getElementsByClassName("mui-preview-indicator")[0].innerHTML.split("/")[0];
+				thispicid = pics[picid - 1].id;
+				if (~(like.imgid).indexOf(thispicid)) {
+					pid = (like.imgid).indexOf(thispicid);
+					shoulddelid = like.colid[pid];
+					mui.ajax(appurl + '/user-photoshoots/' + shoulddelid + '?access-token=' + JSON.parse(localStorage.userinfo).access_token, {
+						data: {},
+						dataType: 'json',
+						type: 'delete',
+						timeout: 6000,
+						success: function(data) {
+							if (data.success == true) {
+								pid = (like.imgid).indexOf(thispicid);
+								lsshoulddelid = like.colid[pid];
+								(like.imgid).remove(thispicid);
+								(like.colid).remove(lsshoulddelid);
+								mui.toast("取消收藏成功");
+								ifLike();
+								localStorage.collectpic = JSON.stringify(like);
+								stopload();
+							} else {
+								mui.alert("取消收藏失败，请稍候再试");
+								stopload();
+								return false
+							}
+						},
+						error: function(xhr, textStatus, errorThrown) {
+							mui.alert("网络连接失败，请稍候再试");
+							stopload();
+						}
+					});
+				} else {
+					mui.ajax(appurl + '/user-photoshoots?access-token=' + JSON.parse(localStorage.userinfo).access_token, {
+						data: {
+							user_id : JSON.parse(localStorage.userinfo).id,
+							photoshoot_id : thispicid
+						},
+						dataType: 'json',
+						type: 'post',
+						timeout: 6000,
+						success: function(data) {
+							if (data.success == true) {
+								(like.imgid).push(thispicid);
+								(like.colid).push(data.data.id);
+								localStorage.collectpic = JSON.stringify(like);
+								mui.toast("收藏成功");
+								ifLike();
+								stopload();
+							} else {
+								mui.alert("收藏失败，请稍候再试");
+								stopload();
+								return false
+							}
+						},
+						error: function(xhr, textStatus, errorThrown) {
+							mui.alert("网络连接失败，请稍候再试");
+							stopload();
+						}
+					});
+				}
+			}
+		}
+		var tab = new Array(3);
+		tab[1] = 0;
+		tab[2] = 0;
+		tab[3] = 0;
+		var key = new Array(3);
+		key[1] = -1;
+		key[2] = -1;
+		key[3] = -1;
+
+		function Key1() {
+			if (tab[1]) {
+				document.getElementById("key1").className = "menu right-boder";
+				closetab(1);
+				tab[1] = 0;
+				return false;
+			}
+			tab[1] = 1;
+			document.getElementById("key1").className = "menu right-boder active"
+			closetab(2);
+			closetab(3);
+			opentab(1);
+		}
+
+		function Key2() {
+			if (tab[2]) {
+				document.getElementById("key2").className = "menu right-boder";
+				closetab(2);
+				tab[2] = 0;
+				return false;
+			}
+			tab[2] = 1;
+			document.getElementById("key2").className = "menu right-boder active"
+			closetab(1);
+			closetab(3);
+			opentab(2);
+		}
+
+		function Key3() {
+			if (tab[3]) {
+				document.getElementById("key3").className = "menu";
+				closetab(3);
+				tab[3] = 0;
+				return false;
+			}
+			tab[3] = 1;
+			document.getElementById("key3").className = "menu active"
+			closetab(1);
+			closetab(2);
+			opentab(3);
+		}
+
+		function opentab(e) {
+			document.getElementsByClassName("tab")[0].style.display = "block";
+			for (var i = 1; i < 4; i++) {
+				if (i == e) {
+					document.getElementsByClassName("tab" + i)[0].style.display = "block";
+				} else {
+					document.getElementsByClassName("tab" + i)[0].style.display = "none";
+				}
+			}
+			var elem = document.getElementsByClassName("tab" + e)[0].getElementsByTagName("span");
+			elem[key[e] + 1].className = "selected";
+		}
+
+		function selectclass(a, b) {
+			key[a] = b;
+			closetab(a);
+			var div = document.getElementById("list");
+			while (div.hasChildNodes()) {
+				div.removeChild(div.firstChild);
+			}
+			document.body.removeAttribute('data-imagelazyload');
+			searchData();
+			lazyload();
+		}
+
+		function closetab(a) {
+			if (a == 3) {
+				document.getElementById("key" + a).className = "menu";
+			} else {
+				document.getElementById("key" + a).className = "menu right-boder";
+			}
+			tab[a] = 0;
+			var elem = document.getElementsByClassName("tab" + a)[0].getElementsByTagName("span");
+			for (var i = 0; i < elem.length; i++) {
+				elem[i].className = "";
+			}
+			document.getElementsByClassName("tab")[0].style.display = "none";
+		}
+
+		function searchData() {
+			pics = [];
+			var j = 0;
+			for (var i = 0; i < Data.length; i++) {
+				if ((key[1] == -1 || key[1] == Data[i].key1) && (key[2] == -1 || key[2] == Data[i].key2) && (key[3] == -1 || key[3] == Data[i].key3)) {
+					pics[j] = Data[i];
+					j++;
+				}
+			}
+		}
+		mui('.mui-bar-tab').on('tap', 'a', function(e) {
+			var targetTab = this.getAttribute('href');
+			window.location.href = targetTab;
+		});
+	</script>
+
+</html>

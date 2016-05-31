@@ -1,0 +1,40 @@
+.mui-slider-group {
+	webkit-transform: translateZ(0);
+	-moz-transform: translateZ(0);
+	-ms-transform: translateZ(0);
+	-o-transform: translateZ(0);
+	transform: translateZ(0);
+}
+
+.mui-slider-group .mui-checkbox {
+	position: absolute;
+	top: 0;
+	right: 0;
+	z-index: 999;
+	width: 50px;
+	height: 50px;
+}
+
+.mui-checkbox input[type=checkbox]:before {
+	font-size: 50px;
+}
+
+#slider {
+	margin-top: 40%;
+}
+
+.choose {
+	font-family: "微软雅黑";
+	text-align: center;
+	font-size: 13px;
+	margin-top: 50px;
+}
+.next{
+	background-color: #ccc;
+	height: 40px;
+	line-height: 40px;
+	border-radius: 20px;
+	color: #fff;
+	width: 150px;
+	margin:30px  auto;
+}

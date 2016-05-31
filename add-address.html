@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+		<meta name="format-detection" content="telephone=no">
+		<meta content="email=no" name="format-detection" />
+		<script type="text/javascript" src="js/global.js" ></script>
+		<script type="text/javascript" src="js/mui.min.js"></script>
+		<script type="text/javascript" src="js/mui.picker.js" ></script>
+		<script type="text/javascript" src="js/mui.poppicker.js" ></script>
+
+		<script src="js/city.data.js" type="text/javascript" charset="utf-8"></script>
+		
+		<link rel="stylesheet" href="css/mui.min.css" />
+		<link rel="stylesheet" href="css/app.css" />
+		<link rel="stylesheet" href="css/address.css" />
+		<link href="css/mui.picker.css" rel="stylesheet" />
+		<link href="css/mui.poppicker.css" rel="stylesheet" />
+		<title>微软装</title>
+	</head>
+
+	<body>
+		<div id="load">
+			<div class="loading"></div>
+			<div class="loading-text"><img src="images/load.gif" width="25px">加载中，请稍候...</div>
+		</div>
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+
+			<h1 class="mui-title">新建收货地址</h1>
+		</header>
+
+		<div class="mui-content">
+			<form class="mui-input-group">
+				<div class="mui-input-row">
+					<label>收货人:</label>
+					<input type="text" class="mui-input-clear" id="person">
+				</div>
+				<div class="mui-input-row">
+					<label>手机号码:</label>
+					<input type="text" class="mui-input-clear" id="phonenum">
+				</div>
+				<div class="mui-input-row">
+					<label>邮政号码:</label>
+					<input type="text" class="mui-input-clear" id="postcode">
+				</div>
+				<div class="mui-input-row">
+					<label>所在地址:</label>
+					<button id='pickcity' class="mui-btn mui-btn-block" type='button'><span id="province"></span><span id="city"></span><span id="county"></span></button>
+				</div>
+				<div class="mui-input-row">
+					<label>详细地址:</label>
+					<input type="text" class="mui-input-clear" id="detailedaddress">
+				</div>
+
+			</form>
+			<div class="savearea"><button class="mui-btn mui-btn-danger" id="save" onclick="saveaddaddress()">保存</button></div>
+
+		</div>
+
+	</body>
+	<script>
+		mui.init();
+		var jsonaddress = JSON.parse(localStorage.alladdress);
+		(function($, doc) {
+			mui.init();
+			$.ready(function() {
+				var pickcity = new $.PopPicker({
+					layer: 3
+				});
+				pickcity.setData(cityData3);
+				var showbtn = doc.getElementById('pickcity');
+				showbtn.addEventListener('tap', function(event) {
+					pickcity.show(function(items) {
+						document.getElementById("province").innerHTML = (items[0] || {}).text;
+						document.getElementById("city").innerHTML = (items[1] || {}).text;
+						document.getElementById("county").innerHTML = (items[2] || {}).text;
+					});
+				}, false);
+			});
+		})(mui, document);
+
+		function saveaddaddress() {
+			if (!document.getElementById("person").value) {
+				alert("请填写收货人");
+				return false;
+			}
+			if (!document.getElementById("phonenum").value) {
+				alert("请填写手机号码");
+				return false;
+			}
+			if (!document.getElementById("postcode").value) {
+				alert("请填写邮政号码");
+				return false;
+			}
+			if (!document.getElementById("city").innerHTML) {
+				alert("请选择省市区");
+				return false;
+			}
+			if (!document.getElementById("detailedaddress").value) {
+				alert("请填写详细地址");
+				return false;
+			}
+			startload();
+			mui.ajax(appurl + '/delivery-addresses?access-token=' + JSON.parse(localStorage.userinfo).access_token, {
+				data: {
+					'user_id': JSON.parse(localStorage.userinfo).id,
+					'consignee': document.getElementById("person").value,
+					'mobile': document.getElementById("phonenum").value,
+					'postcode': document.getElementById("postcode").value,
+					'province': document.getElementById("province").innerHTML,
+					'city': document.getElementById("city").innerHTML,
+					'county': document.getElementById("county").innerHTML,
+					'address': document.getElementById("detailedaddress").value
+				},
+				dataType: 'json',
+				type: 'post',
+				timeout: 6000,
+				success: function(data) {
+					if (data.success == true) {
+						var id = data.data.id;
+						var jsonadd = '{"person":"' + document.getElementById("person").value + '","phonenum": "' + document.getElementById("phonenum").value + '","postcode": "'+ document.getElementById("postcode").value + '","province": "' + document.getElementById("province").innerHTML + '","city": "' + document.getElementById("city").innerHTML + '","county": "' + document.getElementById("county").innerHTML + '","detailedaddress": "' + document.getElementById("detailedaddress").value + '","id": "' + id + '"}';
+						jsonadd = JSON.parse(jsonadd);
+						jsonaddress.address.push(jsonadd);
+						localStorage.alladdress = JSON.stringify(jsonaddress);
+						history.go(-1);
+					} else {
+						mui.alert("增加地址失败，请稍候再试");
+						stopload();
+					}
+				},
+				error: function(xhr, textStatus, errorThrown) {
+					mui.alert("网络连接失败，请稍候再试");
+					stopload();
+				}
+			});
+		}
+	</script>
+
+</html>

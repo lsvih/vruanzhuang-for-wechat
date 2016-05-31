@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+		<meta name="format-detection" content="telephone=no">
+		<meta content="email=no" name="format-detection" />
+		<script type="text/javascript" src="js/app.js"></script>
+		<script type="text/javascript" src="js/global.js"></script>
+		<script type="text/javascript" src="js/mui.min.js"></script>
+		<link rel="stylesheet" href="css/mui.min.css" />
+		<link rel="stylesheet" href="css/app.css" />
+		<link rel="stylesheet" href="css/match.css" />
+		<title>微软装</title>
+	</head>
+
+	<body onresize="javascript:adaptive();">
+		<div id="load">
+			<div class="loading"></div>
+			<div class="loading-text"><img src="images/load.gif" width="25px">加载中，请稍候...</div>
+		</div>
+
+		
+			<div id="slider" class="mui-slider">
+				<div class="mui-slider-group">
+					<div class="mui-slider-item mui-active" style="z-index: 13;">
+						<img src="images/match/xd.jpg" class="1" id="0" onclick="selecttype(this)">
+					</div>
+					<div class="mui-slider-item" style="z-index: 12;">
+						<img src="images/match/os.jpg" class="1" id="1" onclick="selecttype(this)">
+					</div>
+					<div class="mui-slider-item" style="z-index: 11;">
+
+						<img src="images/match/jy.jpg" class="1" id="2" onclick="selecttype(this)">
+					</div>
+					<div class="mui-slider-item" style="z-index: 10;">
+						<img src="images/match/zs.jpg" class="1" id="3" onclick="selecttype(this)">
+					</div>
+					<div class="mui-slider-item" style="z-index: 9;">
+						<img src="images/match/dny.jpg" class="1" id="4" onclick="selecttype(this)">
+
+					</div>
+					<div class="mui-slider-item" style="z-index: 8;">
+						<img src="images/match/rs.jpg" class="1" id="5" onclick="selecttype(this)">
+					</div>
+					<div class="mui-slider-item" style="z-index: 7;">
+						<img src="images/match/ms.jpg" class="1" id="6" onclick="selecttype(this)">
+					</div>
+					<div class="mui-slider-item" style="z-index: 6;">
+						<img src="images/match/dzh.jpg" class="1" id="9" onclick="selecttype(this)">
+					</div>
+				</div>
+			</div>
+			<div class="choose">请选择1~2个你喜欢的
+				<div style="font-size: 23px;line-height: 37px;">装修风格</div>
+				<div class="next" onclick="next()">
+					下一步
+				</div>
+			</div>
+
+
+	</body>
+	<script>
+		mui.ready(function() {
+			localStorage.removeItem('selectedstyle')
+			adaptive();
+			document.querySelector('.mui-slider').addEventListener('slide', function(event) {
+				adaptive();
+			});
+		})
+		var selectnum = 0;
+		var MAXSELECT = 2;
+
+		function adaptive() {
+			item = document.getElementsByClassName("mui-slider-group")[0].getElementsByClassName("mui-slider-item");
+			img = document.getElementsByClassName("mui-slider-group")[0].getElementsByTagName("img");
+			itemWidth = window.innerWidth;
+			for (i = 0; i < item.length; i++) {
+				item[i].style.height = itemWidth * 0.5 + 'px';
+				item[i].style.width = itemWidth * 0.5 + 'px';
+				item[i].style.marginRight = itemWidth * 0.15 + 'px';
+			}
+			for (i = 0; i < img.length; i++) {
+				img[i].style.height = itemWidth * 0.5 + 'px';
+				img[i].style.width = itemWidth * 0.5 + 'px';
+				img[i].style.marginLeft = itemWidth * 0.25 + 'px';
+				img[i].style.marginLeft = itemWidth * 0.25 + 'px';
+			}
+		}
+
+		function selecttype(e) {
+			if (e.className == 1) {
+				if (selectnum >= MAXSELECT) {
+					alert('您最多选择两种方案!');
+					return false;
+				}
+				e.className = 2;
+				e.src = e.src.substring(0, e.src.length - 4) + '-a.jpg';
+				selectnum++;
+			} else {
+				e.className = 1;
+				e.src = e.src.substring(0, e.src.length - 6) + '.jpg';
+				selectnum--;
+			}
+		}
+
+		function next() {
+			selected = document.getElementsByClassName('2');
+			selectstyle = new Array;
+			for(i=0;i<selected.length;i++){
+				selectstyle.push(selected[i].id)
+			}
+			localStorage.selectedstyle = JSON.stringify(selectstyle).replace("[", "").replace("]", "");;
+			localStorage.selectedstyle = localStorage.selectedstyle.replace(/\"/g, "");
+			if(!localStorage.selectedstyle){
+				alert('请至少选择一种方案!');
+				return false;
+			}
+			location.href = 'match-step2.html'
+		}
+		mui('.mui-bar-tab').on('tap', 'a', function(e) {
+			var targetTab = this.getAttribute('href');
+			window.location.href = targetTab;
+		});
+	</script>
+
+</html>

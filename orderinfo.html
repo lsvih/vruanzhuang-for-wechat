@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+		<meta name="format-detection" content="telephone=no">
+		<meta content="email=no" name="format-detection" />
+		<script type="text/javascript" src="js/vue.js"></script>
+				<script type="text/javascript" src="js/app.js"></script>
+		<script type="text/javascript" src="js/global.js" ></script>
+		<script type="text/javascript" src="js/mui.min.js"></script>
+		
+		<link rel="stylesheet" href="css/mui.min.css" />
+		<link rel="stylesheet" href="css/app.css" />
+		<link rel="stylesheet" href="css/order.css" />
+		<link rel="stylesheet" href="css/address.css" />
+		<title>微软装</title>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title">订单详情</h1>
+		</header>
+
+		<div class="mui-content" id="order">
+			<ul id="address" class="mui-table-view">
+				<li class="mui-table-view-cell">
+					<div class="address-elem">
+						<div class="person">{{person}}</div>
+						<div class="phonenum">{{phonenum}}</div>
+						<div class="address"><span class="province">{{province}}</span><span class="city">{{city}}</span><span class="county">{{county}}</span><span class="detailed-address">{{detailedaddress}}</span></div>
+					</div>
+				</li>
+			</ul>
+			<ul class="mui-table-view">
+				<div>
+					<div class="blank"></div>
+					<li class="orderinfo">
+						<div class="order-state">{{orderstate }}</div>
+						<div class="orderid">订单号:<span>{{orderid }}</span></div>
+						<div class="ordertime">下单日期:<span>{{ ordertime }}</span></div>
+						<div class="orderstate">订单状态:<span class="state">{{orderstate}}</span></div>
+						<div class="iteminner">
+							<div class="items">
+								<div class="lineimg" v-for="good in goods">
+									<div class="item" onclick="list()"><img v-bind:src="good.img_src"></div>
+								</div>
+							</div>
+						</div>
+
+					</li>
+
+				</div>
+				<div class="blank"></div>
+				<div class="paymode">支付方式：<span>{{paymode}}</span></div>
+			</ul>
+			<div class="infonum">共<span class="num">{{goods.length}}</span>件商品，合计：<span class="price info">{{price  | currency '￥'}}</span><br />运费：<span class="sendprice info">{{sendprice | currency '￥'}}</span></div>
+		</div>
+
+	</body>
+	<script>
+		mui.init();
+		jsonaddress = JSON.parse(localStorage.alladdress);
+		jsonorder = JSON.parse(localStorage.order);
+		var url = window.location.search;
+		var orderid = url.substring(url.lastIndexOf('=') + 1, url.length);
+		for (var i = 0; i < jsonorder.orders.length; i++) {
+			if (orderid == jsonorder.orders[i].orderid) {
+				thisorder = jsonorder.orders[i];
+			}
+		}
+		for (var j = 0; j < jsonaddress.address.length; j++) {
+			if (thisorder.address == jsonaddress.address[j].id) {
+				thisaddress = jsonaddress.address[j];
+			}
+		}
+		new Vue({
+			el: '#address',
+			data: thisaddress
+		});
+		new Vue({
+			el: '#order',
+			data: thisorder
+		})
+		updatastate();
+
+		function updatastate() {
+			var elem = document.getElementsByClassName("state");
+			for (var i = 0; i < elem.length; i++) {
+				switch (elem[i].innerHTML) {
+					case "1":
+						elem[i].innerHTML = "待付款";
+						var oDiv = document.createElement('div');
+						oDiv.innerHTML = '<div class="cancel innavfor2">取消订单</div><div class="pay innavfor2 active">确认付款</div>';
+						elem[i].parentNode.parentNode.parentNode.appendChild(oDiv);
+						break;
+					case "2":
+						elem[i].innerHTML = "待配送";
+						var oDiv = document.createElement('div');
+						oDiv.innerHTML = '<div class="cancel innavfor1">取消订单</div>';
+						elem[i].parentNode.parentNode.parentNode.appendChild(oDiv);
+						break;
+					default:
+						elem[i].innerHTML = "待评价";
+						var oDiv = document.createElement('div');
+						oDiv.innerHTML = '<div class="pay innavfor1 active">评价</div>';
+						elem[i].parentNode.parentNode.parentNode.appendChild(oDiv);
+						break;
+				}
+			}
+			var elem2 = document.getElementsByClassName("paymode")[0].getElementsByTagName("span")[0];
+			switch (elem2.innerHTML) {
+				case "1":
+					elem2.innerHTML = "微信支付";
+					break;
+				case "2":
+					elem2.innerHTML = "支付宝";
+					break;
+				default:
+					elem2.innerHTML = "银联支付";
+					break;
+			}
+		}
+
+		function list() {
+			window.location.href = "list.html?orderid=" + thisorder.orderid;
+		}
+	</script>
+
+</html>

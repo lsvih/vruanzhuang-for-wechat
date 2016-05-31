@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+		<meta name="format-detection" content="telephone=no">
+		<meta content="email=no" name="format-detection" />
+		<meta http-equiv="pragma" content="no-cache">
+		<meta http-equiv="Cache-Control" content="no-cache, must-revalidate">
+		<meta http-equiv="expires" content="Wed, 26 Feb 1997 08:21:57 GMT">
+		<script type="text/javascript" src="js/vue.js"></script>
+		<script type="text/javascript" src="js/app.js"></script>
+				<script type="text/javascript" src="js/iflogin.js?url=myorder.html"></script>
+		<script type="text/javascript" src="js/global.js"></script>
+		<script type="text/javascript" src="js/mui.min.js"></script>
+
+		<link rel="stylesheet" href="css/mui.min.css" />
+		<link rel="stylesheet" href="css/app.css" />
+		<link rel="stylesheet" href="css/order.css" />
+	</head>
+
+	<body>
+		<div id="load">
+			<div class="loading"></div>
+			<div class="loading-text"><img src="images/load.gif" width="25px">加载中，请稍候...</div>
+		</div>
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-icon mui-icon-left-nav mui-pull-left" href="usercenter.html"></a>
+			<h1 class="mui-title">我的订单</h1>
+		</header>
+
+		<div class="mui-content" style="display: none;">
+			<div>
+				<div id="segmentedControl" class="mui-segmented-control">
+					<a id="order1" class="mui-control-item" href="#item1">
+				全部
+			</a>
+					<a id="order2" class="mui-control-item" href="#item2">
+				待付款
+			</a>
+					<a id="order3" class="mui-control-item" href="#item3">
+				待配送
+			</a>
+					<a id="order4" class="mui-control-item" href="#item4">
+				待评价
+			</a>
+				</div>
+			</div>
+			<div>
+				<div id="item1" class="mui-control-content">
+					<div class="mui-scroll">
+						<ul class="mui-table-view" id="allorder" v-for="orders in orders|filtersBy '[1,2,3,4,5]' 'orderstate'">
+							<div>
+								<div class="blank"></div>
+								<li class="mui-table-view-cell" onclick="orderinfo('{{orders.order_id}}','{{ orders.orderstate }}')">
+									<div class="order-state">{{ orders.orderstate }}</div>
+									<div class="order_id" style="display: none;">{{orders.order_id}}</div>
+									<div class="orderid">订单号:<span>{{ orders.orderid }}</span></div>
+									<div class="ordertime">下单日期:<span>{{ orders.ordertime }}</span></div>
+									<div class="orderstate">订单状态:<span class="state">{{ orders.orderstate }}</span></div>
+									<div class="iteminner">
+										<div class="items">
+											<div class="lineimg" v-for="scheme in orders.schemes">
+												<div class="scheme-item"><img v-bind:src="scheme.img_src"></div>
+											</div>
+											<div class="lineimg" v-for="good in orders.goods">
+												<div class="item"><img v-bind:src="good.img_src"></div>
+											</div>
+										</div>
+									</div>
+									<div class="note">共<span class="num">{{ orders.goods.length}}</span>件商品，合计<span class="price">{{ orders.price  | currency '￥'}}</span>（含运费：<span class="sendprice">{{ orders.sendprice | currency '￥'}}</span>）</div>
+								</li>
+
+							</div>
+						</ul>
+					</div>
+
+				</div>
+				<div id="item2" class="mui-control-content">
+					<div class="mui-scroll">
+						<ul class="mui-table-view" id="obligations" v-for="orders in orders | filterBy '2' in 'orderstate'">
+							<div>
+								<div class="blank"></div>
+								<li class="mui-table-view-cell" onclick="orderinfo('{{orders.order_id}}','{{ orders.orderstate }}')">
+									<div class="order-state">{{ orders.orderstate }}</div>
+									<div class="order_id" style="display: none;">{{orders.order_id}}</div>
+									<div class="orderid">订单号:<span>{{ orders.orderid }}</span></div>
+									<div class="ordertime">下单日期:<span>{{ orders.ordertime }}</span></div>
+									<div class="orderstate">订单状态:<span class="state">{{ orders.orderstate }}</span></div>
+									<div class="iteminner">
+										<div class="items">
+											<div class="lineimg" v-for="scheme in orders.schemes">
+												<div class="scheme-item"><img v-bind:src="scheme.img_src"></div>
+											</div>
+											<div class="lineimg" v-for="good in orders.goods">
+												<div class="item"><img v-bind:src="good.img_src"></div>
+											</div>
+										</div>
+									</div>
+									<div class="note">共<span class="num">{{ orders.goods.length}}</span>件商品，合计<span class="price">{{ orders.price  | currency '￥'}}</span>（含运费：<span class="sendprice">{{ orders.sendprice | currency '￥'}}</span>）</div>
+								</li>
+
+							</div>
+						</ul>
+					</div>
+				</div>
+
+				<div id="item3" class="mui-control-content">
+					<div class="mui-scroll">
+						<ul class="mui-table-view" id="distribution" v-for="orders in orders|filtersBy '[3,4]' 'orderstate'">
+							<div>
+								<div class="blank"></div>
+								<li class="mui-table-view-cell" onclick="orderinfo('{{orders.order_id}}','{{ orders.orderstate }}')">
+									<div class="order-state">{{ orders.orderstate }}</div>
+									<div class="order_id" style="display: none;">{{orders.order_id}}</div>
+									<div class="orderid">订单号:<span>{{ orders.orderid }}</span></div>
+									<div class="ordertime">下单日期:<span>{{ orders.ordertime }}</span></div>
+									<div class="orderstate">订单状态:<span class="state">{{ orders.orderstate }}</span></div>
+									<div class="iteminner">
+										<div class="items">
+											<div class="lineimg" v-for="scheme in orders.schemes">
+												<div class="scheme-item"><img v-bind:src="scheme.img_src"></div>
+											</div>
+											<div class="lineimg" v-for="good in orders.goods">
+												<div class="item"><img v-bind:src="good.img_src"></div>
+											</div>
+										</div>
+									</div>
+									<div class="note">共<span class="num">{{ orders.goods.length}}</span>件商品，合计<span class="price">{{ orders.price  | currency '￥'}}</span>（含运费：<span class="sendprice">{{ orders.sendprice | currency '￥'}}</span>）</div>
+								</li>
+
+							</div>
+						</ul>
+					</div>
+				</div>
+				<div id="item4" class="mui-control-content">
+					<div class="mui-scroll">
+						<ul class="mui-table-view" id="evaluate" v-for="orders in orders | filterBy '5' in 'orderstate'">
+							<div>
+								<div class="blank"></div>
+								<li class="mui-table-view-cell" onclick="orderinfo('{{orders.order_id}}','{{ orders.orderstate }}')">
+									<div class="order-state">{{ orders.orderstate }}</div>
+									<div class="order_id" style="display: none;">{{orders.order_id}}</div>
+									<div class="orderid">订单号:<span>{{ orders.orderid }}</span></div>
+									<div class="ordertime">下单日期:<span>{{ orders.ordertime }}</span></div>
+									<div class="orderstate">订单状态:<span class="state">{{ orders.orderstate }}</span></div>
+									<div class="iteminner">
+										<div class="items">
+											<div class="lineimg" v-for="scheme in orders.schemes">
+												<div class="scheme-item"><img v-bind:src="scheme.img_src"></div>
+											</div>
+											<div class="lineimg" v-for="good in orders.goods">
+												<div class="item"><img v-bind:src="good.img_src"></div>
+											</div>
+										</div>
+									</div>
+									<div class="note">共<span class="num">{{ orders.goods.length}}</span>件商品，合计<span class="price">{{ orders.price  | currency '￥'}}</span>（含运费：<span class="sendprice">{{ orders.sendprice | currency '￥'}}</span>）</div>
+								</li>
+
+							</div>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+	<script>
+		var order = {
+			"orders": []
+		};
+		var url = window.location.search;
+		var loc = url.substring(url.lastIndexOf('=') + 1, url.length);
+		if (loc == null || loc == "") {
+			window.location.href = url + "?type=1"
+		}
+		startload()
+		mui.ready(function() {
+			if (GetQueryString() == "") {
+				document.getElementById('order1').className = "mui-control-item mui-active";
+				document.getElementById('item1').className = "mui-control-item mui-active";
+			} else {
+				var orderx = 'order' + GetQueryString();
+				var itemx = 'item' + GetQueryString();
+				document.getElementById(orderx).className = "mui-control-item mui-active";
+				document.getElementById(itemx).className = "mui-control-content mui-active";
+			}
+			mui.ajax(appurl + '/orders?access-token=' + JSON.parse(localStorage.userinfo).access_token + '&and[user_id]=' + JSON.parse(localStorage.userinfo).id + '&expand=orderSchemes.scheme,orderProducts.product.productImages', {
+				data: {
+					'per-page': 500000
+				},
+				dataType: 'json',
+				type: 'get',
+				timeout: 6000,
+				success: function(data) {
+					if (data.success == true) {
+						source = data.data.items;
+						for (i = 0; i < source.length; i++) {
+							newjson = {
+								"order_id": "x",
+								"orderid": "x",
+								"orderstate": "x",
+								"ordertime": "x",
+								"price": "x",
+								"sendprice": "x",
+								"address": "x",
+								"goods": [],
+								"schemes":[]
+							};
+							order.orders.push(newjson);
+							for (j = 0; j < source[i].orderProducts.length; j++) {
+								addgoodjson = {
+									"id": "x",
+									"name": "x",
+									"price": "x",
+									"num": "x",
+									"img_src": "x"
+								}
+								order.orders[i].goods.push(addgoodjson);
+							}
+							for (j = 0; j < source[i].orderSchemes.length; j++) {
+								addgoodjson = {
+									"id": "x",
+									"name": "x",
+									"price": "x",
+									"num": "x",
+									"img_src": "x"
+								}
+								order.orders[i].schemes.push(addgoodjson);
+							}
+						}
+						for (i = 0; i < source.length; i++) {
+							order.orders[i].order_id = source[i].id;
+							order.orders[i].orderid = source[i].order_no;
+							order.orders[i].orderstate = source[i].status;
+							order.orders[i].ordertime = getDate(source[i].created_at);
+							order.orders[i].price = source[i].order_fee;
+							order.orders[i].sendprice = source[i].freight;
+							order.orders[i].address = source[i].delivery_address_id;
+							for (j = 0; j < source[i].orderProducts.length; j++) {
+								order.orders[i].goods[j].id = source[i].orderProducts[j].product_id;
+								order.orders[i].goods[j].name = source[i].orderProducts[j].product_name;
+								order.orders[i].goods[j].price = source[i].orderProducts[j].product_price;
+								order.orders[i].goods[j].num = source[i].orderProducts[j].purchase_num;
+								if (!source[i].orderProducts[j].product.productImages[0]) {
+									order.orders[i].goods[j].img_src = null;
+								} else {
+									order.orders[i].goods[j].img_src = serverurl + "/vrz/uploads/" + source[i].orderProducts[j].product.productImages[0].icon_img;
+								}
+							}
+							for (j = 0; j < source[i].orderSchemes.length; j++) {
+								order.orders[i].schemes[j].id = source[i].orderSchemes[j].scheme_id;
+								order.orders[i].schemes[j].name = source[i].orderSchemes[j].scheme_name;
+								order.orders[i].schemes[j].price = source[i].orderSchemes[j].scheme_price;
+								order.orders[i].schemes[j].num = source[i].orderSchemes[j].purchase_num;
+								if (!source[i].orderSchemes[j].scheme.cover_img) {
+									order.orders[i].schemes[j].img_src = null;
+								} else {
+									order.orders[i].schemes[j].img_src = serverurl + "/vrz/uploads/" + source[i].orderSchemes[j].scheme.cover_img;
+								}
+							}
+						}
+						localStorage.order = JSON.stringify(order);
+						allorder=  new Vue({
+							el: '#allorder',
+							data: order
+						})
+						obligations = new Vue({
+							el: '#obligations',
+							data: order
+						})
+						distribution = new Vue({
+							el: '#distribution ',
+							data: order
+						})
+						evaluate = new Vue({
+							el: '#evaluate',
+							data: order
+						})
+						updatastate();
+						document.getElementsByClassName("mui-content")[0].style.display = "block";
+						stopload();
+					} else {
+						mui.alert("获取地址列表失败，请稍候再试");
+						stopload();
+					}
+				},
+				error: function(xhr, textStatus, errorThrown) {
+					//mui.alert("网络连接失败，请稍候再试");
+					stopload();
+				}
+			});
+		})
+
+		function GetQueryString() {
+			var reg = new RegExp("(^|&)type=([^&]*)(&|$)", "i");
+			var r = window.location.search.substr(1).match(reg);
+			var context = "";
+			if (r != null)
+				context = r[2];
+			reg = null;
+			r = null;
+			return context == null || context == "" || context == "undefined" ? "" : context;
+		}
+
+		function updatastate() {
+			var elem = document.getElementsByClassName("state");
+			for (var i = 0; i < elem.length; i++) {
+				switch (elem[i].innerHTML) {
+					case "1":
+						elem[i].innerHTML = "待确认";
+						var oDiv = document.createElement('div');
+						oDiv.innerHTML = '<div class="btn-area"><div class="cancel btn" onclick="cancelorder(this)">取消订单</div><div class="pay btn active" onclick="clicksub(this)">确认付款</div></div>';
+						elem[i].parentNode.parentNode.parentNode.appendChild(oDiv);
+						break;
+					case "2":
+						elem[i].innerHTML = "待付款";
+						var oDiv = document.createElement('div');
+						oDiv.innerHTML = '<div class="btn-area"><div class="cancel btn">取消订单</div><div class="pay btn active" onclick="clicksub(this)">确认付款</div></div>';
+						elem[i].parentNode.parentNode.parentNode.appendChild(oDiv);
+						break;
+					case "3":
+						elem[i].innerHTML = "待配送";
+						var oDiv = document.createElement('div');
+						elem[i].parentNode.parentNode.parentNode.appendChild(oDiv);
+						break;
+					case "4":
+						elem[i].innerHTML = "待配送";
+						var oDiv = document.createElement('div');
+						elem[i].parentNode.parentNode.parentNode.appendChild(oDiv);
+						break;
+					case "5":
+						elem[i].innerHTML = "待评价";
+						var oDiv = document.createElement('div');
+						oDiv.innerHTML = '<div class="btn-area"><div class="pay btn active">评价</div></div>';
+						elem[i].parentNode.parentNode.parentNode.appendChild(oDiv);
+						break;
+				}
+			}
+		}
+
+		function orderinfo(e, f) {
+			startload()
+			mui.ajax(appurl + '/orders/' + e + '?access-token=' + JSON.parse(localStorage.userinfo).access_token, {
+				data: {},
+				dataType: 'json',
+				type: 'get',
+				timeout: 6000,
+				success: function(data) {
+					if (data.success == true) {
+						localStorage.temporder = JSON.stringify(data.data);
+						switch (f) {
+							case "1":
+								window.location.href = "orderinfo-calculated.html?orderid=" + e;
+								break;
+							case "2":
+
+								window.location.href = "orderinfo-waitforpay.html?orderid=" + e;
+								break;
+							case "3":
+								break;
+							default:
+								break;
+						}
+					}
+				},
+				error: function(xhr, type, errorThrown, message) {
+					//mui.alert("网络连接失败，请稍候再试");
+					stopload();
+				}
+			});
+		}
+
+
+		function cancelorder(d) {
+			thisid = d.parentElement.parentElement.parentElement.getElementsByClassName("order_id")[0].innerHTML;
+			var btnArray = ['是', '否'];
+			mui.confirm('确认取消此订单吗？', '微软装', btnArray, function(e) {
+				if (e.index == 1) {
+					return false;
+				} else {
+					startload()
+					mui.ajax(appurl + '/orders/' + thisid + '?access-token=' + JSON.parse(localStorage.userinfo).access_token, {
+						data: {},
+						dataType: 'json',
+						type: 'delete',
+						timeout: 6000,
+						success: function(data) {
+							if (data.status == 204) {
+								alert("订单已删除！")
+								window.location.href = 'myorder.html'
+							} else {
+								mui.alert("订单删除失败");
+								stopload();
+							}
+						},
+						error: function(xhr, type, errorThrown, message) {
+							//mui.alert("网络连接失败，请稍候再试");
+							stopload();
+						}
+					});
+				}
+			})
+		}
+		function clicksub(e){
+			s=e.parentNode.parentNode.parentNode.getElementsByTagName("li")[0];
+			mui.trigger(s,'click');
+		}
+	</script>
+
+</html>
