@@ -253,12 +253,12 @@
 		}
 		function previewthis(e){
 			type = e.parentNode.getElementsByClassName("cart-type")[0].innerHTML;
-			id = e.parentNode.getElementsByClassName("cart-id")[0].innerHTML;
+			id = e.parentNode.getElementsByClassName("cart-id")[0].innerHTML - 1;
 			if(type == 'scheme'){
-				window.location.href = 'preview-schemes.html?id=' + id
+				window.location.href = 'preview-schemes.html?id=' + id;
 			}
 			if(type == 'product'){
-				window.location.href = 'preview-product.html?id=' + id
+				window.location.href = 'preview-product.html?id=' + id;
 			}
 		}
 		mui('.mui-bar-tab').on('tap', 'a', function(e) {
