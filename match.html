@@ -6,12 +6,17 @@
 		<meta name="viewport" content="initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
 		<meta name="format-detection" content="telephone=no">
 		<meta content="email=no" name="format-detection" />
-		<script type="text/javascript" src="js/app.js"></script>
 		<script type="text/javascript" src="js/global.js"></script>
 		<script type="text/javascript" src="js/mui.min.js"></script>
+		<script src="js/mui.picker.js"></script>
+		<script src="js/mui.poppicker.js"></script>
+		<script src="js/city.data.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/javascript" src="js/vue.js"></script>
 		<link rel="stylesheet" href="css/mui.min.css" />
 		<link rel="stylesheet" href="css/app.css" />
 		<link rel="stylesheet" href="css/match.css" />
+		<link href="css/mui.picker.css" rel="stylesheet" />
+		<link href="css/mui.poppicker.css" rel="stylesheet" />
 		<title>微软装</title>
 	</head>
 
@@ -20,109 +25,102 @@
 			<div class="loading"></div>
 			<div class="loading-text"><img src="images/load.gif" width="25px">加载中，请稍候...</div>
 		</div>
+		<span id="close" class="close"><img src="images/close.jpg" width="40px" height="40px"></span>
+		<div class="mui-content">
+			<div class="title">请选择你家的</div>
+			<div class="choose-address">
+				<button id='pickcity' class="mui-btn mui-btn-block" type='button'><span id="province"></span><span id="city">所在城市</span><span id="county"></span></button>
+			</div>
 
-		
-			<div id="slider" class="mui-slider">
-				<div class="mui-slider-group">
-					<div class="mui-slider-item mui-active" style="z-index: 13;">
-						<img src="images/match/xd.jpg" class="1" id="0" onclick="selecttype(this)">
-					</div>
-					<div class="mui-slider-item" style="z-index: 12;">
-						<img src="images/match/os.jpg" class="1" id="1" onclick="selecttype(this)">
-					</div>
-					<div class="mui-slider-item" style="z-index: 11;">
-
-						<img src="images/match/jy.jpg" class="1" id="2" onclick="selecttype(this)">
-					</div>
-					<div class="mui-slider-item" style="z-index: 10;">
-						<img src="images/match/zs.jpg" class="1" id="3" onclick="selecttype(this)">
-					</div>
-					<div class="mui-slider-item" style="z-index: 9;">
-						<img src="images/match/dny.jpg" class="1" id="4" onclick="selecttype(this)">
-
-					</div>
-					<div class="mui-slider-item" style="z-index: 8;">
-						<img src="images/match/rs.jpg" class="1" id="5" onclick="selecttype(this)">
-					</div>
-					<div class="mui-slider-item" style="z-index: 7;">
-						<img src="images/match/ms.jpg" class="1" id="6" onclick="selecttype(this)">
-					</div>
-					<div class="mui-slider-item" style="z-index: 6;">
-						<img src="images/match/dzh.jpg" class="1" id="9" onclick="selecttype(this)">
+			<div id="tag-list">
+				<div class="tagtype" v-for="tagtype in tags">
+					<div class="tag-name">{{tagtype.p_tag_name}}</div>
+					<div class="tags"><span class="sortid">{{$index}}</span>
+						<span class="tag" v-for="tag in tagtype.tags" onclick="selectatag({{tag.tag_id}},this)">{{tag.tag_name}}</span>
 					</div>
 				</div>
 			</div>
-			<div class="choose">请选择1~2个你喜欢的
-				<div style="font-size: 23px;line-height: 37px;">装修风格</div>
-				<div class="next" onclick="next()">
-					下一步
-				</div>
-			</div>
-
-
+			<div id="next-step">选好了，下一步></div>
+		</div>
 	</body>
 	<script>
-		mui.ready(function() {
-			localStorage.removeItem('selectedstyle')
-			adaptive();
-			document.querySelector('.mui-slider').addEventListener('slide', function(event) {
-				adaptive();
+		localStorage.tag = '{"Total":"4","tags":[{"p_tag_id":1,"p_tag_name":"家庭状态","tags":[{"tag_id":1,"tag_name":"单身男"},{"tag_id":2,"tag_name":"单身女"},{"tag_id":3,"tag_name":"恋爱中"},{"tag_id":4,"tag_name":"结婚"}]},{"p_tag_id":2,"p_tag_name":"房屋户型","tags":[{"tag_id":1,"tag_name":"一室"},{"tag_id":2,"tag_name":"二室"},{"tag_id":3,"tag_name":"三室"},{"tag_id":4,"tag_name":"四室及以上"}]},{"p_tag_id":3,"p_tag_name":"房屋面积","tags":[{"tag_id":1,"tag_name":"70-80㎡"},{"tag_id":2,"tag_name":"80-90㎡"},{"tag_id":3,"tag_name":"90-100㎡"}]},{"p_tag_id":4,"p_tag_name":"软装价格","tags":[{"tag_id":1,"tag_name":"1W"},{"tag_id":2,"tag_name":"2W"},{"tag_id":3,"tag_name":"3W"}]}]}';
+		var taglist = JSON.parse(localStorage.tag);
+		var selectobj = new Array(parseInt(taglist.Total));
+		var selected = 0;
+		var colorpallte = ['#339999', '#cc99cc', '#ff9900', '#ccccff'];
+		var colorset = [];
+		(function($, doc) {
+			mui.init();
+			$.ready(function() {
+				var pickcity = new $.PopPicker({
+					layer: 3
+				});
+				pickcity.setData(cityData3);
+				var showbtn = doc.getElementById('pickcity');
+				showbtn.addEventListener('tap', function(event) {
+					pickcity.show(function(items) {
+						document.getElementById("province").innerHTML = (items[0] || {}).text;
+						document.getElementById("city").innerHTML = (items[1] || {}).text;
+						document.getElementById("county").innerHTML = (items[2] || {}).text;
+					});
+				}, false);
 			});
-		})
-		var selectnum = 0;
-		var MAXSELECT = 2;
+		})(mui, document);
+		document.getElementById('close').addEventListener('tap', function() {
+			window.history.back()
+		});
+		document.getElementById('next-step').addEventListener('tap', function() {
+			!document.getElementById("province").innerHTML?mui.alert('请选择您的地址', '微软装'):taglist.Total == selected ? next() : mui.alert('请完成标签选择', '微软装');
+			
+		});
+		mui.ready(function() {
+			list = new Vue({
+				el: '#tag-list',
+				data: taglist
+			});
+			adaptive();
+			changecolor();
+		});
 
 		function adaptive() {
-			item = document.getElementsByClassName("mui-slider-group")[0].getElementsByClassName("mui-slider-item");
-			img = document.getElementsByClassName("mui-slider-group")[0].getElementsByTagName("img");
-			itemWidth = window.innerWidth;
-			for (i = 0; i < item.length; i++) {
-				item[i].style.height = itemWidth * 0.5 + 'px';
-				item[i].style.width = itemWidth * 0.5 + 'px';
-				item[i].style.marginRight = itemWidth * 0.15 + 'px';
-			}
-			for (i = 0; i < img.length; i++) {
-				img[i].style.height = itemWidth * 0.5 + 'px';
-				img[i].style.width = itemWidth * 0.5 + 'px';
-				img[i].style.marginLeft = itemWidth * 0.25 + 'px';
-				img[i].style.marginLeft = itemWidth * 0.25 + 'px';
+			tagtype = document.getElementsByClassName("tagtype");
+			tags = document.getElementsByClassName("tags");
+			tagname = document.getElementsByClassName("tag-name");
+			for (var i = 0; i < tagtype.length; i++) {
+				tagname[i].style.top = tags[i].offsetHeight / 2 - 15 + 'px';
+				tagtype[i].style.height = tags[i].offsetHeight + 'px';
 			}
 		}
 
-		function selecttype(e) {
-			if (e.className == 1) {
-				if (selectnum >= MAXSELECT) {
-					alert('您最多选择两种方案!');
-					return false;
+		function changecolor() {
+			tagtype = document.getElementsByClassName("tagtype");
+			for (var i = 0; i < taglist.Total; i++) {
+				colorset.push(colorpallte[Math.floor(Math.random() * colorpallte.length)]);
+				tagtype[i].style.color = colorset[i]
+				tag = tagtype[i].getElementsByClassName("tag");
+				for (var j = 0; j < tag.length; j++) {
+					tag[j].style.border = '1px solid' + colorset[i];
 				}
-				e.className = 2;
-				e.src = e.src.substring(0, e.src.length - 4) + '-a.jpg';
-				selectnum++;
-			} else {
-				e.className = 1;
-				e.src = e.src.substring(0, e.src.length - 6) + '.jpg';
-				selectnum--;
 			}
+		}
+
+		function selectatag(e, f) {
+			thistagtype = f.parentNode;
+			sortid = thistagtype.getElementsByClassName("sortid")[0].innerHTML;
+			if (!selectobj[sortid]) selected++;
+			selectobj[sortid] = e;
+			for (var i = 0; i < thistagtype.getElementsByClassName("tag").length; i++) {
+				thistagtype.getElementsByClassName("tag")[i].style.backgroundColor = "#fff";
+				thistagtype.getElementsByClassName("tag")[i].style.color = colorset[sortid];
+			}
+			f.style.color = '#fff';
+			f.style.backgroundColor = colorset[sortid];
 		}
 
 		function next() {
-			selected = document.getElementsByClassName('2');
-			selectstyle = new Array;
-			for(i=0;i<selected.length;i++){
-				selectstyle.push(selected[i].id)
-			}
-			localStorage.selectedstyle = JSON.stringify(selectstyle).replace("[", "").replace("]", "");;
-			localStorage.selectedstyle = localStorage.selectedstyle.replace(/\"/g, "");
-			if(!localStorage.selectedstyle){
-				alert('请至少选择一种方案!');
-				return false;
-			}
-			location.href = 'match-step2.html'
+			alert(selectobj)
 		}
-		mui('.mui-bar-tab').on('tap', 'a', function(e) {
-			var targetTab = this.getAttribute('href');
-			window.location.href = targetTab;
-		});
 	</script>
 
 </html>

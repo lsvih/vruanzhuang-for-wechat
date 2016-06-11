@@ -1,40 +1,68 @@
-.mui-slider-group {
-	webkit-transform: translateZ(0);
-	-moz-transform: translateZ(0);
-	-ms-transform: translateZ(0);
-	-o-transform: translateZ(0);
-	transform: translateZ(0);
+.close {
+	position: fixed;
+	top: 0px;
+	right: 4px;
 }
 
-.mui-slider-group .mui-checkbox {
-	position: absolute;
-	top: 0;
-	right: 0;
-	z-index: 999;
-	width: 50px;
-	height: 50px;
-}
-
-.mui-checkbox input[type=checkbox]:before {
-	font-size: 50px;
-}
-
-#slider {
-	margin-top: 40%;
-}
-
-.choose {
-	font-family: "微软雅黑";
+.title {
 	text-align: center;
-	font-size: 13px;
-	margin-top: 50px;
+	margin-bottom: 10px;
+	color: #666600;
+	font-weight: bold;
 }
-.next{
-	background-color: #ccc;
-	height: 40px;
-	line-height: 40px;
-	border-radius: 20px;
-	color: #fff;
-	width: 150px;
-	margin:30px  auto;
+
+.choose-address {
+	margin: auto;
+	text-align: center;
+	width: 200px;
+}
+
+.mui-btn-block {
+	padding: 0;
+	font-size: 15px;
+	color: #9A9A9A;
+}
+#tag-list{
+	position: relative;
+}
+.tag-name{
+	font-size: 15px;
+	position: absolute;
+	width: auto;
+	left: 20px;
+	font-weight: bold;
+}
+.tagtype{
+	position: relative;
+	height: 0px;
+	border: 1px solid#eee;
+}
+.tags{
+	position: absolute;
+	
+	left:100px;
+	padding: 10px 15px 15px 10px;
+}
+.tag{
+	display: inline-block;
+	font-size: 15px;
+	border: 1px solid#eee;
+	height: 30px;
+	line-height: 30px;
+	border-radius:15px;
+	padding: 0 8px;
+	margin: 5px 5px;
+}
+.sortid{
+	display: none;
+}
+#next-step{
+	text-align: center;
+	margin: 30px;
+	color: #9A9A9A;
+	font-size: 13px;
+	border: 1px solid#eee;
+	height: 25px;
+	line-height: 25px;
+	border-radius: 12px;
 }
