@@ -6,28 +6,32 @@
 		<meta name="viewport" content="initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
 		<meta name="format-detection" content="telephone=no">
 		<meta content="email=no" name="format-detection" />
-				<script type="text/javascript" src="js/app.js"></script>
-		<script type="text/javascript" src="js/global.js" ></script>
+		<script type="text/javascript" src="js/app.js"></script>
+		<script type="text/javascript" src="js/global.js"></script>
 		<script type="text/javascript" src="js/mui.min.js"></script>
 		<script type="text/javascript" src="js/mui.lazyload.js"></script>
 		<script type="text/javascript" src="js/mui.lazyload.img.js"></script>
-		
+
 		<link rel="stylesheet" href="css/mui.min.css" />
 		<link rel="stylesheet" href="css/app.css" />
 		<link rel="stylesheet" href="css/index.css" />
 		<title>微软装</title>
 	</head>
-
 	<body onresize="javascript:adaptive();">
 		<div id="load">
 			<div class="loading"></div>
 			<div class="loading-text">加载中，请稍候...</div>
 		</div>
-	
+		<header class="mui-bar mui-bar-nav">
+
+			<span id="cart" class="iconfont icon-gouwuche icon-left-nav mui-icon mui-pull-right"></span>
+			<span id="intelligent" class="mui-icon mui-icon-pengyouquan icon-left-nav mui-icon mui-pull-right">&nbsp;&nbsp;&nbsp;</span>
+			<span class="mui-icon mui-icon-home icon-left-nav mui-icon mui-pull-right" style="color: #ccc;">&nbsp;&nbsp;&nbsp;</span>
+		</header>
+	<div class="mui-content"><div id="nodata"><span>暂无数据</span></div>
+		<div id="list" class="pictures">
+		</div></div>
 		
-			<div id="nodata"><span>暂无数据</span></div>
-			<div id="list" class="pictures">
-			</div>
 
 	</body>
 	<script>
@@ -59,8 +63,8 @@
 		function lazyload() {
 			tempindeximg = JSON.parse(localStorage.schemes);
 			pics = new Array;
-			for(i=0;i<tempindeximg.length;i++){
-				pics[i] = '{"title":"' + tempindeximg[i].name +'","preview":"' + tempindeximg[i].cover_img + '","id":"' + tempindeximg[i].id + '"}'
+			for (i = 0; i < tempindeximg.length; i++) {
+				pics[i] = '{"title":"' + tempindeximg[i].name + '","preview":"' + tempindeximg[i].cover_img + '","id":"' + tempindeximg[i].id + '"}'
 				pics[i] = JSON.parse(pics[i]);
 			}
 			document.getElementById("nodata").style.display = "none";
@@ -71,16 +75,20 @@
 			var createFragment = function(count) {
 				var fragment = document.createDocumentFragment();
 				var span;
-				for (var i = 0; i < count; i++) {
+				div = document.createElement('div');
+				div.className = "indexpic";
+				div.innerHTML = '<img data-lazyload="' + serverurl + '/vrz/uploads/' + pics[0].preview + '" onclick="enterschemes(0)"><p class="title">' + pics[0].title + '<span class="scpr"><i class="hr">/</i>￥1000~2000</span><span class="dsn">Lee.Yanzdedz/Too.xxxfqgf</span></p>';
+				fragment.appendChild(div);
+				for (var i = 1; i < count; i++) {
 					div = document.createElement('div');
-					div.className = "indexpic";
-					div.innerHTML = '<span class="title" onclick="window.location.href=\'schemes.html?id='+ i + '\'" >' + pics[i].title + '</span><img data-lazyload="' + serverurl + '/vrz/uploads/thumbs/m-' + pics[i].preview +  '">';
+					div.className = "indexpic margin180";
+					div.innerHTML = '<img data-lazyload="' + serverurl + '/vrz/uploads/' + pics[i].preview + '" onclick="enterschemes(' + i + ')"><p class="title">' + pics[i].title + '<span class="scpr"><i class="hr">/</i>￥1000~2000</span><span class="dsn">Lee.Yz/Too.xf</span></p>';
 					fragment.appendChild(div);
 				}
 				return fragment;
 			};
 			(function($) {
-				var list = document.getElementById("list"); 
+				var list = document.getElementById("list");
 				list.appendChild(createFragment(pics.length));
 				$(document).imageLazyload({
 					placeholder: 'images/default-1.png'
@@ -95,14 +103,35 @@
 			casesHeight = 0.611 * cases[0].scrollWidth;
 			for (i = 0; i < cases.length; i++) {
 				cases[i].style.height = casesHeight + 'px';
-				title[i].style.height = casesHeight + 'px';
-				title[i].style.lineHeight = casesHeight * 1.8 + 'px';
 			}
 		}
-		mui('.mui-bar-tab').on('tap', 'a', function(e) {
-			var targetTab = this.getAttribute('href');
-			window.location.href = targetTab;
+		document.getElementById('cart').addEventListener('tap', function() {
+			mui.openWindow({
+				url: "cart.html",
+				id: "cart",
+				show: {
+					aniShow: 'zoom-fade-out',
+					duration: 300
+				}
+			});
+			return;
 		});
+		document.getElementById('intelligent').addEventListener('tap', function() {
+			mui.openWindow({
+				url: "match.html",
+				id: "match",
+				show: {
+					aniShow: 'zoom-fade-out',
+					duration: 300
+				}
+			});
+			return;
+		});
+
+		function enterschemes(e) {
+			location.href = "schemes.html?id=" + e;
+			return;
+		}
 	</script>
 
 </html>
