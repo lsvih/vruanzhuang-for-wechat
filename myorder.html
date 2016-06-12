@@ -242,22 +242,14 @@
 								order.orders[i].goods[j].name = source[i].orderProducts[j].product_name;
 								order.orders[i].goods[j].price = source[i].orderProducts[j].product_price;
 								order.orders[i].goods[j].num = source[i].orderProducts[j].purchase_num;
-								if (!source[i].orderProducts[j].product.productImages[0]) {
-									order.orders[i].goods[j].img_src = null;
-								} else {
-									order.orders[i].goods[j].img_src = serverurl + "/vrz/uploads/" + source[i].orderProducts[j].product.productImages[0].icon_img;
-								}
+								!source[i].orderProducts[j].product.productImages[0]?order.orders[i].goods[j].img_src = null:order.orders[i].goods[j].img_src = serverurl + "/vrz/uploads/" + source[i].orderProducts[j].product.productImages[0].icon_img;
 							}
 							for (j = 0; j < source[i].orderSchemes.length; j++) {
 								order.orders[i].schemes[j].id = source[i].orderSchemes[j].scheme_id;
 								order.orders[i].schemes[j].name = source[i].orderSchemes[j].scheme_name;
 								order.orders[i].schemes[j].price = source[i].orderSchemes[j].scheme_price;
 								order.orders[i].schemes[j].num = source[i].orderSchemes[j].purchase_num;
-								if (!source[i].orderSchemes[j].scheme.cover_img) {
-									order.orders[i].schemes[j].img_src = null;
-								} else {
-									order.orders[i].schemes[j].img_src = serverurl + "/vrz/uploads/" + source[i].orderSchemes[j].scheme.cover_img;
-								}
+								!source[i].orderSchemes[j].scheme.cover_img?order.orders[i].schemes[j].img_src = null:order.orders[i].schemes[j].img_src = serverurl + "/vrz/uploads/" + source[i].orderSchemes[j].scheme.cover_img;
 							}
 						}
 						localStorage.order = JSON.stringify(order);

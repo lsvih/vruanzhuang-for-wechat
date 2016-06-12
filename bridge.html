@@ -95,10 +95,7 @@
 								stopload();
 								var btnArray = ['确认', '取消'];
 								mui.confirm('支付失败,是否重试？', '微软装', btnArray, function(e) {
-									if (e.index == 0) {
-										onwxpay();
-									} else {
-										location.href = 'myorder.html?type=2'
+									e.index == 0?onwxpay():location.href = 'myorder.html?type=2';
 									}
 								});
 								

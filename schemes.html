@@ -128,51 +128,15 @@
 		function setschemes() {
 			document.getElementById("cover").childNodes[0].src = serverurl +'/vrz/uploads/thumbs/m-' + jsonschemes.cover_img;
 			document.getElementById("title").innerHTML = jsonschemes.community;
-			if (!jsonschemes.bedroom) {
-				document.getElementById("woshi").style.display = "none";
-			} else {
-				document.getElementById("woshi").getElementsByTagName("span")[0].innerHTML = jsonschemes.bedroom;
-			}
-			if (!jsonschemes.livingroom) {
-				document.getElementById("keting").style.display = "none";
-			} else {
-				document.getElementById("keting").getElementsByTagName("span")[0].innerHTML = jsonschemes.livingroom;
-			}
-			if (!jsonschemes.studyroom) {
-				document.getElementById("shufang").style.display = "none";
-			} else {
-				document.getElementById("shufang").getElementsByTagName("span")[0].innerHTML = jsonschemes.studyroom;
-			}
-			if (!jsonschemes.diningroom) {
-				document.getElementById("canting").style.display = "none";
-			} else {
-				document.getElementById("canting").getElementsByTagName("span")[0].innerHTML = jsonschemes.diningroom;
-			}
-			if (!jsonschemes.kitchen) {
-				document.getElementById("chufang").style.display = "none";
-			} else {
-				document.getElementById("chufang").getElementsByTagName("span")[0].innerHTML = jsonschemes.kitchen;
-			}
-			if (!jsonschemes.bathroom) {
-				document.getElementById("weishengjian").style.display = "none";
-			} else {
-				document.getElementById("weishengjian").getElementsByTagName("span")[0].innerHTML = jsonschemes.bathroom;
-			}
-			if (!jsonschemes.balcony) {
-				document.getElementById("yangtai").style.display = "none";
-			} else {
-				document.getElementById("yangtai").getElementsByTagName("span")[0].innerHTML = jsonschemes.balcony;
-			}
-			if (!jsonschemes.tearoom) {
-				document.getElementById("chashi").style.display = "none";
-			} else {
-				document.getElementById("chashi").getElementsByTagName("span")[0].innerHTML = jsonschemes.tearoom;
-			}
-			if (!jsonschemes.lounge) {
-				document.getElementById("xiuxianqu").style.display = "none";
-			} else {
-				document.getElementById("xiuxianqu").getElementsByTagName("span")[0].innerHTML = jsonschemes.lounge;
-			}
+			!jsonschemes.bedroom?document.getElementById("woshi").style.display = "none":document.getElementById("woshi").getElementsByTagName("span")[0].innerHTML = jsonschemes.bedroom;
+			!jsonschemes.livingroom?document.getElementById("keting").style.display = "none":document.getElementById("keting").getElementsByTagName("span")[0].innerHTML = jsonschemes.livingroom;
+			!jsonschemes.studyroom?document.getElementById("shufang").style.display = "none":document.getElementById("shufang").getElementsByTagName("span")[0].innerHTML = jsonschemes.studyroom;
+			!jsonschemes.diningroom?document.getElementById("canting").style.display = "none":document.getElementById("canting").getElementsByTagName("span")[0].innerHTML = jsonschemes.diningroom;
+			!jsonschemes.kitchen?document.getElementById("chufang").style.display = "none":document.getElementById("chufang").getElementsByTagName("span")[0].innerHTML = jsonschemes.kitchen;
+			!jsonschemes.bathroom?document.getElementById("weishengjian").style.display = "none":document.getElementById("weishengjian").getElementsByTagName("span")[0].innerHTML = jsonschemes.bathroom;
+			!jsonschemes.balcony?document.getElementById("yangtai").style.display = "none":document.getElementById("yangtai").getElementsByTagName("span")[0].innerHTML = jsonschemes.balcony;
+			!jsonschemes.tearoom?document.getElementById("chashi").style.display = "none":document.getElementById("chashi").getElementsByTagName("span")[0].innerHTML = jsonschemes.tearoom;
+			!jsonschemes.lounge?document.getElementById("xiuxianqu").style.display = "none":document.getElementById("xiuxianqu").getElementsByTagName("span")[0].innerHTML = jsonschemes.lounge;
 			document.getElementById("inspiration").childNodes[0].src = serverurl +'/vrz/uploads/'  + jsonschemes.inspiration_img;
 			document.getElementById("bright_spot").childNodes[0].src =serverurl + '/vrz/uploads/'  + jsonschemes.bright_spot_img;
 			document.getElementById("color_analysis").childNodes[0].src = serverurl + '/vrz/uploads/'  + jsonschemes.color_analysis_img;

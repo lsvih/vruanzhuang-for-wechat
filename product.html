@@ -208,86 +208,22 @@
 						document.getElementById("addcrat").disabled = "";
 						document.getElementById("name").innerHTML = data.data.name;
 						document.getElementById("pri").innerHTML = data.data.unit_price;
-						if (!data.data.size) {
-							document.getElementById("Ssize").style.display = "none";
-						} else {
-							document.getElementById("size").innerHTML = data.data.size;
-						}
-						if (!data.data.main_material) {
-							document.getElementById("SmainMaterial").style.display = "none";
-						} else {
-							document.getElementById("mainMaterial").innerHTML = data.data.main_material;
-						}
-						if (!data.data.vice_material) {
-							document.getElementById("SviceMaterial").style.display = "none";
-						} else {
-							document.getElementById("viceMaterial").innerHTML = data.data.vice_material;
-						}
-						if (!data.data.fabric) {
-							document.getElementById("Sfabric").style.display = "none";
-						} else {
-							document.getElementById("fabric").innerHTML = data.data.fabric;
-						}
-						if (!data.data.paint) {
-							document.getElementById("Spaint").style.display = "none";
-						} else {
-							document.getElementById("paint").innerHTML = data.data.paint;
-						}
-						if (!data.data.shape) {
-							document.getElementById("Sshape").style.display = "none";
-						} else {
-							document.getElementById("shape").innerHTML = data.data.shape;
-						}
-						if (!data.data.installation) {
-							document.getElementById("Sinstallation").style.display = "none";
-						} else {
-							document.getElementById("installation").innerHTML = data.data.installation;
-						}
-						if (!data.data.color) {
-							document.getElementById("Scolor").style.display = "none";
-						} else {
-							document.getElementById("color").innerHTML = data.data.color;
-						}
-						if (!data.data.special_arts) {
-							document.getElementById("SspecialArts").style.display = "none";
-						} else {
-							document.getElementById("specialArts").innerHTML = data.data.special_arts;
-						}
-						if (!data.data.light_source_type) {
-							document.getElementById("SlightSourceType").style.display = "none";
-						} else {
-							document.getElementById("lightSourceType").innerHTML = data.data.light_source_type;
-						}
-						if (!data.data.voltage) {
-							document.getElementById("Svoltage").style.display = "none";
-						} else {
-							document.getElementById("voltage").innerHTML = data.data.voltage;
-						}
-						if (!data.data.parts) {
-							document.getElementById("Sparts").style.display = "none";
-						} else {
-							document.getElementById("parts").innerHTML = data.data.parts;
-						}
-						if (!data.data.have_light) {
-							document.getElementById("SisHaveLight").style.display = "none";
-						} else {
-							document.getElementById("SisHaveLight").innerHTML = data.data.have_light;
-						}
-						if (!data.data.have_bedside) {
-							document.getElementById("SisHaveBedSide").style.display = "none";
-						} else {
-							document.getElementById("isHaveBedSide").innerHTML = data.data.have_bedside;
-						}
-						if (!data.data.have_bedding) {
-							document.getElementById("SisHaveBedding").style.display = "none";
-						} else {
-							document.getElementById("isHaveBedding").innerHTML = data.data.have_bedding;
-						}
-						if (!data.data.intro) {
-							document.getElementById("Sdescription").style.display = "none";
-						} else {
-							document.getElementById("description").innerHTML = data.data.intro;
-						}
+						!data.data.size?document.getElementById("Ssize").style.display = "none":document.getElementById("size").innerHTML = data.data.size;
+						!data.data.main_material?document.getElementById("SmainMaterial").style.display = "none":document.getElementById("mainMaterial").innerHTML = data.data.main_material;
+						!data.data.vice_material?document.getElementById("SviceMaterial").style.display = "none":document.getElementById("viceMaterial").innerHTML = data.data.vice_material;
+						!data.data.fabric?document.getElementById("Sfabric").style.display = "none":document.getElementById("fabric").innerHTML = data.data.fabric;
+					!data.data.paint?document.getElementById("Spaint").style.display = "none":document.getElementById("paint").innerHTML = data.data.paint;
+						!data.data.shape?document.getElementById("Sshape").style.display = "none":document.getElementById("shape").innerHTML = data.data.shape;
+						!data.data.installation?document.getElementById("Sinstallation").style.display = "none":document.getElementById("installation").innerHTML = data.data.installation;
+						!data.data.color?document.getElementById("Scolor").style.display = "none":document.getElementById("color").innerHTML = data.data.color;
+						!data.data.special_arts?document.getElementById("SspecialArts").style.display = "none":document.getElementById("specialArts").innerHTML = data.data.special_arts;
+						!data.data.light_source_type?document.getElementById("SlightSourceType").style.display = "none":document.getElementById("lightSourceType").innerHTML = data.data.light_source_type;
+						!data.data.voltage?document.getElementById("Svoltage").style.display = "none":document.getElementById("voltage").innerHTML = data.data.voltage;
+						!data.data.parts?document.getElementById("Sparts").style.display = "none":document.getElementById("parts").innerHTML = data.data.parts;
+						!data.data.have_light?document.getElementById("SisHaveLight").style.display = "none":document.getElementById("SisHaveLight").innerHTML = data.data.have_light;
+						!data.data.have_bedside?document.getElementById("SisHaveBedSide").style.display = "none":document.getElementById("isHaveBedSide").innerHTML = data.data.have_bedside;
+						!data.data.have_bedding?document.getElementById("SisHaveBedding").style.display = "none":document.getElementById("isHaveBedding").innerHTML = data.data.have_bedding;
+						!data.data.intro?document.getElementById("Sdescription").style.display = "none":document.getElementById("description").innerHTML = data.data.intro;
 						stopload();
 					} else {
 						mui.alert(data.message);

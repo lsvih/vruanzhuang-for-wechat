@@ -52,13 +52,7 @@ function GetRequest() {
 }
 
 function cart(type, id, name, num, price, img) {
-	if (!localStorage.cart) {
-		if (!localStorage.userinfo) {
-			window.location.href = "login.html?lastpage=" + encodeURIComponent(window.location.href);
-		} else {
-			localStorage.cart = '{"goods":[]}';
-		}
-	}
+	if (!localStorage.cart) !localStorage.userinfo?window.location.href = "login.html?lastpage=" + encodeURIComponent(window.location.href):localStorage.cart = '{"goods":[]}';
 	tempcart = JSON.parse(localStorage.cart);
 	var k = 0;
 	for (i = 0; i < tempcart.goods.length; i++) {

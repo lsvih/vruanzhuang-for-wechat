@@ -73,14 +73,7 @@
 				var elem = this;
 				var li = elem.parentNode.parentNode;
 				mui.confirm('是否从购物车中删除该商品？', '微软装', btnArray, function(e) {
-					if (e.index == 0) {
-						del(li);
-						li.parentNode.removeChild(li);
-						selectChange();
-					} else {
-						setTimeout(function() {
-							$.swipeoutClose(li);
-						}, 0);
+					e.index == 0?(del(li),li.parentNode.removeChild(li),selectChange()):setTimeout(function() {$.swipeoutClose(li)},0);
 					}
 				});
 			});
@@ -139,11 +132,7 @@
 					count = Number(a) * Number(b) + Number(count);
 				}
 			}
-			if (j) {
-				document.getElementById("count").parentNode.style.backgroundColor = "#c51919";
-			} else {
-				document.getElementById("count").parentNode.style.backgroundColor = "gray"
-			}
+			j?document.getElementById("count").parentNode.style.backgroundColor = "#c51919":document.getElementById("count").parentNode.style.backgroundColor = "gray";
 			document.getElementById("count").innerHTML = j;
 			document.getElementById("allPrice").innerHTML = "￥" + count;
 		}

@@ -79,11 +79,7 @@
 		(function($, doc) {
 			//性别
 			$.ready(function() {
-				if (!jsonuserinfo.fullname) {
-					document.getElementById("showname").innerHTML = "立即填写";
-				} else {
-					document.getElementById("showname").innerHTML = jsonuserinfo.fullname;
-				}
+				!jsonuserinfo.fullname?document.getElementById("showname").innerHTML = "立即填写":document.getElementById("showname").innerHTML = jsonuserinfo.fullname;
 				switch (jsonuserinfo.sex) {
 					case 0:
 						document.getElementById("showsex").innerHTML = "男";
