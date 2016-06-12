@@ -73,8 +73,7 @@
 				var elem = this;
 				var li = elem.parentNode.parentNode;
 				mui.confirm('是否从购物车中删除该商品？', '微软装', btnArray, function(e) {
-					e.index == 0?(del(li),li.parentNode.removeChild(li),selectChange()):setTimeout(function() {$.swipeoutClose(li)},0);
-					}
+					e.index == 0?(del(li),li.parentNode.removeChild(li),selectChange()):setTimeout(function(){$.swipeoutClose(li)},0);
 				});
 			});
 			var btnArray = ['确认', '取消'];
