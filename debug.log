@@ -38,3 +38,4 @@
 [0418/151947:ERROR:renderer_main.cc(227)] Running without renderer sandbox
 [0418/154023:ERROR:gpu_info_collector_win.cc(103)] Can't retrieve a valid WinSAT assessment.
 [0418/154023:ERROR:proxy_service_factory.cc(105)] Cannot use V8 Proxy resolver in single process mode.
+[0611/142045:ERROR:proxy_service_factory.cc(105)] Cannot use V8 Proxy resolver in single process mode.

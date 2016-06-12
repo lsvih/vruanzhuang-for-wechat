@@ -16,72 +16,74 @@
 		<title>微软装</title>
 	</head>
 
-	<body class="background-gray">
+	<body>
 		<div id="load">
 			<div class="loading"></div>
 			<div class="loading-text"><img src="images/load.gif" width="25px">加载中，请稍候...</div>
 		</div>
-		<header class="mui-bar mui-bar-nav background-gray">
+		<header class="mui-bar mui-bar-nav">
 			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
 			<a class="icon-left-nav mui-icon mui-pull-right skip" href="match-step3.html">跳过></a> </header>
-		<div class="mui-content background-gray">
-			<div class="title2 background-gray">
+		<div class="mui-content">
+			<div class="title2">
 				<p>请选择几个你喜欢的</p>装修风格</div>
-			<div class="style-list background-gray">
-				<div class="circle grid-1" onclick="selectstyle(this)">现代</div>
-				<div class="circle grid-2" onclick="selectstyle(this)">简约</div>
-				<div class="circle grid-3" onclick="selectstyle(this)">欧式</div>
-				<div class="circle grid-4" onclick="selectstyle(this)">中式</div>
-				<div class="circle grid-5" onclick="selectstyle(this)">田园</div>
-				<div class="circle grid-6" onclick="selectstyle(this)">美式</div>
-				<div class="circle grid-7" onclick="selectstyle(this)">混搭</div>
+			<div class="style-list">
+				<div class="circle grid-1" onclick="selectstyle(this)"><span>现代</span></div>
+				<div class="circle grid-2" onclick="selectstyle(this)"><span>简约</span></div>
+				<div class="circle grid-3" onclick="selectstyle(this)"><span>欧式</span></div>
+				<div class="circle grid-4" onclick="selectstyle(this)"><span>中式</span></div>
+				<div class="circle grid-5" onclick="selectstyle(this)"><span>田园</span></div>
+				<div class="circle grid-6" onclick="selectstyle(this)"><span>美式</span></div>
+				<div class="circle grid-7" onclick="selectstyle(this)"><span>混搭</span></div>
 			</div>
 
-			<div class="title2 background-gray">
+			<div class="title2">
 				装修颜色</div>
-			<div class="colorselect background-gray" id="colorlist">
-				<span class="color" v-for="color in colors" id="{{color.color_id}}" onclick="selectcolor(this)">{{color.color_code}}</span>
+			<div class="colorselect" id="colorlist">
+				<span class="color" v-for="color in colors" id="{{color.color_id}}" data="{{color.color_code}}" onclick="selectcolor(this)">
+					{{ color.color_name }}
+				</span>
 			</div>
 
-			<div id="next-step" style="border-color: #fff;">选好了，下一步></div>
+			<div id="next-step">选好了，下一步></div>
 		</div>
 
 	</body>
 	<script>
 		var colorstyle = [{
-			"color_name": "蓝色",
+			"color_name": "蓝",
 			"color_id": 1,
 			"color_code": "#B0E2FF"
 		}, {
-			"color_name": "绿色",
+			"color_name": "绿",
 			"color_id": 2,
 			"color_code": "#BCEE68"
 		}, {
-			"color_name": "黄色",
+			"color_name": "黄",
 			"color_id": 3,
 			"color_code": "#EEEE00"
 		}, {
-			"color_name": "橙色",
+			"color_name": "橙",
 			"color_id": 4,
 			"color_code": "#EEAD0E"
 		}, {
-			"color_name": "红色",
+			"color_name": "红",
 			"color_id": 5,
 			"color_code": "#FF4500"
 		}, {
-			"color_name": "粉色",
+			"color_name": "粉",
 			"color_id": 6,
 			"color_code": "#FFBBFF"
 		}, {
-			"color_name": "咖色",
+			"color_name": "咖",
 			"color_id": 7,
 			"color_code": "#B8860B"
 		}, {
-			"color_name": "白色",
+			"color_name": "白",
 			"color_id": 8,
-			"color_code": "#FFFFFF"
+			"color_code": "#F3F3F3"
 		}, {
-			"color_name": "灰色",
+			"color_name": "灰",
 			"color_id": 9,
 			"color_code": "#E0E0E0"
 		}];
@@ -99,15 +101,15 @@
 			changecolor();
 		})
 		document.getElementById('next-step').addEventListener('tap', function() {
-			!styleid? mui.alert('请选择风格', '微软装'):!colorselect.length?mui.alert('请选择颜色', '微软装'):next();
+			!styleid ? mui.alert('请选择风格', '微软装') : !colorselect.length ? mui.alert('请选择颜色', '微软装') : next();
 		});
 
 		function selectstyle(e) {
 			borthers = e.parentNode.getElementsByClassName("circle");
 			for (i = 0; i < borthers.length; i++) {
-				borthers[i].style.opacity = 0.6
+				borthers[i].getElementsByTagName("span")[0].style.backgroundColor = 'rgba(255,255,255,0.6)'
 			}
-			e.style.opacity = 1;
+			e.getElementsByTagName("span")[0].style.backgroundColor = 'rgba(255,255,255,0)'
 			styleid = e.className.split("grid-")[1];
 		}
 
@@ -119,8 +121,7 @@
 		function changecolor() {
 			item = document.getElementsByClassName("color");
 			for (var i = 0; i < item.length; i++) {
-				item[i].style.backgroundColor = item[i].innerHTML;
-				item[i].innerHTML = '';
+				item[i].style.backgroundColor = item[i].getAttribute('data');
 			}
 		}
 

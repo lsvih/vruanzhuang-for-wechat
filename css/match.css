@@ -108,58 +108,81 @@
 	text-align: center;
 	top: 50%;
 	left: 50%;
-	opacity: 0.6;
+	color: #fff;
+	font-weight: normal;
 }
-.style-list{
+
+.style-list {
 	position: relative;
 	height: 400px;
 	width: 100%;
 }
+
+.circle span {
+	background: rgba(255, 255, 255, 0.6);
+	height: 100px;
+	width: 100px;
+	display: block;
+	-webkit-text-shadow: 0 0 10px #000;
+	-moz-text-shadow: 0 0 10px #000;
+	text-shadow: 0 0 10px #000;
+}
+
 .grid-1 {
 	margin-top: -160px;
 	margin-left: -105px;
+	background-image: url(../images/match/地中海.jpg);
 }
 
 .grid-2 {
 	margin-top: -160px;
 	margin-left: 5px;
+	background-image: url(../images/match/简约现代.jpg);
 }
 
 .grid-3 {
 	margin-top: -50px;
 	margin-left: -160px;
+	background-image: url(../images/match/欧式.jpg);
 }
 
 .grid-4 {
 	margin-top: -50px;
 	margin-left: -50px;
+	background-image: url(../images/match/中式.jpg);
 }
 
 .grid-5 {
 	margin-top: -50px;
 	margin-left: 60px;
+	background-image: url(../images/match/美式田园.jpg);
 }
+
 .grid-6 {
 	margin-top: 60px;
 	margin-left: -105px;
+	background-image: url(../images/match/美式.jpg);
 }
+
 .grid-7 {
 	margin-top: 60px;
 	margin-left: 5px;
+	background-image: url(../images/match/新古典.jpg);
 }
 
-.colorselect{
+.colorselect {
 	text-align: center;
 }
-.color{
+
+.color {
 	display: inline-block;
 	height: 40px;
 	width: 40px;
 	background-color: red;
 	margin: 10px;
-	border-radius:5px;
+	border-radius: 5px;
 	line-height: 40px;
 	text-align: center;
-	
-	}
-
+	font-size: 12px;
+	color: #000;
+}
