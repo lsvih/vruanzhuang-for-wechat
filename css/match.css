@@ -22,47 +22,144 @@
 	font-size: 15px;
 	color: #9A9A9A;
 }
-#tag-list{
+
+#tag-list {
 	position: relative;
 }
-.tag-name{
+
+.tag-name {
 	font-size: 15px;
 	position: absolute;
 	width: auto;
 	left: 20px;
 	font-weight: bold;
 }
-.tagtype{
+
+.tagtype {
 	position: relative;
 	height: 0px;
 	border: 1px solid#eee;
 }
-.tags{
+
+.tags {
 	position: absolute;
-	
-	left:100px;
+	left: 100px;
 	padding: 10px 15px 15px 10px;
 }
-.tag{
+
+.tag {
 	display: inline-block;
 	font-size: 15px;
 	border: 1px solid#eee;
 	height: 30px;
 	line-height: 30px;
-	border-radius:15px;
+	border-radius: 15px;
 	padding: 0 8px;
 	margin: 5px 5px;
 }
-.sortid{
+
+.sortid {
 	display: none;
 }
-#next-step{
+
+#next-step {
 	text-align: center;
 	margin: 30px;
 	color: #9A9A9A;
 	font-size: 13px;
 	border: 1px solid#eee;
-	height: 25px;
-	line-height: 25px;
-	border-radius: 12px;
+	height: 35px;
+	line-height: 35px;
+	border-radius: 17px;
 }
+
+.background-gray {
+	background-color: #EBEBEB;
+}
+
+.mui-action-back {
+	color: #000;
+}
+
+.skip {
+	font-size: 15px!important;
+	line-height: 25px;
+	color: #9A9A9A;
+}
+
+.mui-bar {
+	border: none;
+}
+
+.title2 {
+	font-size: 20px;
+	text-align: center;
+	color: #666600;
+	font-weight: normal;
+}
+
+.circle {
+	background-color: blanchedalmond;
+	height: 100px;
+	width: 100px;
+	position: absolute;
+	border-radius: 50px;
+	line-height: 110px;
+	text-align: center;
+	top: 50%;
+	left: 50%;
+	opacity: 0.6;
+}
+.style-list{
+	position: relative;
+	height: 400px;
+	width: 100%;
+}
+.grid-1 {
+	margin-top: -160px;
+	margin-left: -105px;
+}
+
+.grid-2 {
+	margin-top: -160px;
+	margin-left: 5px;
+}
+
+.grid-3 {
+	margin-top: -50px;
+	margin-left: -160px;
+}
+
+.grid-4 {
+	margin-top: -50px;
+	margin-left: -50px;
+}
+
+.grid-5 {
+	margin-top: -50px;
+	margin-left: 60px;
+}
+.grid-6 {
+	margin-top: 60px;
+	margin-left: -105px;
+}
+.grid-7 {
+	margin-top: 60px;
+	margin-left: 5px;
+}
+
+.colorselect{
+	text-align: center;
+}
+.color{
+	display: inline-block;
+	height: 40px;
+	width: 40px;
+	background-color: red;
+	margin: 10px;
+	border-radius:5px;
+	line-height: 40px;
+	text-align: center;
+	
+	}
+

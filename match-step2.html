@@ -9,103 +9,125 @@
 		<script type="text/javascript" src="js/app.js"></script>
 		<script type="text/javascript" src="js/global.js"></script>
 		<script type="text/javascript" src="js/mui.min.js"></script>
+		<script type="text/javascript" src="js/vue.js"></script>
 		<link rel="stylesheet" href="css/mui.min.css" />
 		<link rel="stylesheet" href="css/app.css" />
 		<link rel="stylesheet" href="css/match.css" />
 		<title>微软装</title>
 	</head>
 
-	<body onresize="javascript:adaptive();">
+	<body class="background-gray">
 		<div id="load">
 			<div class="loading"></div>
 			<div class="loading-text"><img src="images/load.gif" width="25px">加载中，请稍候...</div>
 		</div>
-
-		
-			<div id="slider" class="mui-slider">
-				<div class="mui-slider-group">
-					<div class="mui-slider-item mui-active" style="z-index: 13;">
-						<img src="images/match/yj.jpg" class="1" id="1" onclick="selecttype(this)">
-					</div>
-					<div class="mui-slider-item" style="z-index: 12;">
-						<img src="images/match/lj.jpg" class="1" id="2" onclick="selecttype(this)">
-					</div>
-					<div class="mui-slider-item" style="z-index: 11;">
-
-						<img src="images/match/sj.jpg" class="1" id="3" onclick="selecttype(this)">
-					</div>
-					<div class="mui-slider-item" style="z-index: 10;">
-						<img src="images/match/fs.jpg" class="1" id="4" onclick="selecttype(this)">
-					</div>
-					<div class="mui-slider-item" style="z-index: 9;">
-						<img src="images/match/bs.jpg" class="1" id="5" onclick="selecttype(this)">
-					</div>
-
-				</div>
-			</div>
-			<div class="choose">请选择你家的
-				<div style="font-size: 23px;line-height: 37px;">家居户型</div>
-				<div class="next" onclick="next()">
-					下一步
-				</div>
+		<header class="mui-bar mui-bar-nav background-gray">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<a class="icon-left-nav mui-icon mui-pull-right skip" href="match-step3.html">跳过></a> </header>
+		<div class="mui-content background-gray">
+			<div class="title2 background-gray">
+				<p>请选择几个你喜欢的</p>装修风格</div>
+			<div class="style-list background-gray">
+				<div class="circle grid-1" onclick="selectstyle(this)">现代</div>
+				<div class="circle grid-2" onclick="selectstyle(this)">简约</div>
+				<div class="circle grid-3" onclick="selectstyle(this)">欧式</div>
+				<div class="circle grid-4" onclick="selectstyle(this)">中式</div>
+				<div class="circle grid-5" onclick="selectstyle(this)">田园</div>
+				<div class="circle grid-6" onclick="selectstyle(this)">美式</div>
+				<div class="circle grid-7" onclick="selectstyle(this)">混搭</div>
 			</div>
 
-	
+			<div class="title2 background-gray">
+				装修颜色</div>
+			<div class="colorselect background-gray" id="colorlist">
+				<span class="color" v-for="color in colors" id="{{color.color_id}}" onclick="selectcolor(this)">{{color.color_code}}</span>
+			</div>
+
+			<div id="next-step" style="border-color: #fff;">选好了，下一步></div>
+		</div>
 
 	</body>
 	<script>
+		var colorstyle = [{
+			"color_name": "蓝色",
+			"color_id": 1,
+			"color_code": "#B0E2FF"
+		}, {
+			"color_name": "绿色",
+			"color_id": 2,
+			"color_code": "#BCEE68"
+		}, {
+			"color_name": "黄色",
+			"color_id": 3,
+			"color_code": "#EEEE00"
+		}, {
+			"color_name": "橙色",
+			"color_id": 4,
+			"color_code": "#EEAD0E"
+		}, {
+			"color_name": "红色",
+			"color_id": 5,
+			"color_code": "#FF4500"
+		}, {
+			"color_name": "粉色",
+			"color_id": 6,
+			"color_code": "#FFBBFF"
+		}, {
+			"color_name": "咖色",
+			"color_id": 7,
+			"color_code": "#B8860B"
+		}, {
+			"color_name": "白色",
+			"color_id": 8,
+			"color_code": "#FFFFFF"
+		}, {
+			"color_name": "灰色",
+			"color_id": 9,
+			"color_code": "#E0E0E0"
+		}];
+		var colorselect = [];
+		var styleid;
 		mui.ready(function() {
-			localStorage.removeItem('selectedtype')
-			adaptive();
-			document.querySelector('.mui-slider').addEventListener('slide', function(event) {
-				adaptive();
+			localStorage.removeItem('IC_color');
+			localStorage.removeItem('IC_style');
+			colorlist = new Vue({
+				el: '#colorlist',
+				data: {
+					'colors': colorstyle
+				}
 			});
+			changecolor();
 		})
+		document.getElementById('next-step').addEventListener('tap', function() {
+			!styleid? mui.alert('请选择风格', '微软装'):!colorselect.length?mui.alert('请选择颜色', '微软装'):next();
+		});
 
-		function adaptive() {
-			item = document.getElementsByClassName("mui-slider-group")[0].getElementsByClassName("mui-slider-item");
-			img = document.getElementsByClassName("mui-slider-group")[0].getElementsByTagName("img");
-			itemWidth = window.innerWidth;
-			for (i = 0; i < item.length; i++) {
-				item[i].style.height = itemWidth * 0.5 + 'px';
-				item[i].style.width = itemWidth * 0.5 + 'px';
-				item[i].style.marginRight = itemWidth * 0.15 + 'px';
+		function selectstyle(e) {
+			borthers = e.parentNode.getElementsByClassName("circle");
+			for (i = 0; i < borthers.length; i++) {
+				borthers[i].style.opacity = 0.6
 			}
-			for (i = 0; i < img.length; i++) {
-				img[i].style.height = itemWidth * 0.5 + 'px';
-				img[i].style.width = itemWidth * 0.5 + 'px';
-				img[i].style.marginLeft = itemWidth * 0.25 + 'px';
-				img[i].style.marginLeft = itemWidth * 0.25 + 'px';
-			}
+			e.style.opacity = 1;
+			styleid = e.className.split("grid-")[1];
 		}
 
-		function selecttype(e) {
-			if (e.className == 2) {
-				e.className = 1;
-				e.src = e.src.substring(0, e.src.length - 6) + '.jpg';
-			} else {
-				items = document.getElementsByClassName('mui-slider-item');
-				for (i = 0; i < items.length; i++) {
-					if (items[i].getElementsByTagName('img')[0].className == 2) {
-						items[i].getElementsByTagName('img')[0].className = 1;
-						items[i].getElementsByTagName('img')[0].src = items[i].getElementsByTagName('img')[0].src.substring(0, items[i].getElementsByTagName('img')[0].src.length - 6) + '.jpg';
-					}
-				}
-				e.src = e.src.substring(0, e.src.length - 4) + '-a.jpg';
-				e.className = 2;
+		function selectcolor(e) {
+			borthers = e.parentNode.getElementsByClassName("color");
+			!e.style.border ? (e.style.border = '2px solid#0000EE', colorselect.push(e.id)) : (e.style.border = '', colorselect.remove(e.id))
+		}
+
+		function changecolor() {
+			item = document.getElementsByClassName("color");
+			for (var i = 0; i < item.length; i++) {
+				item[i].style.backgroundColor = item[i].innerHTML;
+				item[i].innerHTML = '';
 			}
 		}
 
 		function next() {
-			selected = document.getElementsByClassName('2');
-			for (i = 0; i < selected.length; i++) {
-				localStorage.selectedtype =selected[i].id;
-			}
-			if(!localStorage.selectedtype){
-				alert('请选择您的家居户型!');
-				return false;
-			}
-			location.href = 'myscheme.html'
+			localStorage.IC_color = colorselect;
+			localStorage.IC_style = styleid;
+			location.href = "match-step3.html"
 		}
 	</script>
 

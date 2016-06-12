@@ -8,3 +8,4 @@ function stopload() {
 var serverurl = "http://vruanzhuang.cn";
 var appurl = serverurl + "/vrz/api/web";
 var frontend = serverurl + "/web/project/vrz"
+var colorpallte = ['#339999', '#cc99cc', '#ff9900', '#ccccff','#ff0033','#0099cc','#99cc33'];
