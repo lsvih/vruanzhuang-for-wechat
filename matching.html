@@ -106,15 +106,14 @@
 		}
 		mui.ready(function() {
 			var timestamp = parseInt(new Date().getTime() / 1000);
-			//			IC_data();
-						setTimeout(function(){location.href = "myscheme.html"},3000);
+			IC_data();
 		});
 
 		function IC_data() {
 			data = localStorage.IC;
 			localStorage.removeItem("IC");
-			mui.ajax(apiurl + 'xxxxx', {
-				data: data,
+			mui.ajax(apiurl + 'schemes/match', {
+				data: {'tags':data},
 				dataType: 'json',
 				type: 'post',
 				timeout: 6000,
@@ -124,12 +123,10 @@
 						setTimeout(function(){location.href = "myscheme.html"},3000);
 					} else {
 						mui.alert("获取方案失败，请稍候再试");
-						stopload();
 					}
 				},
 				error: function(xhr, textStatus, errorThrown) {
 					mui.alert("网络连接失败，请稍候再试");
-					stopload();
 				}
 			});
 		}

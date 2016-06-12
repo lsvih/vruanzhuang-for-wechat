@@ -32,6 +32,7 @@
 			<span id="intelligent" class="mui-icon mui-icon-pengyouquan icon-left-nav mui-icon mui-pull-right">&nbsp;&nbsp;&nbsp;</span>
 			<span id="home" class="mui-icon mui-icon-home icon-left-nav mui-icon mui-pull-right">&nbsp;&nbsp;&nbsp;</span>
 		</header>
+		<div id="catalog"><img src="images/app-logo.png" width="69px" height="69px"></div>
 		<div class="mui-content">
 			<div id="cover" class="innerdiv"><img src="images/default-1.png" data-preview-src="" data-preview-group="1" /></div>
 			<div class="title">[<span id="title">...</span>]</div>
@@ -166,6 +167,7 @@
 								}
 								document.getElementById("allnum").innerHTML = tempallnum;
 								document.getElementById("allprice").innerHTML = tempallprice;
+								makecatalog();
 							}
 						})
 						delnull();
@@ -261,6 +263,15 @@
 			});
 			return;
 		});
+		
+		document.getElementById('catalog').addEventListener('tap', function() {
+			catalog();
+		});
+		
+		
+		function makecatalog(){
+			//TODO 生成索引
+		}
 	</script>
 
 </html>
