@@ -14,7 +14,7 @@
 		<script type="text/javascript" src="js/mui.min.js"></script>
 		<script type="text/javascript" src="js/mui.zoom.js"></script>
 		<script type="text/javascript" src="js/mui.previewimage.normaltype.js"></script>
-		
+
 		<link rel="stylesheet" href="css/mui.min.css" />
 		<link rel="stylesheet" href="css/app.css" />
 		<link rel="stylesheet" href="css/product.css" />
@@ -28,10 +28,9 @@
 			<div class="loading-text"><img src="images/load.gif" width="25px">加载中，请稍候...</div>
 		</div>
 		<header class="mui-bar mui-bar-nav">
-
-<a class="iconfont icon-kfzx icon-left-nav mui-icon mui-pull-right" href="tel:4000945080"></a>
-<a class="iconfont icon-gouwuche icon-left-nav mui-icon mui-pull-right" onclick="location.href='cart.html'">&nbsp;&nbsp;&nbsp;</a>
-			<h1 class="mui-title"></h1>
+			<span id="cart" class="iconfont icon-gouwuche icon-left-nav mui-icon mui-pull-right"></span>
+			<span id="intelligent" class="mui-icon mui-icon-pengyouquan icon-left-nav mui-icon mui-pull-right">&nbsp;&nbsp;&nbsp;</span>
+			<span id="home" class="mui-icon mui-icon-home icon-left-nav mui-icon mui-pull-right">&nbsp;&nbsp;&nbsp;</span>
 		</header>
 		<div class="mui-content">
 			<div id="cover" class="innerdiv"><img src="images/default-1.png" data-preview-src="" data-preview-group="1" /></div>
@@ -126,20 +125,20 @@
 		mui.previewImage();
 
 		function setschemes() {
-			document.getElementById("cover").childNodes[0].src = serverurl +'/vrz/uploads/thumbs/m-' + jsonschemes.cover_img;
+			document.getElementById("cover").childNodes[0].src = serverurl + '/vrz/uploads/thumbs/m-' + jsonschemes.cover_img;
 			document.getElementById("title").innerHTML = jsonschemes.community;
-			!jsonschemes.bedroom?document.getElementById("woshi").style.display = "none":document.getElementById("woshi").getElementsByTagName("span")[0].innerHTML = jsonschemes.bedroom;
-			!jsonschemes.livingroom?document.getElementById("keting").style.display = "none":document.getElementById("keting").getElementsByTagName("span")[0].innerHTML = jsonschemes.livingroom;
-			!jsonschemes.studyroom?document.getElementById("shufang").style.display = "none":document.getElementById("shufang").getElementsByTagName("span")[0].innerHTML = jsonschemes.studyroom;
-			!jsonschemes.diningroom?document.getElementById("canting").style.display = "none":document.getElementById("canting").getElementsByTagName("span")[0].innerHTML = jsonschemes.diningroom;
-			!jsonschemes.kitchen?document.getElementById("chufang").style.display = "none":document.getElementById("chufang").getElementsByTagName("span")[0].innerHTML = jsonschemes.kitchen;
-			!jsonschemes.bathroom?document.getElementById("weishengjian").style.display = "none":document.getElementById("weishengjian").getElementsByTagName("span")[0].innerHTML = jsonschemes.bathroom;
-			!jsonschemes.balcony?document.getElementById("yangtai").style.display = "none":document.getElementById("yangtai").getElementsByTagName("span")[0].innerHTML = jsonschemes.balcony;
-			!jsonschemes.tearoom?document.getElementById("chashi").style.display = "none":document.getElementById("chashi").getElementsByTagName("span")[0].innerHTML = jsonschemes.tearoom;
-			!jsonschemes.lounge?document.getElementById("xiuxianqu").style.display = "none":document.getElementById("xiuxianqu").getElementsByTagName("span")[0].innerHTML = jsonschemes.lounge;
-			document.getElementById("inspiration").childNodes[0].src = serverurl +'/vrz/uploads/'  + jsonschemes.inspiration_img;
-			document.getElementById("bright_spot").childNodes[0].src =serverurl + '/vrz/uploads/'  + jsonschemes.bright_spot_img;
-			document.getElementById("color_analysis").childNodes[0].src = serverurl + '/vrz/uploads/'  + jsonschemes.color_analysis_img;
+			!jsonschemes.bedroom ? document.getElementById("woshi").style.display = "none" : document.getElementById("woshi").getElementsByTagName("span")[0].innerHTML = jsonschemes.bedroom;
+			!jsonschemes.livingroom ? document.getElementById("keting").style.display = "none" : document.getElementById("keting").getElementsByTagName("span")[0].innerHTML = jsonschemes.livingroom;
+			!jsonschemes.studyroom ? document.getElementById("shufang").style.display = "none" : document.getElementById("shufang").getElementsByTagName("span")[0].innerHTML = jsonschemes.studyroom;
+			!jsonschemes.diningroom ? document.getElementById("canting").style.display = "none" : document.getElementById("canting").getElementsByTagName("span")[0].innerHTML = jsonschemes.diningroom;
+			!jsonschemes.kitchen ? document.getElementById("chufang").style.display = "none" : document.getElementById("chufang").getElementsByTagName("span")[0].innerHTML = jsonschemes.kitchen;
+			!jsonschemes.bathroom ? document.getElementById("weishengjian").style.display = "none" : document.getElementById("weishengjian").getElementsByTagName("span")[0].innerHTML = jsonschemes.bathroom;
+			!jsonschemes.balcony ? document.getElementById("yangtai").style.display = "none" : document.getElementById("yangtai").getElementsByTagName("span")[0].innerHTML = jsonschemes.balcony;
+			!jsonschemes.tearoom ? document.getElementById("chashi").style.display = "none" : document.getElementById("chashi").getElementsByTagName("span")[0].innerHTML = jsonschemes.tearoom;
+			!jsonschemes.lounge ? document.getElementById("xiuxianqu").style.display = "none" : document.getElementById("xiuxianqu").getElementsByTagName("span")[0].innerHTML = jsonschemes.lounge;
+			document.getElementById("inspiration").childNodes[0].src = serverurl + '/vrz/uploads/' + jsonschemes.inspiration_img;
+			document.getElementById("bright_spot").childNodes[0].src = serverurl + '/vrz/uploads/' + jsonschemes.bright_spot_img;
+			document.getElementById("color_analysis").childNodes[0].src = serverurl + '/vrz/uploads/' + jsonschemes.color_analysis_img;
 			//document.getElementById("display_design").childNodes[0].src = jsonschemes.display_design_img;
 		}
 
@@ -177,25 +176,27 @@
 				}
 			});
 		}
-		
 
 		function delnull() {
-		coverimg = document.getElementsByClassName("coverimg");
+			coverimg = document.getElementsByClassName("coverimg");
 			for (i = 0; i < coverimg.length; i++) {
 				if ((coverimg[i].src).slice(-4) == "null" || (coverimg[i].src).slice(-2) == "s-") {
-					coverimg[i].parentNode.parentNode.style.display = 'none'
+					todeldiv = coverimg[i].parentNode.parentNode;
+					todeldiv.parentNode.removeChild(todeldiv);
 				}
 			}
 			pmt = document.getElementsByClassName("pmt");
 			for (i = 0; i < pmt.length; i++) {
 				if ((pmt[i].src).slice(-4) == "null" || (pmt[i].src).slice(-2) == "s-") {
-					pmt[i].parentNode.parentNode.style.display = 'none'
+					todeldiv = pmt[i].parentNode.parentNode;
+					todeldiv.parentNode.removeChild(todeldiv);
 				}
 			}
 			sjt = document.getElementsByClassName("sjt");
 			for (i = 0; i < sjt.length; i++) {
 				if ((sjt[i].src).slice(-4) == "null" || (sjt[i].src).slice(-2) == "s-") {
-					sjt[i].parentNode.parentNode.style.display = 'none'
+					todeldiv = sjt[i].parentNode.parentNode;
+					todeldiv.parentNode.removeChild(todeldiv);
 				}
 			}
 		}
@@ -224,9 +225,42 @@
 			name = schemename;
 			num = 1;
 			price = document.getElementById("allprice").innerHTML;
-			pic = serverurl+'/vrz/uploads/thumbs/s-'+jsonschemes.cover_img;
-			cart(type,id,name,num,price,pic);
+			pic = serverurl + '/vrz/uploads/thumbs/s-' + jsonschemes.cover_img;
+			cart(type, id, name, num, price, pic);
 		}
+		document.getElementById('cart').addEventListener('tap', function() {
+			mui.openWindow({
+				url: "cart.html",
+				id: "cart",
+				show: {
+					aniShow: 'zoom-fade-out',
+					duration: 300
+				}
+			});
+			return;
+		});
+		document.getElementById('intelligent').addEventListener('tap', function() {
+			mui.openWindow({
+				url: "match.html",
+				id: "match",
+				show: {
+					aniShow: 'zoom-fade-out',
+					duration: 300
+				}
+			});
+			return;
+		});
+		document.getElementById('home').addEventListener('tap', function() {
+			mui.openWindow({
+				url: "index.html",
+				id: "index",
+				show: {
+					aniShow: 'zoom-fade-out',
+					duration: 300
+				}
+			});
+			return;
+		});
 	</script>
 
 </html>
