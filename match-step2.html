@@ -23,26 +23,25 @@
 		</div>
 		<header class="mui-bar mui-bar-nav">
 			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
-			<a class="icon-left-nav mui-icon mui-pull-right skip" href="match-step3.html">跳过></a> </header>
+			<!--<a class="icon-left-nav mui-icon mui-pull-right skip" href="match-step3.html">跳过></a>-->
+		</header>
 		<div class="mui-content">
 			<div class="title2">
 				<p>请选择几个你喜欢的</p>装修风格</div>
 			<div class="style-list">
 				<div class="circle grid-1" onclick="selectstyle(this)"><span>现代</span></div>
-				<div class="circle grid-2" onclick="selectstyle(this)"><span>简约</span></div>
+				<div class="circle grid-2" onclick="selectstyle(this)"><span>地中海</span></div>
 				<div class="circle grid-3" onclick="selectstyle(this)"><span>欧式</span></div>
 				<div class="circle grid-4" onclick="selectstyle(this)"><span>中式</span></div>
 				<div class="circle grid-5" onclick="selectstyle(this)"><span>田园</span></div>
 				<div class="circle grid-6" onclick="selectstyle(this)"><span>美式</span></div>
-				<div class="circle grid-7" onclick="selectstyle(this)"><span>混搭</span></div>
+				<div class="circle grid-7" onclick="selectstyle(this)"><span>新古典</span></div>
 			</div>
 
 			<div class="title2">
 				装修颜色</div>
 			<div class="colorselect" id="colorlist">
-				<span class="color" v-for="color in colors" id="{{color.color_id}}" data="{{color.color_code}}" onclick="selectcolor(this)">
-					{{ color.color_name }}
-				</span>
+				<span class="color" v-for="color in colors" id="{{color.color_id}}" data="{{color.color_code}}" onclick="selectcolor(this)">{{color.color_name}}</span>
 			</div>
 
 			<div id="next-step">选好了，下一步></div>
@@ -50,48 +49,68 @@
 
 	</body>
 	<script>
+		var stylelist = [{
+			"name": "现代",
+			"id": 17
+		}, {
+			"name": "地中海",
+			"id": 23
+		}, {
+			"name": "欧式",
+			"id": 18
+		}, {
+			"name": "中式",
+			"id": 19
+		}, {
+			"name": "田园",
+			"id": 20
+		}, {
+			"name": "美式",
+			"id": 22
+		}, {
+			"name": "新古典",
+			"id": 23
+		}];
 		var colorstyle = [{
 			"color_name": "蓝",
-			"color_id": 1,
+			"color_id": 29,
 			"color_code": "#B0E2FF"
 		}, {
 			"color_name": "绿",
-			"color_id": 2,
+			"color_id": 27,
 			"color_code": "#BCEE68"
 		}, {
 			"color_name": "黄",
-			"color_id": 3,
+			"color_id": 26,
 			"color_code": "#EEEE00"
 		}, {
 			"color_name": "橙",
-			"color_id": 4,
+			"color_id": 25,
 			"color_code": "#EEAD0E"
 		}, {
 			"color_name": "红",
-			"color_id": 5,
+			"color_id": 24,
 			"color_code": "#FF4500"
 		}, {
 			"color_name": "粉",
-			"color_id": 6,
+			"color_id": 30,
 			"color_code": "#FFBBFF"
 		}, {
 			"color_name": "咖",
-			"color_id": 7,
+			"color_id": 47,
 			"color_code": "#B8860B"
 		}, {
 			"color_name": "白",
-			"color_id": 8,
+			"color_id": 28,
 			"color_code": "#F3F3F3"
 		}, {
 			"color_name": "灰",
-			"color_id": 9,
+			"color_id": 46,
 			"color_code": "#E0E0E0"
 		}];
 		var colorselect = [];
-		var styleid;
+		var stylename;
 		mui.ready(function() {
-			localStorage.removeItem('IC_color');
-			localStorage.removeItem('IC_style');
 			colorlist = new Vue({
 				el: '#colorlist',
 				data: {
@@ -101,7 +120,7 @@
 			changecolor();
 		})
 		document.getElementById('next-step').addEventListener('tap', function() {
-			!styleid ? mui.alert('请选择风格', '微软装') : !colorselect.length ? mui.alert('请选择颜色', '微软装') : next();
+			!stylename ? mui.alert('请选择风格', '微软装') : !colorselect.length ? mui.alert('请选择颜色', '微软装') : next();
 		});
 
 		function selectstyle(e) {
@@ -110,12 +129,13 @@
 				borthers[i].getElementsByTagName("span")[0].style.backgroundColor = 'rgba(255,255,255,0.6)'
 			}
 			e.getElementsByTagName("span")[0].style.backgroundColor = 'rgba(255,255,255,0)'
-			styleid = e.className.split("grid-")[1];
+			sortid = e.className.split("grid-")[1] - 1;
+			stylename = stylelist[sortid].name;
 		}
 
 		function selectcolor(e) {
 			borthers = e.parentNode.getElementsByClassName("color");
-			!e.style.border ? (e.style.border = '2px solid#0000EE', colorselect.push(e.id)) : (e.style.border = '', colorselect.remove(e.id))
+			!e.style.border ? (e.style.border = '2px solid#0000EE', colorselect.push(e.innerHTML)) : (e.style.border = '', colorselect.remove(e.innerHTML))
 		}
 
 		function changecolor() {
@@ -126,8 +146,10 @@
 		}
 
 		function next() {
-			localStorage.IC_color = colorselect;
-			localStorage.IC_style = styleid;
+			IC = JSON.parse(localStorage.IC);
+			IC.push({"装修风格":stylename});
+			IC.push({"装修色彩":colorselect});
+			localStorage.IC = JSON.stringify(IC);
 			location.href = "match-step3.html"
 		}
 	</script>

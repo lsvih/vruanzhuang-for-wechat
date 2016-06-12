@@ -8,15 +8,12 @@
 		<meta content="email=no" name="format-detection" />
 		<script type="text/javascript" src="js/global.js"></script>
 		<script type="text/javascript" src="js/mui.min.js"></script>
-		<script src="js/mui.picker.js"></script>
-		<script src="js/mui.poppicker.js"></script>
-		<script src="js/city.data.js" type="text/javascript" charset="utf-8"></script>
+
 		<script type="text/javascript" src="js/vue.js"></script>
 		<link rel="stylesheet" href="css/mui.min.css" />
 		<link rel="stylesheet" href="css/app.css" />
 		<link rel="stylesheet" href="css/match.css" />
-		<link href="css/mui.picker.css" rel="stylesheet" />
-		<link href="css/mui.poppicker.css" rel="stylesheet" />
+
 		<title>微软装</title>
 	</head>
 
@@ -27,10 +24,9 @@
 		</div>
 		<header class="mui-bar mui-bar-nav">
 			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
-			<a class="icon-left-nav mui-icon mui-pull-right skip" href="match-step3.html">跳过></a> </header>
+			<a class="icon-left-nav mui-icon mui-pull-right skip" href="matching.html">跳过></a> </header>
 		<div class="mui-content">
 			<div class="title">你对什么感兴趣？</div>
-			
 
 			<div id="tag-list">
 				<div class="tagtype" v-for="tagtype in tags">
@@ -40,7 +36,7 @@
 					</div>
 				</div>
 			</div>
-			<div id="next-step">开启软装之旅！</div>
+			<div id="next-step" onclick="location.href='matching.html'">开启软装之旅！</div>
 		</div>
 	</body>
 	<script>
@@ -48,15 +44,8 @@
 		var taglist = JSON.parse(localStorage.tag);
 		var selectobj = new Array(parseInt(taglist.Total));
 		var selected = 0;
-		
 		var colorset = [];
-		
-		
-		document.getElementById('next-step').addEventListener('tap', function() {
-						
-		});
 		mui.ready(function() {
-			localStorage.removeItem('IC');
 			list = new Vue({
 				el: '#tag-list',
 				data: taglist
@@ -90,25 +79,13 @@
 		function selectatag(e, f) {
 			thistagtype = f.parentNode;
 			sortid = thistagtype.getElementsByClassName("sortid")[0].innerHTML;
-			if (!selectobj[sortid]) selected++;
-			selectobj[sortid] = e;
-			for (var i = 0; i < thistagtype.getElementsByClassName("tag").length; i++) {
-				thistagtype.getElementsByClassName("tag")[i].style.backgroundColor = "#fff";
-				thistagtype.getElementsByClassName("tag")[i].style.color = colorset[sortid];
-			}
-			f.style.color = '#fff';
-			f.style.backgroundColor = colorset[sortid];
-		}
-
-		function next() {
-			var step1_info = [];
-			var p_tag_id;
-			for(var i=0;i<taglist.Total;i++){
-				p_tag_id = taglist.tags[i].p_tag_id;
-				step1_info.push({"id":p_tag_id,"value":selectobj[i]})
-			}
-			localStorage.IC = JSON.stringify(step1_info);
-			location.href = "match-step2.html"
+			!(f.style.color == 'rgb(255, 255, 255)') ? (f.style.color = '#fff', f.style.backgroundColor = colorset[sortid]) : (f.style.color = colorset[sortid], f.style.backgroundColor = '#fff')
+			//			if (!selectobj[sortid]) selected++;
+			//			selectobj[sortid] = e;
+			//			for (var i = 0; i < thistagtype.getElementsByClassName("tag").length; i++) {
+			//				thistagtype.getElementsByClassName("tag")[i].style.backgroundColor = "#fff";
+			//				thistagtype.getElementsByClassName("tag")[i].style.color = colorset[sortid];
+			//			}
 		}
 	</script>
 

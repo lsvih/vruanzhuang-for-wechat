@@ -33,10 +33,10 @@
 			</div>
 
 			<div id="tag-list">
-				<div class="tagtype" v-for="tagtype in tags">
-					<div class="tag-name">{{tagtype.p_tag_name}}</div>
+				<div class="tagtype" v-for="tagtype in items">
+					<div class="tag-name">{{tagtype.name}}</div>
 					<div class="tags"><span class="sortid">{{$index}}</span>
-						<span class="tag" v-for="tag in tagtype.tags" onclick="selectatag({{tag.tag_id}},this)">{{tag.tag_name}}</span>
+						<span class="tag" v-for="tag in tagtype.children" onclick="selectatag({{tag.id}},this)">{{tag.name}}</span>
 					</div>
 				</div>
 			</div>
@@ -44,24 +44,59 @@
 		</div>
 	</body>
 	<script>
-		localStorage.tag = '{"Total":"4","tags":[{"p_tag_id":1,"p_tag_name":"家庭状态","tags":[{"tag_id":1,"tag_name":"单身男"},{"tag_id":2,"tag_name":"单身女"},{"tag_id":3,"tag_name":"恋爱中"},{"tag_id":4,"tag_name":"结婚"}]},{"p_tag_id":2,"p_tag_name":"房屋户型","tags":[{"tag_id":1,"tag_name":"一室"},{"tag_id":2,"tag_name":"二室"},{"tag_id":3,"tag_name":"三室"},{"tag_id":4,"tag_name":"四室及以上"}]},{"p_tag_id":3,"p_tag_name":"房屋面积","tags":[{"tag_id":1,"tag_name":"70-80㎡"},{"tag_id":2,"tag_name":"80-90㎡"},{"tag_id":3,"tag_name":"90-100㎡"}]},{"p_tag_id":4,"p_tag_name":"软装价格","tags":[{"tag_id":1,"tag_name":"1W"},{"tag_id":2,"tag_name":"2W"},{"tag_id":3,"tag_name":"3W"}]}]}';
+		startload();
 		var taglist = JSON.parse(localStorage.tag);
-		var selectobj = new Array(parseInt(taglist.Total));
+		var selectobj = [];
 		var selected = 0;
 		var colorset = [];
+		mui.ajax(apiurl + 'tags/multi-children?name=家庭状态,房屋户型,房屋面积,装修价格', {
+			dataType: 'json',
+			type: 'get',
+			timeout: 6000,
+			success: function(data) {
+				if (data.success == true) {
+					taglist = data.data;
+					list = new Vue({
+						el: '#tag-list',
+						data: taglist
+					});
+					var selectobj = new Array(parseInt(taglist.items.length));
+					adaptive();
+					changecolor();
+					stopload();
+				} else {
+					mui.alert("获取标签失败，请稍候再试");
+					stopload();
+				}
+			},
+			error: function(xhr, textStatus, errorThrown) {
+				mui.alert("网络连接失败，请稍候再试");
+				stopload();
+			}
+		});
 		(function($, doc) {
 			mui.init();
 			$.ready(function() {
 				var pickcity = new $.PopPicker({
-					layer: 3
+					layer: 1
 				});
-				pickcity.setData(cityData3);
+				pickcity.setData([{
+					value: '2',
+					text: '北京'
+				}, {
+					value: '3',
+					text: '三亚'
+				}, {
+					value: '4',
+					text: '海口'
+				}, {
+					value: '5',
+					text: '西双版纳'
+				}]);
 				var showbtn = doc.getElementById('pickcity');
 				showbtn.addEventListener('tap', function(event) {
 					pickcity.show(function(items) {
-						document.getElementById("province").innerHTML = (items[0] || {}).text;
-						document.getElementById("city").innerHTML = (items[1] || {}).text;
-						document.getElementById("county").innerHTML = (items[2] || {}).text;
+						document.getElementById("city").innerHTML = (items[0] || {}).text;
 					});
 				}, false);
 			});
@@ -70,17 +105,10 @@
 			window.history.back()
 		});
 		document.getElementById('next-step').addEventListener('tap', function() {
-			!document.getElementById("province").innerHTML?mui.alert('请选择您的地址', '微软装'):taglist.Total == selected ? next() : mui.alert('请完成标签选择', '微软装');
-			
+			document.getElementById("city").innerHTML == "所在城市" ? mui.alert('请选择您的地址', '微软装') : taglist.items.length == selected ? next() : mui.alert('请完成标签选择', '微软装');
 		});
 		mui.ready(function() {
 			localStorage.removeItem('IC');
-			list = new Vue({
-				el: '#tag-list',
-				data: taglist
-			});
-			adaptive();
-			changecolor();
 		});
 
 		function adaptive() {
@@ -95,7 +123,7 @@
 
 		function changecolor() {
 			tagtype = document.getElementsByClassName("tagtype");
-			for (var i = 0; i < taglist.Total; i++) {
+			for (var i = 0; i < taglist.items.length; i++) {
 				colorset.push(colorpallte[Math.floor(Math.random() * colorpallte.length)]);
 				tagtype[i].style.color = colorset[i]
 				tag = tagtype[i].getElementsByClassName("tag");
@@ -109,7 +137,7 @@
 			thistagtype = f.parentNode;
 			sortid = thistagtype.getElementsByClassName("sortid")[0].innerHTML;
 			if (!selectobj[sortid]) selected++;
-			selectobj[sortid] = e;
+			selectobj[sortid] = f.innerHTML;
 			for (var i = 0; i < thistagtype.getElementsByClassName("tag").length; i++) {
 				thistagtype.getElementsByClassName("tag")[i].style.backgroundColor = "#fff";
 				thistagtype.getElementsByClassName("tag")[i].style.color = colorset[sortid];
@@ -120,11 +148,13 @@
 
 		function next() {
 			var step1_info = [];
-			var p_tag_id;
-			for(var i=0;i<taglist.Total;i++){
-				p_tag_id = taglist.tags[i].p_tag_id;
-				step1_info.push({"id":p_tag_id,"value":selectobj[i]})
+			for (var i = 0; i < taglist.items.length; i++) {
+				step1_info.push(JSON.parse('{"' + taglist.items[i].name + '":"' + selectobj[i] + '"}'))
 			}
+			step1_info.push()
+			step1_info.push({
+				"城市": document.getElementById("city").innerHTML
+			});
 			localStorage.IC = JSON.stringify(step1_info);
 			location.href = "match-step2.html"
 		}
