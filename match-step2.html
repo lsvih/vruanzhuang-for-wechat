@@ -109,7 +109,9 @@
 			"color_code": "#E0E0E0"
 		}];
 		var colorselect = [];
+		var colorselectid = [];
 		var stylename;
+		var styleid;
 		mui.ready(function() {
 			colorlist = new Vue({
 				el: '#colorlist',
@@ -131,11 +133,12 @@
 			e.getElementsByTagName("span")[0].style.backgroundColor = 'rgba(255,255,255,0)'
 			sortid = e.className.split("grid-")[1] - 1;
 			stylename = stylelist[sortid].name;
+			styleid = stylelist[sortid].id;
 		}
 
 		function selectcolor(e) {
 			borthers = e.parentNode.getElementsByClassName("color");
-			!e.style.border ? (e.style.border = '2px solid#0000EE', colorselect.push(e.innerHTML)) : (e.style.border = '', colorselect.remove(e.innerHTML))
+			!e.style.border ? (e.style.border = '2px solid#0000EE', colorselect.push(e.innerHTML), colorselectid.push(e.id)) : (e.style.border = '', colorselect.remove(e.innerHTML), colorselectid.remove(e.id))
 		}
 
 		function changecolor() {
@@ -146,11 +149,29 @@
 		}
 
 		function next() {
+			var colorchildren = [];
 			IC = JSON.parse(localStorage.IC);
-			IC.push({"装修风格":stylename});
-			IC.push({"装修色彩":colorselect});
+			IC.push({
+				"id": 10,
+				"name": "装修风格",
+				"children": {
+					"id": styleid,
+					"name": stylename
+				}
+			});
+			for (var i = 0; i < colorselect.length; i++) {
+				colorchildren.push({
+					"id": colorselectid[i],
+					"name": colorselect[i]
+				});
+			}
+			IC.push({
+				"id": 11,
+				"name": "装修色彩",
+				"children": colorchildren
+			});
 			localStorage.IC = JSON.stringify(IC);
-			location.href = "match-step3.html"
+			location.href = "match-step3.html";
 		}
 	</script>
 

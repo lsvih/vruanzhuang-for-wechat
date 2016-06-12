@@ -47,7 +47,9 @@
 		startload();
 		var taglist = JSON.parse(localStorage.tag);
 		var selectobj = [];
+		var selectobjid = [];
 		var selected = 0;
+		var cityid;
 		var colorset = [];
 		mui.ajax(apiurl + 'tags/multi-children?name=家庭状态,房屋户型,房屋面积,装修价格', {
 			dataType: 'json',
@@ -61,6 +63,7 @@
 						data: taglist
 					});
 					var selectobj = new Array(parseInt(taglist.items.length));
+					var selectobjid = new Array(parseInt(taglist.items.length));
 					adaptive();
 					changecolor();
 					stopload();
@@ -97,6 +100,7 @@
 				showbtn.addEventListener('tap', function(event) {
 					pickcity.show(function(items) {
 						document.getElementById("city").innerHTML = (items[0] || {}).text;
+						cityid =  (items[0] || {}).value;
 					});
 				}, false);
 			});
@@ -138,6 +142,7 @@
 			sortid = thistagtype.getElementsByClassName("sortid")[0].innerHTML;
 			if (!selectobj[sortid]) selected++;
 			selectobj[sortid] = f.innerHTML;
+			selectobjid[sortid] = e;
 			for (var i = 0; i < thistagtype.getElementsByClassName("tag").length; i++) {
 				thistagtype.getElementsByClassName("tag")[i].style.backgroundColor = "#fff";
 				thistagtype.getElementsByClassName("tag")[i].style.color = colorset[sortid];
@@ -149,12 +154,10 @@
 		function next() {
 			var step1_info = [];
 			for (var i = 0; i < taglist.items.length; i++) {
-				step1_info.push(JSON.parse('{"' + taglist.items[i].name + '":"' + selectobj[i] + '"}'))
+				step1_info.push(JSON.parse('{"id":'+ taglist.items[i].id +',"name":"' + taglist.items[i].name + '","children":{"id":'+  selectobjid[i] +',"name":"' + selectobj[i] + '"}}'))
 			}
 			step1_info.push()
-			step1_info.push({
-				"城市": document.getElementById("city").innerHTML
-			});
+			step1_info.push({"id":1,"name":"城市","children":{"id":cityid,"name":document.getElementById("city").innerHTML}});
 			localStorage.IC = JSON.stringify(step1_info);
 			location.href = "match-step2.html"
 		}
