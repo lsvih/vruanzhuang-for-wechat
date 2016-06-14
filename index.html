@@ -37,7 +37,7 @@
 	<script>
 		mui.ready(function() {
 			startload();
-			("IntelligentCollocation" in GetRequest()) ? ((JSON.parse(localStorage.schemes).length) ? (lazyload(), adaptive(), stopload()) : (lazyload(), stopload())) : getschemes();
+			("IntelligentCollocation" in GetRequest()) ? ((JSON.parse(localStorage.schemes).length) ? (lazyload(), adaptive(), stopload(), addtapevent()) : (lazyload(), stopload())) : getschemes();
 		});
 
 		function getschemes() {
@@ -49,24 +49,27 @@
 				success: function(data) {
 					if (data.success == true) {
 						localStorage.schemes = JSON.stringify(data.data.items);
-						(lazyload(), adaptive(), stopload());
-						mui('#list').on('tap', '.indexpic img', function() {
-							id = this.getAttribute('data-id');
-							mui.openWindow({
-								url: "schemes.html?id=" + id,
-								id: "schemes",
-								show: {
-									aniShow: 'zoom-fade-out',
-									duration: 300
-								}
-							});
-							return;
-						});
+						(lazyload(), adaptive(), stopload(), addtapevent());
 					} else {
 						mui.alert(data.message);
 						stopload();
 					}
 				}
+			});
+		}
+
+		function addtapevent() {
+			mui('#list').on('tap', '.indexpic img', function() {
+				id = this.getAttribute('data-id');
+				mui.openWindow({
+					url: "schemes.html?id=" + id,
+					id: "schemes",
+					show: {
+						aniShow: 'zoom-fade-out',
+						duration: 300
+					}
+				});
+				return;
 			});
 		}
 

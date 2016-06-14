@@ -124,18 +124,7 @@
 
 	</body>
 	<script>
-		mui('body').on('tap', '.productsimgs', function() {
-			productid = this.getAttribute('data-id');
-			mui.openWindow({
-				url: "product.html?id=" + productid,
-				id: "product",
-				show: {
-					aniShow: 'zoom-fade-out',
-					duration: 300
-				}
-			});
-			return;
-		});
+		
 		var url = window.location.search;
 		var sortid = url.substring(url.lastIndexOf('=') + 1, url.length);
 		var thisspace = new Array;
@@ -312,6 +301,18 @@
 			mui.openWindow({
 				url: "index.html",
 				id: "index",
+				show: {
+					aniShow: 'zoom-fade-out',
+					duration: 300
+				}
+			});
+			return;
+		});
+		mui('body').on('tap', '.productsimgs', function() {
+			productid = this.getAttribute('data-id');
+			mui.openWindow({
+				url: "product.html?id=" + productid,
+				id: "product",
 				show: {
 					aniShow: 'zoom-fade-out',
 					duration: 300
