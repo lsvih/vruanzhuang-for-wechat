@@ -66,18 +66,16 @@ display: none;
 	margin-left: -17px;
 }
 #load {
-	display: none;
+	display: block;
 }
 
 .loading {
 	position: fixed;
 	height: 100%;
 	width: 100%;
-	background-color: #000;
+	background-color: #eee;
 	z-index: 9999999;
-	filter: alpha(opacity=20);
-	-moz-opacity: 0.2;
-	opacity: 0.2;
+
 	text-align: center;
 }
 

@@ -29,19 +29,19 @@
 			<div class="title2">
 				<p>请选择几个你喜欢的</p>装修风格</div>
 			<div class="style-list">
-				<div class="circle grid-1" onclick="selectstyle(this)"><span>现代</span></div>
-				<div class="circle grid-2" onclick="selectstyle(this)"><span>地中海</span></div>
-				<div class="circle grid-3" onclick="selectstyle(this)"><span>欧式</span></div>
-				<div class="circle grid-4" onclick="selectstyle(this)"><span>中式</span></div>
-				<div class="circle grid-5" onclick="selectstyle(this)"><span>田园</span></div>
-				<div class="circle grid-6" onclick="selectstyle(this)"><span>美式</span></div>
-				<div class="circle grid-7" onclick="selectstyle(this)"><span>新古典</span></div>
+				<div class="circle grid-1"><span>现代</span></div>
+				<div class="circle grid-2"><span>地中海</span></div>
+				<div class="circle grid-3"><span>欧式</span></div>
+				<div class="circle grid-4"><span>中式</span></div>
+				<div class="circle grid-5"><span>田园</span></div>
+				<div class="circle grid-6"><span>美式</span></div>
+				<div class="circle grid-7"><span>新古典</span></div>
 			</div>
 
 			<div class="title2">
 				装修颜色</div>
 			<div class="colorselect" id="colorlist">
-				<span class="color" v-for="color in colors" id="{{color.color_id}}" data="{{color.color_code}}" onclick="selectcolor(this)">{{color.color_name}}</span>
+				<span class="color" v-for="color in colors" id="{{color.color_id}}" data="{{color.color_code}}">{{color.color_name}}</span>
 			</div>
 
 			<div id="next-step">选好了，下一步></div>
@@ -117,10 +117,21 @@
 				el: '#colorlist',
 				data: {
 					'colors': colorstyle
+				},
+				compiled: function() {
+					stopload();
 				}
 			});
 			changecolor();
 		})
+		mui('.style-list').on('tap', '.circle', function() {
+			selectstyle(this);
+			return;
+		});
+		mui('#colorlist').on('tap', '.color', function() {
+			selectcolor(this);
+			return;
+		});
 		document.getElementById('next-step').addEventListener('tap', function() {
 			!stylename ? mui.alert('请选择风格', '微软装') : !colorselect.length ? mui.alert('请选择颜色', '微软装') : next();
 		});

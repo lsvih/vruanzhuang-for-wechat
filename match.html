@@ -36,7 +36,7 @@
 				<div class="tagtype" v-for="tagtype in items">
 					<div class="tag-name">{{tagtype.name}}</div>
 					<div class="tags"><span class="sortid">{{$index}}</span>
-						<span class="tag" v-for="tag in tagtype.children" onclick="selectatag({{tag.id}},this)">{{tag.name}}</span>
+						<span class="tag" v-for="tag in tagtype.children" data-type="tag" data-id="{{tag.id}}">{{tag.name}}</span>
 					</div>
 				</div>
 			</div>
@@ -45,7 +45,7 @@
 				<div class="tagtype" v-for="tagtype in items">
 					<div class="tag-name">{{tagtype.name}}</div>
 					<div class="tags"><span class="sortid">{{$index}}</span>
-						<span class="tag" v-for="tag in tagtype.children" onclick="selectspace({{tag.id}},this)">{{tag.name}}</span>
+						<span class="tag" v-for="tag in tagtype.children" data-type="space" data-id="{{tag.id}}">{{tag.name}}</span>
 					</div>
 				</div>
 			</div>
@@ -53,7 +53,6 @@
 		</div>
 	</body>
 	<script>
-		startload();
 		var taglist;
 		var spacelist;
 		var spaceselectid = [];
@@ -63,6 +62,7 @@
 		var selected = 0;
 		var cityid;
 		var colorset = [];
+
 		function GetRequest() {
 			var url = location.search;
 			var theRequest = new Object();
@@ -189,6 +189,12 @@
 				}
 			}
 		}
+		mui('body').on('tap', '.tag', function() {
+			type = this.getAttribute('data-type');
+			id = this.getAttribute('data-id');
+			type == 'tag'?selectatag(id,this):selectspace(id,this)
+			return;
+		});
 
 		function selectatag(e, f) {
 			thistagtype = f.parentNode;

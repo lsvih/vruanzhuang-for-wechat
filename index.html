@@ -20,7 +20,7 @@
 	<body onresize="javascript:adaptive();">
 		<div id="load">
 			<div class="loading"></div>
-			<div class="loading-text">加载中，请稍候...</div>
+			<div class="loading-text" style="text-align: center;">加载中，请稍候...</div>
 		</div>
 		<header class="mui-bar mui-bar-nav">
 			<span id="cart" class="iconfont icon-gouwuche icon-left-nav mui-icon mui-pull-right"></span>
@@ -37,11 +37,11 @@
 	<script>
 		mui.ready(function() {
 			startload();
-			("IntelligentCollocation" in GetRequest())?((JSON.parse(localStorage.schemes).length)?(lazyload(),adaptive(),stopload()):(lazyload(),stopload())):getschemes();
+			("IntelligentCollocation" in GetRequest()) ? ((JSON.parse(localStorage.schemes).length) ? (lazyload(), adaptive(), stopload()) : (lazyload(), stopload())) : getschemes();
 		});
 
 		function getschemes() {
-			mui.ajax(apiurl + 'schemes', {
+			mui.ajax(apiurl + 'schemes?fields=id,name,amount,cover_t_img-url', {
 				data: {},
 				dataType: 'json',
 				type: 'get',
@@ -49,7 +49,19 @@
 				success: function(data) {
 					if (data.success == true) {
 						localStorage.schemes = JSON.stringify(data.data.items);
-						(lazyload(),adaptive(),stopload());
+						(lazyload(), adaptive(), stopload());
+						mui('#list').on('tap', '.indexpic img', function() {
+							id = this.getAttribute('data-id');
+							mui.openWindow({
+								url: "schemes.html?id=" + id,
+								id: "schemes",
+								show: {
+									aniShow: 'zoom-fade-out',
+									duration: 300
+								}
+							});
+							return;
+						});
 					} else {
 						mui.alert(data.message);
 						stopload();
@@ -62,7 +74,7 @@
 			tempindeximg = JSON.parse(localStorage.schemes);
 			schemelist = new Array;
 			for (i = 0; i < tempindeximg.length; i++) {
-				schemelist[i] = '{"title":"' + tempindeximg[i].name + '","price":'+ tempindeximg[i]['amount']/100 +',"preview":"' + tempindeximg[i]['cover_t_img-url'] + '","id":"' + tempindeximg[i].id + '"}'
+				schemelist[i] = '{"title":"' + tempindeximg[i].name + '","price":' + tempindeximg[i]['amount'] / 100 + ',"preview":"' + tempindeximg[i]['cover_t_img-url'] + '","id":"' + tempindeximg[i].id + '"}'
 				schemelist[i] = JSON.parse(schemelist[i]);
 			}
 			document.getElementById("nodata").style.display = "none";
@@ -75,12 +87,12 @@
 				var span;
 				div = document.createElement('div');
 				div.className = "indexpic";
-				div.innerHTML = '<img data-lazyload="' + serverurl + schemelist[0].preview + '" onclick="enterschemes(0)"><p class="title">' + schemelist[0].title + '<span class="scpr"><i class="hr">/</i>￥'+ schemelist[0].price +'</span><span class="dsn">Lee.Yanzdedz/Too.xxxfqgf</span></p>';
+				div.innerHTML = '<img data-lazyload="' + serverurl + schemelist[0].preview + '" data-id="0"><p class="title">' + schemelist[0].title + '<span class="scpr"><i class="hr">/</i>￥' + schemelist[0].price + '</span></p>';
 				fragment.appendChild(div);
 				for (var i = 1; i < count; i++) {
 					div = document.createElement('div');
 					div.className = "indexpic margin180";
-					div.innerHTML = '<img data-lazyload="' + serverurl  + schemelist[i].preview + '" onclick="enterschemes(' + i + ')"><p class="title">' + schemelist[i].title + '<span class="scpr"><i class="hr">/</i>￥'+ schemelist[i].price +'</span><span class="dsn">Lee.Yz/Too.xf</span></p>';
+					div.innerHTML = '<img data-lazyload="' + serverurl + schemelist[i].preview + '" data-id="' + i + '"><p class="title">' + schemelist[i].title + '<span class="scpr"><i class="hr">/</i>￥' + schemelist[i].price + '</span></p>';
 					fragment.appendChild(div);
 				}
 				return fragment;

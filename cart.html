@@ -73,7 +73,9 @@
 				var elem = this;
 				var li = elem.parentNode.parentNode;
 				mui.confirm('是否从购物车中删除该商品？', '微软装', btnArray, function(e) {
-					e.index == 0?(del(li),li.parentNode.removeChild(li),selectChange()):setTimeout(function(){$.swipeoutClose(li)},0);
+					e.index == 0 ? (del(li), li.parentNode.removeChild(li), selectChange()) : setTimeout(function() {
+						$.swipeoutClose(li)
+					}, 0);
 				});
 			});
 			var btnArray = ['确认', '取消'];
@@ -83,7 +85,10 @@
 		})
 		var cart = new Vue({
 			el: '#cart',
-			data: JSON.parse(localStorage.cart)
+			data: JSON.parse(localStorage.cart),
+			compiled: function() {
+				stopload();
+			}
 		})
 		mui('.pay').on('change', 'input', function() {
 			var value = this.checked;
@@ -131,7 +136,7 @@
 					count = Number(a) * Number(b) + Number(count);
 				}
 			}
-			j?document.getElementById("count").parentNode.style.backgroundColor = "#c51919":document.getElementById("count").parentNode.style.backgroundColor = "gray";
+			j ? document.getElementById("count").parentNode.style.backgroundColor = "#c51919" : document.getElementById("count").parentNode.style.backgroundColor = "gray";
 			document.getElementById("count").innerHTML = j;
 			document.getElementById("allPrice").innerHTML = "￥" + count;
 		}
@@ -239,13 +244,14 @@
 				});
 			}
 		}
-		function previewthis(e){
+
+		function previewthis(e) {
 			type = e.parentNode.getElementsByClassName("cart-type")[0].innerHTML;
 			id = e.parentNode.getElementsByClassName("cart-id")[0].innerHTML - 1;
-			if(type == 'scheme'){
+			if (type == 'scheme') {
 				window.location.href = 'preview-schemes.html?id=' + id;
 			}
-			if(type == 'product'){
+			if (type == 'product') {
 				window.location.href = 'preview-product.html?id=' + id;
 			}
 		}
@@ -253,7 +259,6 @@
 			var targetTab = this.getAttribute('href');
 			window.location.href = targetTab;
 		});
-		
 	</script>
 
 </html>

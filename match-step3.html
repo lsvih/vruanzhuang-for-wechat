@@ -32,7 +32,7 @@
 				<div class="tagtype" v-for="tagtype in tags">
 					<div class="tag-name">{{tagtype.p_tag_name}}</div>
 					<div class="tags"><span class="sortid">{{$index}}</span>
-						<span class="tag" v-for="tag in tagtype.tags" onclick="selectatag({{tag.tag_id}},this)">{{tag.tag_name}}</span>
+						<span class="tag" v-for="tag in tagtype.tags" data-id="{{tag.tag_id}}">{{tag.tag_name}}</span>
 					</div>
 				</div>
 			</div>
@@ -40,6 +40,13 @@
 		</div>
 	</body>
 	<script>
+		mui('#tag-list').on('tap', '.tag', function() {
+			id = this.getAttribute('data-id');
+			selectatag(id,this);
+			return;
+		});
+	
+	
 		localStorage.tag = '{"Total":"3","tags":[{"p_tag_id":1,"p_tag_name":"书影音","tags":[{"tag_id":1,"tag_name":"影视"},{"tag_id":2,"tag_name":"阅读"},{"tag_id":3,"tag_name":"音乐"}]},{"p_tag_id":2,"p_tag_name":"生活","tags":[{"tag_id":1,"tag_name":"旅行"},{"tag_id":2,"tag_name":"居家"},{"tag_id":3,"tag_name":"美食"},{"tag_id":4,"tag_name":"手作"},{"tag_id":5,"tag_name":"运动健身"},{"tag_id":6,"tag_name":"时尚"},{"tag_id":7,"tag_name":"饮茶"}]},{"p_tag_id":3,"p_tag_name":"看世界","tags":[{"tag_id":1,"tag_name":"社交"},{"tag_id":2,"tag_name":"教育"},{"tag_id":3,"tag_name":"科技"},{"tag_id":4,"tag_name":"人文"}]}]}';
 		var taglist = JSON.parse(localStorage.tag);
 		var selectobj = new Array(parseInt(taglist.Total));
@@ -48,7 +55,10 @@
 		mui.ready(function() {
 			list = new Vue({
 				el: '#tag-list',
-				data: taglist
+				data: taglist,
+				compiled: function() {
+					stopload();
+				}
 			});
 			adaptive();
 			changecolor();
