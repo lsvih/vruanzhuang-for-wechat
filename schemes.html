@@ -69,34 +69,41 @@
 					</div>
 				</div>
 			</div>
-			<div class="divtitle">灵感来源</div>
-			<div id="inspiration" class="innerdiv"><img src="images/default-1.png" data-preview-src="" data-preview-group="1" /></div>
-			<div class="divtitle">空间亮点</div>
-			<div id="bright_spot" class="innerdiv"><img src="images/default-1.png" data-preview-src="" data-preview-group="1" /></div>
-			<div class="divtitle">色彩分析</div>
-			<div id="color_analysis" class="innerdiv"><img src="images/default-1.png" data-preview-src="" data-preview-group="1" /></div>
-			<!--<div class="divtitle">设计与表现</div>
-			<div id="display_design" class="innerdiv"><img src="images/default-1.png" data-preview-src="" data-preview-group="1" /></div>-->
+			<div>
+				<div class="divtitle">灵感来源</div>
+				<div id="inspiration" class="innerdiv">
+					<img src="images/default-1.png" data-preview-src="" data-preview-group="1" /></div>
+			</div>
+			<div>
+				<div class="divtitle">空间亮点</div>
+				<div id="bright_spot" class="innerdiv">
+					<img src="images/default-1.png" data-preview-src="" data-preview-group="1" /></div>
+			</div>
+			<div>
+				<div class="divtitle">色彩分析</div>
+				<div id="color_analysis" class="innerdiv">
+					<img src="images/default-1.png" data-preview-src="" data-preview-group="1" /></div>
+			</div>
 
 			<div id="spaces" v-for="spaces in schemeSpaces">
 				<div>
 					<div class="divtitle">{{ spaces.space.name }}</div>
-					<div class="innerdiv"><img class="coverimg" v-bind:src="spaces.space.cover_img|picurl '/vrz/uploads/thumbs/' 's-'" data-preview-src="{{ spaces.space.cover_img|picurl '/vrz/uploads/' '' }}" data-preview-group="1" /></div>
+					<div class="innerdiv"><img class="coverimg" v-bind:src="spaces.space.cover_t_img|picurl '/smart_matching/uploads/imgs/thumbs/' 's-'" data-preview-src="{{ spaces.space.cover_t_img|picurl '/smart_matching/uploads/imgs/' '' }}" data-preview-group="1" /></div>
 				</div>
 				<div>
 					<div class="divtitle">方案设计图</div>
-					<div class="innerdiv"><img class="sjt" v-bind:src="spaces.space.design_img|picurl '/vrz/uploads/thumbs/' 's-'" data-preview-src="{{ spaces.space.design_img|picurl '/vrz/uploads/' '' }}" data-preview-group="1" /></div>
+					<div class="innerdiv"><img class="sjt" v-bind:src="spaces.space.design_t_img|picurl '/smart_matching/uploads/imgs/thumbs/' 's-'" data-preview-src="{{ spaces.space.design_t_img|picurl '/smart_matching/uploads/imgs/' '' }}" data-preview-group="1" /></div>
 				</div>
 				<div>
 					<div class="divtitle">平面图</div>
-					<div class="innerdiv"><img class="pmt" v-bind:src="spaces.space.planar_img|picurl '/vrz/uploads/thumbs/' 's-'" data-preview-src="{{ spaces.space.planar_img|picurl '/vrz/uploads/' '' }}" data-preview-group="1" /></div>
+					<div class="innerdiv"><img class="pmt" v-bind:src="spaces.space.planar_t_img|picurl '/smart_matching/uploads/imgs/thumbs/' 's-'" data-preview-src="{{ spaces.space.planar_t_img|picurl '/smart_matching/uploads/imgs/' '' }}" data-preview-group="1" /></div>
 				</div>
 				<div class="divtitle">配饰清单</div>
 				<div class="goods" v-for="products in spaces.space.spaceProducts">
-					<img class="productsimgs" onclick="window.location.href='product.html?id={{ products.product.id }}'" v-bind:src="products.product.productImages[0].icon_img|picurl '/vrz/uploads/' ''">
+					<img class="productsimgs" onclick="window.location.href='product.html?id={{ products.product.id }}'" v-bind:src="products.product.cover_t_imgs |picurl '/smart_matching/uploads/imgs/thumbs/' 's-'">
 					<div class="productsids" style="display: none;">{{ products.product.id }}</div>
 					<p><span class="productsnames">{{ products.product.name }}</span> x <span class="productsnums">{{ products.product_num }}</span></p>
-					<p><span class="productsunitprice">{{ products.product.unit_price }}</span>元</p>
+					<p><span class="productsunitprice">{{ products.product.amount/100 }}</span>元</p>
 					<div class="line"></div>
 				</div>
 				<div class="line"></div>
@@ -126,7 +133,7 @@
 		mui.previewImage();
 
 		function setschemes() {
-			document.getElementById("cover").childNodes[0].src = serverurl + '/vrz/uploads/thumbs/m-' + jsonschemes.cover_img;
+			document.getElementById("cover").getElementsByTagName("img")[0].src = serverurl + '/smart_matching/uploads/imgs/thumbs/m-' + jsonschemes.cover_t_img;
 			document.getElementById("title").innerHTML = jsonschemes.community;
 			!jsonschemes.bedroom ? document.getElementById("woshi").style.display = "none" : document.getElementById("woshi").getElementsByTagName("span")[0].innerHTML = jsonschemes.bedroom;
 			!jsonschemes.livingroom ? document.getElementById("keting").style.display = "none" : document.getElementById("keting").getElementsByTagName("span")[0].innerHTML = jsonschemes.livingroom;
@@ -137,20 +144,21 @@
 			!jsonschemes.balcony ? document.getElementById("yangtai").style.display = "none" : document.getElementById("yangtai").getElementsByTagName("span")[0].innerHTML = jsonschemes.balcony;
 			!jsonschemes.tearoom ? document.getElementById("chashi").style.display = "none" : document.getElementById("chashi").getElementsByTagName("span")[0].innerHTML = jsonschemes.tearoom;
 			!jsonschemes.lounge ? document.getElementById("xiuxianqu").style.display = "none" : document.getElementById("xiuxianqu").getElementsByTagName("span")[0].innerHTML = jsonschemes.lounge;
-			document.getElementById("inspiration").childNodes[0].src = serverurl + '/vrz/uploads/' + jsonschemes.inspiration_img;
-			document.getElementById("bright_spot").childNodes[0].src = serverurl + '/vrz/uploads/' + jsonschemes.bright_spot_img;
-			document.getElementById("color_analysis").childNodes[0].src = serverurl + '/vrz/uploads/' + jsonschemes.color_analysis_img;
+			document.getElementById("inspiration").getElementsByTagName("img")[0].src = serverurl + '/smart_matching/uploads/imgs/thumbs/m-' + jsonschemes.inspiration_t_img;
+			document.getElementById("bright_spot").getElementsByTagName("img")[0].src = serverurl + '/smart_matching/uploads/imgs/thumbs/m-' + jsonschemes.bright_spot_t_img;
+			document.getElementById("color_analysis").getElementsByTagName("img")[0].src = serverurl + '/smart_matching/uploads/imgs/thumbs/m-' + jsonschemes.color_analysis_t_img;
 			//document.getElementById("display_design").childNodes[0].src = jsonschemes.display_design_img;
 		}
 
 		function getspacedata() {
-			mui.ajax(appurl + '/schemes/' + schemeid + '?expand=schemeSpaces.space.spaceProducts.product.productImages', {
+			mui.ajax(apiurl + 'schemes/' + schemeid + '?expand=schemeSpaces.space.spaceProducts.product', {
 				data: {},
 				dataType: 'json',
 				type: 'get',
 				timeout: 6000,
 				success: function(data) {
 					if (data.success == true) {
+						console.log(JSON.stringify(data.data))
 						new Vue({
 							el: '#spaces',
 							data: data.data,
@@ -180,6 +188,13 @@
 		}
 
 		function delnull() {
+			var judgelist = ["inspiration", "bright_spot", "color_analysis"];
+			for (var i = 0; i < judgelist.length; i++) {
+				item = document.getElementById(judgelist[i]);
+				if ((item.getElementsByTagName("img")[0].src).slice(-4) == "null" || (item.getElementsByTagName("img")[0].src).slice(-2) == "s-") {
+					item.parentNode.parentNode.removeChild(item.parentNode);
+				}
+			}
 			coverimg = document.getElementsByClassName("coverimg");
 			for (i = 0; i < coverimg.length; i++) {
 				if ((coverimg[i].src).slice(-4) == "null" || (coverimg[i].src).slice(-2) == "s-") {
@@ -227,7 +242,7 @@
 			name = schemename;
 			num = 1;
 			price = document.getElementById("allprice").innerHTML;
-			pic = serverurl + '/vrz/uploads/thumbs/s-' + jsonschemes.cover_img;
+			pic = serverurl + '/smart_matching/uploads/imgs/thumbs/s-' + jsonschemes.cover_img;
 			cart(type, id, name, num, price, pic);
 		}
 		document.getElementById('cart').addEventListener('tap', function() {
@@ -243,7 +258,7 @@
 		});
 		document.getElementById('intelligent').addEventListener('tap', function() {
 			mui.openWindow({
-				url: "match.html",
+				url: "match.html?layer",
 				id: "match",
 				show: {
 					aniShow: 'zoom-fade-out',
@@ -263,13 +278,11 @@
 			});
 			return;
 		});
-		
 		document.getElementById('catalog').addEventListener('tap', function() {
 			catalog();
 		});
-		
-		
-		function makecatalog(){
+
+		function makecatalog() {
 			//TODO 生成索引
 		}
 	</script>

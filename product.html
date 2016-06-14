@@ -196,23 +196,23 @@
 		var id = GetRequest()["id"];
 		mui.ready(function() {
 			startload();
-			mui.ajax(appurl + '/products/' + id + '?expand=product.productImages', {
+			mui.ajax(apiurl + 'products/' + id, {
 				data: {},
 				dataType: 'json',
 				type: 'get',
 				timeout: 6000,
 				success: function(data) {
 					if (data.success == true) {
-						document.getElementById("cover").src = serverurl + '/vrz/uploads/' + data.data.productImages[0].icon_img;
+						document.getElementById("cover").src = serverurl + '/smart_matching/uploads/imgs/' + data.data.cover_t_imgs;
 						document.getElementById("addcrat").innerHTML = '<i class="iconfont icon-gouwuche"></i>加入购物车';
 						document.getElementById("addcrat").disabled = "";
 						document.getElementById("name").innerHTML = data.data.name;
-						document.getElementById("pri").innerHTML = data.data.unit_price;
+						document.getElementById("pri").innerHTML = data.data.amount/100;
 						!data.data.size?document.getElementById("Ssize").style.display = "none":document.getElementById("size").innerHTML = data.data.size;
 						!data.data.main_material?document.getElementById("SmainMaterial").style.display = "none":document.getElementById("mainMaterial").innerHTML = data.data.main_material;
 						!data.data.vice_material?document.getElementById("SviceMaterial").style.display = "none":document.getElementById("viceMaterial").innerHTML = data.data.vice_material;
 						!data.data.fabric?document.getElementById("Sfabric").style.display = "none":document.getElementById("fabric").innerHTML = data.data.fabric;
-					!data.data.paint?document.getElementById("Spaint").style.display = "none":document.getElementById("paint").innerHTML = data.data.paint;
+						!data.data.paint?document.getElementById("Spaint").style.display = "none":document.getElementById("paint").innerHTML = data.data.paint;
 						!data.data.shape?document.getElementById("Sshape").style.display = "none":document.getElementById("shape").innerHTML = data.data.shape;
 						!data.data.installation?document.getElementById("Sinstallation").style.display = "none":document.getElementById("installation").innerHTML = data.data.installation;
 						!data.data.color?document.getElementById("Scolor").style.display = "none":document.getElementById("color").innerHTML = data.data.color;

@@ -40,18 +40,50 @@
 					</div>
 				</div>
 			</div>
+
+			<div id="spacetype">
+				<div class="tagtype" v-for="tagtype in items">
+					<div class="tag-name">{{tagtype.name}}</div>
+					<div class="tags"><span class="sortid">{{$index}}</span>
+						<span class="tag" v-for="tag in tagtype.children" onclick="selectspace({{tag.id}},this)">{{tag.name}}</span>
+					</div>
+				</div>
+			</div>
 			<div id="next-step">选好了，下一步></div>
 		</div>
 	</body>
 	<script>
 		startload();
-		var taglist = JSON.parse(localStorage.tag);
+		var taglist;
+		var spacelist;
+		var spaceselectid = [];
+		var spaceselect = [];
 		var selectobj = [];
 		var selectobjid = [];
 		var selected = 0;
 		var cityid;
 		var colorset = [];
-		mui.ajax(apiurl + 'tags/multi-children?name=家庭状态,房屋户型,房屋面积,装修价格', {
+		function GetRequest() {
+			var url = location.search;
+			var theRequest = new Object();
+			if (url.indexOf("?") != -1) {
+				var str = url.substr(1);
+				strs = str.split("&");
+				for (var i = 0; i < strs.length; i++) {
+					theRequest[strs[i].split("=")[0]] = unescape(strs[i].split("=")[1]);
+				}
+			}
+			return theRequest;
+		}
+		if (!("layer" in GetRequest())) document.getElementById("close").style.display = 'none';
+
+		function removeitem(array, val) {
+			var index = array.indexOf(val);
+			if (index > -1) {
+				array.splice(index, 1);
+			}
+		};
+		mui.ajax(apiurl + 'tags/multi-children?name=家庭状态,装修价格', {
 			dataType: 'json',
 			type: 'get',
 			timeout: 6000,
@@ -64,9 +96,30 @@
 					});
 					var selectobj = new Array(parseInt(taglist.items.length));
 					var selectobjid = new Array(parseInt(taglist.items.length));
-					adaptive();
-					changecolor();
-					stopload();
+					mui.ajax(apiurl + 'tags/multi-children?name=空间类型', {
+						dataType: 'json',
+						type: 'get',
+						timeout: 6000,
+						success: function(data) {
+							if (data.success == true) {
+								spacelist = data.data;
+								list = new Vue({
+									el: '#spacetype',
+									data: spacelist
+								});
+								adaptive();
+								changecolor();
+								stopload();
+							} else {
+								mui.alert("获取标签失败，请稍候再试");
+								stopload();
+							}
+						},
+						error: function(xhr, textStatus, errorThrown) {
+							mui.alert("网络连接失败，请稍候再试");
+							stopload();
+						}
+					});
 				} else {
 					mui.alert("获取标签失败，请稍候再试");
 					stopload();
@@ -100,7 +153,7 @@
 				showbtn.addEventListener('tap', function(event) {
 					pickcity.show(function(items) {
 						document.getElementById("city").innerHTML = (items[0] || {}).text;
-						cityid =  (items[0] || {}).value;
+						cityid = (items[0] || {}).value;
 					});
 				}, false);
 			});
@@ -109,7 +162,7 @@
 			window.history.back()
 		});
 		document.getElementById('next-step').addEventListener('tap', function() {
-			document.getElementById("city").innerHTML == "所在城市" ? mui.alert('请选择您的地址', '微软装') : taglist.items.length == selected ? next() : mui.alert('请完成标签选择', '微软装');
+			document.getElementById("city").innerHTML == "所在城市" ? mui.alert('请选择您的地址', '微软装') : !taglist.items.length == selected ? mui.alert('请完成标签选择', '微软装') : !spaceselect.length ? mui.alert('请至少选择一种空间类型', '微软装') : next();
 		});
 		mui.ready(function() {
 			localStorage.removeItem('IC');
@@ -127,7 +180,7 @@
 
 		function changecolor() {
 			tagtype = document.getElementsByClassName("tagtype");
-			for (var i = 0; i < taglist.items.length; i++) {
+			for (var i = 0; i < (taglist.items.length + spacelist.items.length); i++) {
 				colorset.push(colorpallte[Math.floor(Math.random() * colorpallte.length)]);
 				tagtype[i].style.color = colorset[i]
 				tag = tagtype[i].getElementsByClassName("tag");
@@ -151,13 +204,36 @@
 			f.style.backgroundColor = colorset[sortid];
 		}
 
+		function selectspace(e, f) {
+			(f.style.backgroundColor == 'rgb(255, 255, 255)' || !f.style.backgroundColor) ? (f.style.color = '#fff', f.style.backgroundColor = f.style.borderColor, spaceselect.push(f.innerHTML), spaceselectid.push(e)) : (f.style.color = f.style.backgroundColor, f.style.backgroundColor = 'rgb(255, 255, 255)', removeitem(spaceselect, f.innerHTML), removeitem(spaceselectid, e))
+		}
+
 		function next() {
+			var spacechildren = [];
 			var step1_info = [];
 			for (var i = 0; i < taglist.items.length; i++) {
-				step1_info.push(JSON.parse('{"id":'+ taglist.items[i].id +',"name":"' + taglist.items[i].name + '","children":{"id":'+  selectobjid[i] +',"name":"' + selectobj[i] + '"}}'))
+				step1_info.push(JSON.parse('{"id":' + taglist.items[i].id + ',"name":"' + taglist.items[i].name + '","children":{"id":' + selectobjid[i] + ',"name":"' + selectobj[i] + '"}}'))
 			}
 			step1_info.push()
-			step1_info.push({"id":1,"name":"城市","children":{"id":cityid,"name":document.getElementById("city").innerHTML}});
+			step1_info.push({
+				"id": 1,
+				"name": "城市",
+				"children": {
+					"id": cityid,
+					"name": document.getElementById("city").innerHTML
+				}
+			});
+			for (var i = 0; i < spaceselect.length; i++) {
+				spacechildren.push({
+					"id": spaceselectid[i],
+					"name": spaceselect[i]
+				});
+			}
+			step1_info.push({
+				"id": 48,
+				"name": "空间类型",
+				"children": spacechildren
+			});
 			localStorage.IC = JSON.stringify(step1_info);
 			location.href = "match-step2.html"
 		}

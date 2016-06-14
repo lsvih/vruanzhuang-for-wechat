@@ -108,19 +108,24 @@
 			var timestamp = parseInt(new Date().getTime() / 1000);
 			IC_data();
 		});
-
+console.log(localStorage.IC)
 		function IC_data() {
 			data = localStorage.IC;
 			localStorage.removeItem("IC");
 			mui.ajax(apiurl + 'schemes/match', {
-				data: {'tags':data},
+				data: {
+					'tags': data
+				},
 				dataType: 'json',
 				type: 'post',
 				timeout: 6000,
 				success: function(data) {
 					if (data.success == true) {
-						localStorage.showschemes = JSON.stringify(data.data);
-						setTimeout(function(){location.href = "myscheme.html"},3000);
+						localStorage.schemes = JSON.stringify(data.data);
+						console.log(JSON.stringify(data.data))
+						setTimeout(function() {
+							location.href = "index.html?IntelligentCollocation"
+						}, 3000);
 					} else {
 						mui.alert("获取方案失败，请稍候再试");
 					}

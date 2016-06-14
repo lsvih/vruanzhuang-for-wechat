@@ -40,28 +40,7 @@
 
 		function getschemes() {
 			
-			mui.ajax(appurl + '/schemes?in[style]='+ localStorage.selectedstyle, {
-				data: {},
-				dataType: 'json',
-				type: 'get',
-				timeout: 6000,
-				success: function(data) {
-					if (data.success == true) {
-						localStorage.schemes = JSON.stringify(data.data.items);
-						stopload()
-						lazyload();
-						adaptive();
-						
-					} else {
-						mui.alert(data.message);
-						stopload();
-					}
-					stopload()
-				},
-				error: function(xhr, type, errorThrown, message) {
-				stopload();
-			}
-			});
+			
 		}
 
 		function lazyload() {

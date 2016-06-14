@@ -137,7 +137,6 @@
 		}
 
 		function selectcolor(e) {
-			borthers = e.parentNode.getElementsByClassName("color");
 			!e.style.border ? (e.style.border = '2px solid#0000EE', colorselect.push(e.innerHTML), colorselectid.push(e.id)) : (e.style.border = '', colorselect.remove(e.innerHTML), colorselectid.remove(e.id))
 		}
 
