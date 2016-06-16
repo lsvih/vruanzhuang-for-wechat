@@ -55,7 +55,7 @@
 						<div class="cart-price">￥<span class="price">{{ goods.price }}</span></div>
 						<div class="mui-numbox" data-numbox-min='1'>
 							<button class="mui-btn mui-btn-numbox-minus" type="button" onclick="valueChange(this)">-</button>
-							<input class="mui-input-numbox" type="number" value="{{ goods.num }}" onchange="valueChange(this)" />
+							<input class="mui-input-numbox" type="number" v-bind:value="goods.num" onchange="valueChange(this)" />
 							<button class="mui-btn mui-btn-numbox-plus" type="button" onclick="valueChange(this)">+</button>
 						</div>
 					</div>
@@ -159,7 +159,7 @@
 				console.log(JSON.stringify(b))
 				localStorage.temporder = JSON.stringify(b);
 				startload();
-				mui.ajax(appurl + '/orders?access-token=' + JSON.parse(localStorage.userinfo).access_token, {
+				mui.ajax(apiurl + 'orders?access-token=' + JSON.parse(localStorage.userinfo).access_token, {
 					data: {
 						'user_id': JSON.parse(localStorage.userinfo).id
 					},
@@ -172,49 +172,53 @@
 							checkcart = JSON.parse(localStorage.temporder);
 							goodslen = checkcart.length;
 							for (i = 0; i < goodslen; i++) {
-								if (JSON.parse(localStorage.temporder)[i].type == 'product') {
-									mui.ajax(appurl + '/order-products?access-token=' + JSON.parse(localStorage.userinfo).access_token, {
-										data: {
-											'order_id': orderid,
-											'product_id': JSON.parse(localStorage.temporder)[i].id,
-											'purchase_num': JSON.parse(localStorage.temporder)[i].num
-										},
-										dataType: 'json',
-										type: 'post',
-										timeout: 6000,
-										success: function(data) {
-											if (data.success == true) {}
-										},
-										error: function(xhr, type, errorThrown, message) {
-											mui.alert("网络连接失败，请稍候再试");
-											stopload();
-										}
-									});
-								}
-								if (JSON.parse(localStorage.temporder)[i].type == 'scheme') {
-									mui.ajax(appurl + '/order-schemes?access-token=' + JSON.parse(localStorage.userinfo).access_token, {
-										data: {
-											'order_id': orderid,
-											'scheme_id': JSON.parse(localStorage.temporder)[i].id,
-											'purchase_num': JSON.parse(localStorage.temporder)[i].num
-										},
-										dataType: 'json',
-										type: 'post',
-										timeout: 6000,
-										success: function(data) {
-											if (data.success == true) {
-												console.log(JSON.stringify(data.data))
+								switch (JSON.parse(localStorage.temporder)[i].type) {
+									case "1":
+										mui.ajax(apiurl + 'order-products?access-token=' + JSON.parse(localStorage.userinfo).access_token, {
+											data: {
+												'order_id': orderid,
+												'product_id': JSON.parse(localStorage.temporder)[i].id,
+												'purchase_num': JSON.parse(localStorage.temporder)[i].num
+											},
+											dataType: 'json',
+											type: 'post',
+											timeout: 6000,
+											success: function(data) {
+												if (data.success == true) {}
+											},
+											error: function(xhr, type, errorThrown, message) {
+												mui.alert("网络连接失败，请稍候再试");
+												stopload();
 											}
-										},
-										error: function(xhr, type, errorThrown, message) {
-											mui.alert("网络连接失败，请稍候再试");
-											stopload();
-										}
-									});
+										});
+										break;
+									case "2":
+										mui.ajax(apiurl + 'order-schemes?access-token=' + JSON.parse(localStorage.userinfo).access_token, {
+											data: {
+												'order_id': orderid,
+												'scheme_id': JSON.parse(localStorage.temporder)[i].id,
+												'purchase_num': JSON.parse(localStorage.temporder)[i].num
+											},
+											dataType: 'json',
+											type: 'post',
+											timeout: 6000,
+											success: function(data) {
+												if (data.success == true) {
+													console.log(JSON.stringify(data.data))
+												}
+											},
+											error: function(xhr, type, errorThrown, message) {
+												mui.alert("网络连接失败，请稍候再试");
+												stopload();
+											}
+										});
+										break;
+									default:
+										break;
 								}
 							}
 							sleep(500)
-							mui.ajax(appurl + '/orders/' + orderid + '?access-token=' + JSON.parse(localStorage.userinfo).access_token, {
+							mui.ajax(apiurl + 'orders/' + orderid + '?access-token=' + JSON.parse(localStorage.userinfo).access_token, {
 								data: {
 									'status': '1',
 								},
@@ -248,17 +252,20 @@
 		function previewthis(e) {
 			type = e.parentNode.getElementsByClassName("cart-type")[0].innerHTML;
 			id = e.parentNode.getElementsByClassName("cart-id")[0].innerHTML - 1;
-			if (type == 'scheme') {
-				window.location.href = 'preview-schemes.html?id=' + id;
-			}
-			if (type == 'product') {
-				window.location.href = 'preview-product.html?id=' + id;
+			sortid = e.parentNode.getElementsByClassName("sort-id")[0].innerHTML;
+			switch (type) {
+				case "1":
+					window.location.href = 'product.html?preview&id=' + id;
+					break;
+				case "2":
+					window.location.href = 'preview-schemes.html?id=' + id;
+					break;
+				default:
+					window.location.href = 'preview-custom.html';
+					localStorage.previewcustom = JSON.stringify(JSON.parse(localStorage.cart).goods[sortid].content);
+					break;
 			}
 		}
-		mui('.mui-bar-tab').on('tap', 'a', function(e) {
-			var targetTab = this.getAttribute('href');
-			window.location.href = targetTab;
-		});
 	</script>
 
 </html>

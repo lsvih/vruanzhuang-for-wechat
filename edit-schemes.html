@@ -8,13 +8,12 @@
 		<meta content="email=no" name="format-detection" />
 		<meta name="apple-mobile-web-app-capable" content="yes">
 		<meta name="apple-mobile-web-app-status-bar-style" content="black">
-		<script type="text/javascript" src="js/app.js"></script>
 		<script type="text/javascript" src="js/global.js"></script>
-		<script type="text/javascript" src="js/vue.js"></script>
+		<script type="text/javascript" src="js/app.js" ></script>
 		<script type="text/javascript" src="js/mui.min.js"></script>
+		<script type="text/javascript" src="js/vue.js"></script>
 		<script type="text/javascript" src="js/mui.zoom.js"></script>
 		<script type="text/javascript" src="js/mui.previewimage.normaltype.js"></script>
-
 		<link rel="stylesheet" href="css/mui.min.css" />
 		<link rel="stylesheet" href="css/app.css" />
 		<link rel="stylesheet" href="css/product.css" />
@@ -32,52 +31,54 @@
 			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
 			<h1 class="mui-title">编辑方案</h1>
 		</header>
-		<div id="catalog"><img src="images/app-logo.png" width="50px" height="50px"></div>
-		<div class="mui-content" id="简介">
-			<div id="cover" class="innerdiv"><img src="images/default-1.png" data-preview-src="" data-preview-group="1" /></div>
-			<div class="title">[<span id="title">...</span>]</div>
-			<div id="spaces" v-for="space in spaces">
-				<div>
-					<div class="divtitle spacename">{{ space.name }}</div>
-					<div class="innerdiv"><img class="coverimg" v-bind:src="space.cover_t_img|picurl '/smart_matching/uploads/imgs/thumbs/' 's-'" data-preview-src="{{ space.cover_t_img|picurl '/smart_matching/uploads/imgs/' '' }}" data-preview-group="1" /></div>
-				</div>
-				<div>
-					<div class="divtitle">方案设计图</div>
-					<div class="innerdiv"><img class="sjt" v-bind:src="space.design_t_img|picurl '/smart_matching/uploads/imgs/thumbs/' 's-'" data-preview-src="{{ space.design_t_img|picurl '/smart_matching/uploads/imgs/' '' }}" data-preview-group="1" /></div>
-				</div>
-				<div>
-					<div class="divtitle">平面图</div>
-					<div class="innerdiv"><img class="pmt" v-bind:src="space.planar_t_img|picurl '/smart_matching/uploads/imgs/thumbs/' 's-'" data-preview-src="{{ space.planar_t_img|picurl '/smart_matching/uploads/imgs/' '' }}" data-preview-group="1" /></div>
-				</div>
-				<div class="divtitle">配饰清单</div>
-				<div class="goods" v-for="product in space.products">
-					<div class="deleteproduct"><img></div>
-					<img class="productsimgs" data-id="{{ product.id }}" v-bind:src="product.cover_t_img |picurl '/smart_matching/uploads/imgs/thumbs/' 's-'">
-					<div class="productsids" style="display: none;">{{ product.id }}</div>
-					<p><span class="productsnames">{{ product.name }}</span> x <span class="productsnums">{{ product.num }}</span></p>
-					<p><span class="productsunitprice">{{ product.price/100 }}</span>元</p>
+		<div id="custom">
+			<div class="mui-content" id="简介">
+				<div id="cover" class="innerdiv"><img src="images/default-1.png" v-bind:src="cover_t_img|picurl '/smart_matching/uploads/imgs/thumbs/' 's-'" data-preview-src="{{ cover_t_img|picurl '/smart_matching/uploads/imgs/' '' }}" data-preview-group="1" /></div>
+				<div class="title">[{{name}}]</div>
+				<div id="spaces" v-for="space in spaces">
+					<div class="spaceid">{{space.space_id}}</div>
+					<div class="spaceid">{{$index}}</div>
+					<div>
+						<div class="divtitle spacename">{{ space.name }}</div>
+						<div class="innerdiv"><img class="coverimg" v-bind:src="space.cover_t_img|picurl '/smart_matching/uploads/imgs/thumbs/' 's-'" data-preview-src="{{ space.cover_t_img|picurl '/smart_matching/uploads/imgs/' '' }}" data-preview-group="1" /></div>
+					</div>
+					<div>
+						<div class="divtitle">方案设计图</div>
+						<div class="innerdiv"><img class="sjt" v-bind:src="space.design_t_img|picurl '/smart_matching/uploads/imgs/thumbs/' 's-'" data-preview-src="{{ space.design_t_img|picurl '/smart_matching/uploads/imgs/' '' }}" data-preview-group="1" /></div>
+					</div>
+					<div>
+						<div class="divtitle">平面图</div>
+						<div class="innerdiv"><img class="pmt" v-bind:src="space.planar_t_img|picurl '/smart_matching/uploads/imgs/thumbs/' 's-'" data-preview-src="{{ space.planar_t_img|picurl '/smart_matching/uploads/imgs/' '' }}" data-preview-group="1" /></div>
+					</div>
+					<div class="divtitle">配饰清单</div>
+					<div class="goods" v-for="product in space.products">
+						<div class="deleteproduct" data-id="{{$index}}"><img src="images/delete.png"></div>
+						<img class="productsimgs" data-id="{{ product.product_id }}" v-bind:src="product.cover_t_img |picurl '/smart_matching/uploads/imgs/thumbs/' 's-'">
+						<div class="productsids" style="display: none;">{{ product.product_id }}</div>
+						<p>
+							<span class="productsnames">{{ product.name }}</span>
+							<br />
+							<div class="mui-numbox" data-numbox-min='1'>
+								<button class="mui-btn mui-btn-numbox-minus" type="button">-</button>
+								<input class="mui-input-numbox" type="number" v-bind:value="product.product_num" v-model="product.product_num" onchange="contnum()" />
+								<button class="mui-btn mui-btn-numbox-plus" type="button">+</button>
+							</div>
+						</p>
+						<p><span class="productsunitprice">{{ product.price/100 }}</span>元</p>
+						<div class="line"></div>
+					</div>
 					<div class="line"></div>
-				</div>
-				<div class="line"></div>
 
+				</div>
+				<div class="cont">方案产品总数:<span id="allnum">0</span>&nbsp;方案总金额:<span id="allprice">{{amount/100}}</span>元</div>
 			</div>
-			<div class="cont">方案产品总数:<span id="allnum">0</span>&nbsp;方案总金额:<span id="allprice">0</span>元</div>
-			<div class="footer edit" onclick="edit()"><i class="iconfont icon-buy"></i>编辑</div>
-			<div class="footer addcart" onclick="addalltocart()"><i class="iconfont icon-buy"></i>加入购物车</div>
-			<div id="cataloglist">
-				<div>索引</div>
-				<ul id="potlist">
-					<li>简介</li>
-					<span id="catalogpot"><li v-for="point in points">{{point}}</li></span>
-				</ul>
-			</div>
+			<div class="footer save" onclick="addalltocart()"><i class="iconfont icon-buy"></i>保存方案</div>
 		</div>
 
 	</body>
 	<script>
 		var customscheme = JSON.parse(localStorage.temp);
-		//TODO delete annotation when finish
-		//		localStorage.removeItem("temp");
+		localStorage.removeItem("temp");
 		var jsonschemes;
 		var spacedata;
 		var topbarHeight = 39;
@@ -88,33 +89,53 @@
 			getspacedata();
 			adaptive();
 			mui.previewImage();
-			stopload();
 		})
 
 		function getspacedata() {
-			document.getElementById("cover").getElementsByTagName("img")[0].src = serverurl + '/smart_matching/uploads/imgs/thumbs/m-' + customscheme.cover_t_img;
-			document.getElementById("title").innerHTML = customscheme.name + "方案";
-			new Vue({
-				el: '#spaces',
+			data = new Vue({
+				el: '#custom',
 				data: customscheme,
 				compiled: function() {
-					tempnum = document.getElementsByClassName("productsnums");
-					tempprice = document.getElementsByClassName("productsunitprice");
-					document.getElementById("allnum").innerHTML = 0;
-					document.getElementById("allprice").innerHTML = 0;
-					var tempallnum = 0;
-					var tempallprice = 0;
-					for (i = 0; i < tempnum.length; i++) {
-						tempallnum += parseInt(tempnum[i].innerHTML);
-						tempallprice += parseInt(tempnum[i].innerHTML) * parseInt(tempprice[i].innerHTML);
-					}
-					document.getElementById("allnum").innerHTML = tempallnum;
-					document.getElementById("allprice").innerHTML = tempallprice;
-					stopload()
+					contnum();
+					stopload();
 					makecatalog();
+					mui('.mui-numbox').numbox();
 				}
 			})
 			delnull();
+		}
+
+		function contnum() {
+			var allnum = 0;
+			for (var u = 0; u < customscheme.spaces.length; u++) {
+				for (var v = 0; v < customscheme.spaces[u].products.length; v++) {
+					allnum += parseInt(customscheme.spaces[u].products[v].product_num);
+				}
+			}
+			document.getElementById("allnum").innerHTML = allnum;
+		}
+		mui('body').on('tap', '.deleteproduct', function() {
+			productsortid = this.getAttribute('data-id');
+			spacesort = parseInt(this.parentNode.parentNode.getElementsByClassName("spaceid")[1].innerHTML);
+			var btnArray = ['是', '否'];
+			mui.confirm('是否删除单品？', '微软装', btnArray, function(s) {
+				if (!s.index) {
+					customscheme.amount -= parseInt(customscheme.spaces[spacesort].products[productsortid].product_num * customscheme.spaces[spacesort].products[productsortid].price)
+					customscheme.spaces[spacesort].products.splice(productsortid, 1)
+					contnum();
+					if (!customscheme.spaces[spacesort].products.length) customscheme.spaces.splice(spacesort, 1)
+				} else {
+					return;
+				}
+			})
+			return;
+		});
+
+		function valueChange(e, f) {
+			spacesort = parseInt(e.parentNode.parentNode.parentNode.getElementsByClassName("spaceid")[1].innerHTML);
+			var changeNum = e.parentNode.getElementsByTagName("input")[0].value;
+			customscheme.spaces[spacesort].products[f].num = changeNum;
+			contnum();
 		}
 
 		function delnull() {
@@ -153,6 +174,7 @@
 			for (i = 0; i < goods.length; i++) {
 				goods[i].style.width = bodywideth * 0.48 + 'px';
 				goods[i].style.height = bodywideth * 0.48 + 'px';
+				goods[i].getElementsByClassName("productsimgs")[0].style.height = bodywideth * 0.27 + 'px';
 				if (i % 2) {
 					goods[i].style.marginLeft = bodywideth * 0.02 + 'px';
 				}
@@ -160,6 +182,7 @@
 		}
 		mui('body').on('tap', '.productsimgs', function() {
 			productid = this.getAttribute('data-id');
+			localStorage.temp = JSON.stringify(customscheme);
 			mui.openWindow({
 				url: "product.html?id=" + productid,
 				id: "product",
@@ -170,44 +193,17 @@
 			});
 			return;
 		});
-		mui('#potlist').on('tap', 'li', function() {
-			scroller(this.innerHTML, 600)
-		});
-		document.getElementById('catalog').addEventListener('tap', function() {
-			catalogOpen();
-		});
-		document.getElementById('mask').addEventListener('tap', function() {
-			catalogClose();
-		});
 
-		function catalogOpen() {
-			var el = document.getElementById("mask");
-			el.style.display = 'block';
-			document.getElementById("cataloglist").style.left = '0';
-		}
-
-		function catalogClose() {
-			var el = document.getElementById("mask");
-			el.style.display = 'none';
-			document.getElementById("cataloglist").style.left = '-150px';
-		}
-		var catalog = [];
+		
+		var catalogarray = [];
 
 		function makecatalog() {
 			spacenames = document.getElementsByClassName("divtitle spacename");
 			for (var i = 0; i < spacenames.length; i++) {
 				searchresult = searchKeyWordAndMakeCatalog(spacenames[i].innerHTML);
-				if (searchresult)(spacenames[i].innerHTML = searchresult, spacenames[i].id = searchresult, catalog.push(searchresult))
+				if (searchresult)(spacenames[i].innerHTML = searchresult, spacenames[i].id = searchresult, catalogarray.push(searchresult))
 			}
-			new Vue({
-				el: '#catalogpot',
-				data: {
-					points: catalog
-				},
-				compiled: function() {
-					document.styleSheets[0].insertRule('#cataloglist ul::before { bottom: ' + (document.getElementById("cataloglist").offsetHeight - 80 - 42 * catalog.length) + 'px;}', 0);
-				}
-			})
+		
 		}
 
 		function searchKeyWordAndMakeCatalog(title) {
@@ -231,93 +227,15 @@
 			}
 			return false;
 		}
-
-		function intval(v) {
-			v = parseInt(v);
-			return isNaN(v) ? 0 : v;
+			
+		function addalltocart() {
+			name = customscheme.name +'自定义方案';
+			price = customscheme.amount/100;
+			pic = document.getElementById("cover").getElementsByTagName("img")[0].src;
+			cart(3, customscheme.scheme_id, name, 1, price, pic, JSON.stringify(customscheme));
+			window.location.href = "cart.html";
 		}
-
-		function getPos(e) {
-			var l = 0;
-			var t = 0;
-			var w = intval(e.style.width);
-			var h = intval(e.style.height);
-			var wb = e.offsetWidth;
-			var hb = e.offsetHeight;
-			while (e.offsetParent) {
-				l += e.offsetLeft + (e.currentStyle ? intval(e.currentStyle.borderLeftWidth) : 0);
-				t += e.offsetTop + (e.currentStyle ? intval(e.currentStyle.borderTopWidth) : 0);
-				e = e.offsetParent;
-			}
-			l += e.offsetLeft + (e.currentStyle ? intval(e.currentStyle.borderLeftWidth) : 0);
-			t += e.offsetTop + (e.currentStyle ? intval(e.currentStyle.borderTopWidth) : 0);
-			return {
-				x: l,
-				y: t - topbarHeight,
-				w: w,
-				h: h,
-				wb: wb,
-				hb: hb
-			};
-		}
-
-		function getScroll() {
-			var t, l, w, h;
-			if (document.documentElement && document.documentElement.scrollTop) {
-				t = document.documentElement.scrollTop;
-				l = document.documentElement.scrollLeft;
-				w = document.documentElement.scrollWidth;
-				h = document.documentElement.scrollHeight;
-			} else if (document.body) {
-				t = document.body.scrollTop;
-				l = document.body.scrollLeft;
-				w = document.body.scrollWidth;
-				h = document.body.scrollHeight;
-			}
-			return {
-				t: t,
-				l: l,
-				w: w,
-				h: h
-			};
-		}
-
-		function scroller(el, duration) {
-			catalogClose();
-			if (typeof el != 'object') {
-				el = document.getElementById(el);
-			}
-			if (!el) return;
-			var z = this;
-			z.el = el;
-			z.p = getPos(el);
-			z.s = getScroll();
-			z.clear = function() {
-				window.clearInterval(z.timer);
-				z.timer = null
-			};
-			z.t = (new Date).getTime();
-			z.step = function() {
-				var t = (new Date).getTime();
-				var p = (t - z.t) / duration;
-				if (t >= duration + z.t) {
-					z.clear();
-					window.setTimeout(function() {
-						z.scroll(z.p.y, z.p.x)
-					}, 13);
-				} else {
-					st = ((-Math.cos(p * Math.PI) / 2) + 0.5) * (z.p.y - z.s.t) + z.s.t;
-					sl = ((-Math.cos(p * Math.PI) / 2) + 0.5) * (z.p.x - z.s.l) + z.s.l;
-					z.scroll(st, sl);
-				}
-			};
-			z.scroll = function(t, l) {
-				window.scrollTo(l, t)
-			};
-			z.timer = window.setInterval(function() {
-				z.step();
-			}, 13);
-		}
+		
 	</script>
 
 </html>

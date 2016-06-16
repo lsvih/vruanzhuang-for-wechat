@@ -30,7 +30,6 @@ function saveArray(e, f) {
 	localStorage.setItem(e, JSON.stringify(value));
 }
 
-
 Array.prototype.remove = function(val) {
 	var index = this.indexOf(val);
 	if (index > -1) {
@@ -51,20 +50,21 @@ function GetRequest() {
 	return theRequest;
 }
 
-function cart(type, id, name, num, price, img) {
-	if (!localStorage.cart) !localStorage.userinfo?window.location.href = "login.html?lastpage=" + encodeURIComponent(window.location.href):localStorage.cart = '{"goods":[]}';
+function cart(type, id, name, num, price, img, content) {
+	if (!localStorage.cart) !localStorage.userinfo ? window.location.href = "login.html?lastpage=" + encodeURIComponent(window.location.href) : localStorage.cart = '{"goods":[]}';
 	tempcart = JSON.parse(localStorage.cart);
-	var k = 0;
-	for (i = 0; i < tempcart.goods.length; i++) {
-		if (tempcart.goods[i].id == id) {
-			tempcart.goods[i].num = parseInt(tempcart.goods[i].num) + parseInt(num);
-			k = 1;
-			break;
+	if (type == 1 || type == 2) {
+		for (i = 0; i < tempcart.goods.length; i++) {
+			if (tempcart.goods[i].id == id) {
+				tempcart.goods[i].num = parseInt(tempcart.goods[i].num) + parseInt(num);
+				type = 0;
+				break;
+			}
 		}
 	}
 
-	if (k == 0) {
-		addjson = '{"type":"'+ type +'","id":"' + id + '","name":"' + name + '","price":"' + price + '","num":"' + num + '","img_src":"' + img + '"}';
+	if (type != 0) {
+		addjson = '{"type":"' + type + '","id":"' + id + '","name":"' + name + '","price":"' + price + '","num":"' + num + '","img_src":"' + img + '","content":' + content + '}';
 		addjson = JSON.parse(addjson);
 		(tempcart.goods).push(addjson);
 	}
@@ -77,7 +77,6 @@ function getDate(tm) {
 	return tt;
 }
 
-
-function sleep(d){
-  for(var t = Date.now();Date.now() - t <= d;);
+function sleep(d) {
+	for (var t = Date.now(); Date.now() - t <= d;);
 }

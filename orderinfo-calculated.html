@@ -57,12 +57,12 @@
 						<div class="iteminner">
 							<div class="items">
 								<div class="lineimg" id="kschemes" v-for="item in items">
-									<div  class="scheme-item" onclick="window.location.href = 'preview-schemes.html?id=' + {{item.scheme.id}}"><img v-bind:src="item.scheme.cover_img|picurl '/vrz/uploads/'"></div>
+									<div class="scheme-item" onclick="window.location.href='preview-schemes.html?id={{item.scheme.id}}'"><img v-bind:src="item.scheme.cover_t_img|picurl '/smart_matching/uploads/imgs/thumbs/' 's-'"></div>
 								</div>
 								<div class="lineimg" id="kgoods" v-for="item in items">
-									<div  class="item" onclick="list()"><img v-bind:src="item.product.productImages[0].icon_img|picurl '/vrz/uploads/'"></div>
+									<div class="item" onclick="list()"><img v-bind:src="item.product[0].icon_t_img|picurl '/smart_matching/uploads/imgs/thumbs/' 's-'"></div>
 								</div>
-								
+
 							</div>
 						</div>
 
@@ -84,22 +84,18 @@
 		var orderid = GetRequest()["orderid"];
 		thisorder = JSON.parse(localStorage.temporder);
 		thisorder.created_at = getDate(thisorder.created_at);
-		console.log(localStorage.temporder);
 		startload();
-		Vue.filter('picurl', function(value, url) {
-			return serverurl + url + value
-		})
-		mui.ajax(appurl + '/order-products?access-token=' + JSON.parse(localStorage.userinfo).access_token + '&and[order_id]=' + orderid + '&expand=product,product.productImages', {
+		Vue.filter('picurl', function(value, url, picsize) {
+			return serverurl + url + picsize + value;
+		});
+		mui.ajax(apiurl + 'order-products?access-token=' + JSON.parse(localStorage.userinfo).access_token + '&and[order_id]=' + orderid + '&expand=product', {
 			data: {},
 			dataType: 'json',
 			type: 'get',
 			timeout: 6000,
 			success: function(data) {
 				if (data.success == true) {
-					goods = data.data;
-					console.log(JSON.stringify(data.data))
-					localStorage.tempgoods = JSON.stringify(goods);
-					thisgoods = JSON.parse(localStorage.tempgoods);
+					thisgoods = data.data;
 					var sgood = new Vue({
 						el: '#kgoods',
 						data: thisgoods
@@ -133,18 +129,15 @@
 				stopload();
 			}
 		});
-		mui.ajax(appurl + '/order-schemes?access-token=' + JSON.parse(localStorage.userinfo).access_token + '&and[order_id]=' + orderid+ '&expand=scheme', {
+		mui.ajax(apiurl + 'order-schemes?access-token=' + JSON.parse(localStorage.userinfo).access_token + '&and[order_id]=' + orderid + '&expand=scheme', {
 			data: {},
 			dataType: 'json',
 			type: 'get',
 			timeout: 6000,
 			success: function(data) {
-				console.log(JSON.stringify(data))
 				if (data.success == true) {
-					schemes = data.data;
-					console.log(JSON.stringify(data.data))
-					localStorage.tempschemes = JSON.stringify(schemes);
-					thisschemes = JSON.parse(localStorage.tempschemes);
+					console.log(JSON.stringify(data.data));
+					thisschemes = data.data;
 					var sgood = new Vue({
 						el: '#kschemes',
 						data: thisschemes
@@ -178,13 +171,12 @@
 				stopload();
 			}
 		});
-
 		jsonaddress = JSON.parse(localStorage.alladdress);
 		if (!(jsonaddress.address[0])) {
-			document.getElementById("showaddress").style.display = " none";
+			document.getElementById("showaddress").style.display = "none";
 			thisaddress = null;
 		} else {
-			document.getElementById("addaddress").style.display = " none";
+			document.getElementById("addaddress").style.display = "none";
 		} //确保地址有值
 		var addresssortid = GetRequest()["selectaddress"];
 		if (!addresssortid) { //没有选择地址则搜索默认地址
@@ -223,25 +215,25 @@
 					case "1":
 						elem[i].innerHTML = "待确认";
 						var oDiv = document.createElement('div');
-						oDiv.innerHTML = '<div class="cancel innavfor2">取消订单</div><div class="pay innavfor2 active">确认付款</div>';
+						oDiv.innerHTML = '<div class="cancel innavfor2">取消订单</div> <div class = "pay innavfor2 active"> 确认付款 </div>';
 						elem[i].parentNode.parentNode.parentNode.appendChild(oDiv);
 						break;
 					case "2":
 						elem[i].innerHTML = "待付款";
 						var oDiv = document.createElement('div');
-						oDiv.innerHTML = '<div class="cancel innavfor2">取消订单</div><div class="pay innavfor2 active">确认付款</div>';
+						oDiv.innerHTML = '<div class = "cancel innavfor2"> 取消订单 </div> <div class = "pay innavfor2 active"> 确认付款 </div>';
 						elem[i].parentNode.parentNode.parentNode.appendChild(oDiv);
 						break;
 					case "3":
 						elem[i].innerHTML = "待配送";
 						var oDiv = document.createElement('div');
-						oDiv.innerHTML = '<div class="cancel innavfor1">取消订单</div>';
+						oDiv.innerHTML = '<div class = "cancel innavfor1"> 取消订单 </div>';
 						elem[i].parentNode.parentNode.parentNode.appendChild(oDiv);
 						break;
 					default:
 						elem[i].innerHTML = "待评价";
 						var oDiv = document.createElement('div');
-						oDiv.innerHTML = '<div class="pay innavfor1 active">评价</div>';
+						oDiv.innerHTML = '<div class = "pay innavfor1 active"> 评价 </div>';
 						elem[i].parentNode.parentNode.parentNode.appendChild(oDiv);
 						break;
 				}
@@ -266,7 +258,7 @@
 				return false;
 			}
 			startload();
-			mui.ajax(appurl + '/orders/' + thisorder.id + '?access-token=' + JSON.parse(localStorage.userinfo).access_token, {
+			mui.ajax(apiurl + 'orders/' + thisorder.id + '?access-token=' + JSON.parse(localStorage.userinfo).access_token, {
 				data: {
 					'status': '2',
 					'delivery_address_id': thisaddress.id
@@ -293,16 +285,16 @@
 				if (e.index == 1) {
 					return false;
 				} else {
-					startload()
-					mui.ajax(appurl + '/orders/' + thisorder.id + '?access-token=' + JSON.parse(localStorage.userinfo).access_token, {
+					startload();
+					mui.ajax(apiurl + 'orders/' + thisorder.id + '?access-token=' + JSON.parse(localStorage.userinfo).access_token, {
 						data: {},
 						dataType: 'json',
 						type: 'delete',
 						timeout: 6000,
 						success: function(data) {
 							if (data.status == 204) {
-								alert("订单已删除！")
-								window.location.href = 'myorder.html'
+								alert("订单已删除！");
+								window.location.href = 'myorder.html';
 							} else {
 								mui.alert("订单删除失败");
 								stopload();
@@ -325,10 +317,10 @@
 		function list() {
 			window.location.href = "list.html?orderid=" + orderid;
 		}
-		function selectaddress(){
+
+		function selectaddress() {
 			window.location.href = 'select-address.html?orderid=' + orderid;
 		}
-
 	</script>
 
 </html>

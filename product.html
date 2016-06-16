@@ -193,6 +193,10 @@
 
 	</body>
 	<script>
+		if("preview" in GetRequest()){
+			document.getElementById("addcrat").style.display = 'none';
+			document.getElementsByTagName("header")[0].innerHTML = '<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a><h1 class="mui-title">查看单品</h1>';
+		}
 		var id = GetRequest()["id"];
 		mui.ready(function() {
 			startload();
@@ -258,7 +262,7 @@
 		}
 
 		function addtocart() {
-			cart('product',id,document.getElementById("name").innerHTML,1,document.getElementById("pri").innerHTML,document.getElementById("cover").src);
+			cart(1,id,document.getElementById("name").innerHTML,1,document.getElementById("pri").innerHTML,document.getElementById("cover").src,null);
 		}
 
 	</script>

@@ -132,14 +132,14 @@
 		var jsonschemes;
 		var spacedata;
 		var topbarHeight = 39;
-		
 		mui.ready(function() {
 			Vue.filter('picurl', function(value, url, picsize) {
 				return serverurl + url + picsize + value
 			})
-			getschemes();adaptive();mui.previewImage();
+			getschemes();
+			adaptive();
+			mui.previewImage();
 		})
-		
 
 		function getschemes() {
 			mui.ajax(apiurl + 'schemes/' + schemeid, {
@@ -267,71 +267,14 @@
 		}
 
 		function addalltocart() {
-			type = 'scheme';
-			id = schemeid;
-			name = schemename;
-			num = 1;
 			price = document.getElementById("allprice").innerHTML;
-			pic = serverurl + '/smart_matching/uploads/imgs/thumbs/s-' + jsonschemes.cover_img;
-			cart(type, id, name, num, price, pic);
+			pic = document.getElementById("cover").getElementsByTagName("img")[0].src;
+			cart(2, schemeid, schemename, 1, price, pic, JSON.stringify(format()));
 		}
 
 		function edit() {
-			var customscheme = {
-				"name": null,
-				"cover_t_img": null,
-				"amount": null,
-				"spaces": []
-			}
-			var customspace = {
-				"id": null,
-				"name": null,
-				"cover_t_img": null,
-				"design_t_img": null,
-				"planar_t_img": null,
-				"products": []
-			}
-			var customproduct = {
-				"id": null,
-				"name": null,
-				"num": null,
-				"price": null,
-				"cover_t_img": null
-			}
-			customscheme.name = spacedata.name;
-			customscheme.cover_t_img = spacedata.cover_t_img;
-			customscheme.amount = spacedata.amount;
-			for (var i = 0; i < spacedata.schemeSpaces.length; i++) {
-				customspace.id = spacedata.schemeSpaces[i].space.id;
-				customspace.name = spacedata.schemeSpaces[i].space.name;
-				customspace.cover_t_img = spacedata.schemeSpaces[i].space.cover_t_img;
-				customspace.design_t_img = spacedata.schemeSpaces[i].space.design_t_img;
-				customspace.planar_t_img = spacedata.schemeSpaces[i].space.planar_t_img;
-				for (var j = 0; j < spacedata.schemeSpaces[i].space.spaceProducts.length; j++) {
-					customproduct.id = spacedata.schemeSpaces[i].space.spaceProducts[j].product.id;
-					customproduct.name = spacedata.schemeSpaces[i].space.spaceProducts[j].product.name;
-					customproduct.num = spacedata.schemeSpaces[i].space.spaceProducts[j].product_num;
-					customproduct.price = spacedata.schemeSpaces[i].space.spaceProducts[j].product.amount;
-					customproduct.cover_t_img = spacedata.schemeSpaces[i].space.spaceProducts[j].product.cover_t_imgs;
-					customspace.products.push(customproduct);
-					customproduct = {
-						"id": null,
-						"name": null,
-						"num": null,
-						"price": null,
-						"cover_t_img": null
-					}
-				}
-				customscheme.spaces.push(customspace);
-				customspace = {
-					"id": null,
-					"name": null,
-					"cover_t_img": null,
-					"design_t_img": null,
-					"planar_t_img": null,
-					"products": []
-				}
-			}
+			localStorage.removeItem("temp");
+			customscheme = format();
 			localStorage.temp = JSON.stringify(customscheme);
 			mui.openWindow({
 				url: "edit-schemes.html",
@@ -342,6 +285,69 @@
 				}
 			});
 			return;
+		}
+
+		function format() {
+			var customscheme = {
+				"scheme_id": null,
+				"name": null,
+				"cover_t_img": null,
+				"amount": null,
+				"spaces": []
+			}
+			var customspace = {
+				"space_id": null,
+				"name": null,
+				"space_num": 1,
+				"cover_t_img": null,
+				"design_t_img": null,
+				"planar_t_img": null,
+				"products": []
+			}
+			var customproduct = {
+				"product_id": null,
+				"name": null,
+				"product_num": null,
+				"price": null,
+				"cover_t_img": null
+			}
+			customscheme.scheme_id = spacedata.id;
+			customscheme.name = spacedata.name;
+			customscheme.cover_t_img = spacedata.cover_t_img;
+			customscheme.amount = spacedata.amount;
+			for (var i = 0; i < spacedata.schemeSpaces.length; i++) {
+				customspace.space_id = spacedata.schemeSpaces[i].space.id;
+				customspace.name = spacedata.schemeSpaces[i].space.name;
+				customspace.cover_t_img = spacedata.schemeSpaces[i].space.cover_t_img;
+				customspace.design_t_img = spacedata.schemeSpaces[i].space.design_t_img;
+				customspace.planar_t_img = spacedata.schemeSpaces[i].space.planar_t_img;
+				for (var j = 0; j < spacedata.schemeSpaces[i].space.spaceProducts.length; j++) {
+					customproduct.product_id = spacedata.schemeSpaces[i].space.spaceProducts[j].product.id;
+					customproduct.name = spacedata.schemeSpaces[i].space.spaceProducts[j].product.name;
+					customproduct.product_num = parseInt(spacedata.schemeSpaces[i].space.spaceProducts[j].product_num);
+					customproduct.price = spacedata.schemeSpaces[i].space.spaceProducts[j].product.amount;
+					customproduct.cover_t_img = spacedata.schemeSpaces[i].space.spaceProducts[j].product.cover_t_imgs;
+					customspace.products.push(customproduct);
+					customproduct = {
+						"product_id": null,
+						"name": null,
+						"product_num": null,
+						"price": null,
+						"cover_t_img": null
+					}
+				}
+				customscheme.spaces.push(customspace);
+				customspace = {
+					"space_id": null,
+					"name": null,
+					"space_num": 1,
+					"cover_t_img": null,
+					"design_t_img": null,
+					"planar_t_img": null,
+					"products": []
+				}
+			}
+			return customscheme;
 		}
 		document.getElementById('cart').addEventListener('tap', function() {
 			mui.openWindow({

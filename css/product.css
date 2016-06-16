@@ -2,9 +2,11 @@ body {
 	font-size: 15px;
 	color: #949494;
 }
-.mui-content{
+
+.mui-content {
 	margin-bottom: 70px;
 }
+
 .name {
 	margin-left: 10px;
 }
@@ -29,6 +31,7 @@ body {
 }
 
 .goods {
+	position: relative;
 	display: inline-block;
 	text-align: center;
 	line-height: 15px;
@@ -41,7 +44,6 @@ body {
 
 .goods img {
 	width: 100%;
-	height: auto;
 }
 
 .line {
@@ -85,13 +87,13 @@ body {
 
 .cont {
 	position: fixed;
-    bottom: 40px;
-    height: 30px;
-    width: 100%;
-    font-size: 12px;
-    line-height: 30px;
-    text-align: center;
-    background-color: rgba(255,255,255,0.8);
+	bottom: 40px;
+	height: 30px;
+	width: 100%;
+	font-size: 12px;
+	line-height: 30px;
+	text-align: center;
+	background-color: rgba(255, 255, 255, 0.8);
 }
 
 .space-elems {
@@ -310,6 +312,7 @@ p img {
 	position: fixed;
 	bottom: 70px;
 	left: 20px;
+	z-index: 5;
 }
 
 #cataloglist {
@@ -398,4 +401,26 @@ p img {
 	width: 50%;
 	height: 40px;
 	line-height: 40px;
+}
+
+.save {
+	color: #fff;
+	right: 0;
+	background-color: #c51919;
+	width: 100%;
+}
+
+.deleteproduct {
+	position: absolute;
+	top: 0;
+	right: 0;
+}
+
+.deleteproduct img {
+	width: 30px;
+	height: 30px;
+}
+
+.spaceid {
+	display: none;
 }

@@ -11,7 +11,7 @@
 		<meta http-equiv="expires" content="Wed, 26 Feb 1997 08:21:57 GMT">
 		<script type="text/javascript" src="js/vue.js"></script>
 		<script type="text/javascript" src="js/app.js"></script>
-				<script type="text/javascript" src="js/iflogin.js?url=myorder.html"></script>
+		<script type="text/javascript" src="js/iflogin.js?url=myorder.html"></script>
 		<script type="text/javascript" src="js/global.js"></script>
 		<script type="text/javascript" src="js/mui.min.js"></script>
 
@@ -185,7 +185,7 @@
 				document.getElementById(orderx).className = "mui-control-item mui-active";
 				document.getElementById(itemx).className = "mui-control-content mui-active";
 			}
-			mui.ajax(appurl + '/orders?access-token=' + JSON.parse(localStorage.userinfo).access_token + '&and[user_id]=' + JSON.parse(localStorage.userinfo).id + '&expand=orderSchemes.scheme,orderProducts.product.productImages', {
+			mui.ajax(apiurl + 'orders?access-token=' + JSON.parse(localStorage.userinfo).access_token + '&and[user_id]=' + JSON.parse(localStorage.userinfo).id + '&expand=orderSchemes.scheme,orderProducts.product', {
 				data: {
 					'per-page': 500000
 				},
@@ -205,7 +205,7 @@
 								"sendprice": "x",
 								"address": "x",
 								"goods": [],
-								"schemes":[]
+								"schemes": []
 							};
 							order.orders.push(newjson);
 							for (j = 0; j < source[i].orderProducts.length; j++) {
@@ -242,33 +242,33 @@
 								order.orders[i].goods[j].name = source[i].orderProducts[j].product_name;
 								order.orders[i].goods[j].price = source[i].orderProducts[j].product_price;
 								order.orders[i].goods[j].num = source[i].orderProducts[j].purchase_num;
-								!source[i].orderProducts[j].product.productImages[0]?order.orders[i].goods[j].img_src = null:order.orders[i].goods[j].img_src = serverurl + "/vrz/uploads/" + source[i].orderProducts[j].product.productImages[0].icon_img;
+								!source[i].orderProducts[j].product.cover_t_imgs ? order.orders[i].goods[j].img_src = null : order.orders[i].goods[j].img_src = serverurl + "/smart_matching/uploads/imgs/" + source[i].orderProducts[j].product.cover_t_imgs;
 							}
 							for (j = 0; j < source[i].orderSchemes.length; j++) {
 								order.orders[i].schemes[j].id = source[i].orderSchemes[j].scheme_id;
 								order.orders[i].schemes[j].name = source[i].orderSchemes[j].scheme_name;
 								order.orders[i].schemes[j].price = source[i].orderSchemes[j].scheme_price;
 								order.orders[i].schemes[j].num = source[i].orderSchemes[j].purchase_num;
-								!source[i].orderSchemes[j].scheme.cover_img?order.orders[i].schemes[j].img_src = null:order.orders[i].schemes[j].img_src = serverurl + "/vrz/uploads/" + source[i].orderSchemes[j].scheme.cover_img;
+								!source[i].orderSchemes[j].scheme.cover_t_img ? order.orders[i].schemes[j].img_src = null : order.orders[i].schemes[j].img_src = serverurl + "/smart_matching/uploads/imgs/" + source[i].orderSchemes[j].scheme.cover_t_img;
 							}
 						}
 						localStorage.order = JSON.stringify(order);
-						allorder=  new Vue({
+						allorder = new Vue({
 							el: '#allorder',
 							data: order
-						})
+						});
 						obligations = new Vue({
 							el: '#obligations',
 							data: order
-						})
+						});
 						distribution = new Vue({
 							el: '#distribution ',
 							data: order
-						})
+						});
 						evaluate = new Vue({
 							el: '#evaluate',
 							data: order
-						})
+						});
 						updatastate();
 						document.getElementsByClassName("mui-content")[0].style.display = "block";
 						stopload();
@@ -333,7 +333,7 @@
 
 		function orderinfo(e, f) {
 			startload()
-			mui.ajax(appurl + '/orders/' + e + '?access-token=' + JSON.parse(localStorage.userinfo).access_token, {
+			mui.ajax(apiurl + 'orders/' + e + '?access-token=' + JSON.parse(localStorage.userinfo).access_token, {
 				data: {},
 				dataType: 'json',
 				type: 'get',
@@ -346,7 +346,6 @@
 								window.location.href = "orderinfo-calculated.html?orderid=" + e;
 								break;
 							case "2":
-
 								window.location.href = "orderinfo-waitforpay.html?orderid=" + e;
 								break;
 							case "3":
@@ -363,7 +362,6 @@
 			});
 		}
 
-
 		function cancelorder(d) {
 			thisid = d.parentElement.parentElement.parentElement.getElementsByClassName("order_id")[0].innerHTML;
 			var btnArray = ['是', '否'];
@@ -372,7 +370,7 @@
 					return false;
 				} else {
 					startload()
-					mui.ajax(appurl + '/orders/' + thisid + '?access-token=' + JSON.parse(localStorage.userinfo).access_token, {
+					mui.ajax(apiurl + 'orders/' + thisid + '?access-token=' + JSON.parse(localStorage.userinfo).access_token, {
 						data: {},
 						dataType: 'json',
 						type: 'delete',
@@ -394,9 +392,10 @@
 				}
 			})
 		}
-		function clicksub(e){
-			s=e.parentNode.parentNode.parentNode.getElementsByTagName("li")[0];
-			mui.trigger(s,'click');
+
+		function clicksub(e) {
+			s = e.parentNode.parentNode.parentNode.getElementsByTagName("li")[0];
+			mui.trigger(s, 'click');
 		}
 	</script>
 

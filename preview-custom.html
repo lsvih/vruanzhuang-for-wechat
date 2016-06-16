@@ -29,87 +29,40 @@
 			<div class="loading-text"><img src="images/load.gif" width="25px">加载中，请稍候...</div>
 		</div>
 		<header class="mui-bar mui-bar-nav">
-			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a><h1 class="mui-title">查看方案</h1>
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title">查看方案</h1>
 		</header>
 		<div id="catalog"><img src="images/app-logo.png" width="50px" height="50px"></div>
 		<div class="mui-content" id="简介">
-			<div id="cover" class="innerdiv"><img src="images/default-1.png" data-preview-src="" data-preview-group="1" /></div>
-			<div class="title">[<span id="title">...</span>]</div>
-			<div class="space-elems">
-				<div class="space-elems-inner">
+			<div id="cover" class="innerdiv"><img v-bind:src="cover_t_img|picurl '/smart_matching/uploads/imgs/thumbs/' 's-'" data-preview-src="{{cover_t_img|picurl '/smart_matching/uploads/imgs/' '' }}" data-preview-group="1" /></div>
+			<div class="title">[<span id="title">{{name}}</span>]</div>
 
-					<div class="space-elem" id="woshi"><i class="iconfont icon-chuang"></i>
-						<p><span>1</span>卧室</p>
-					</div>
-					<div class="space-elem" id="keting"><i class="iconfont icon-shafa"></i>
-						<p><span>1</span>客厅</p>
-					</div>
-					<div class="space-elem" id="shufang"><i class="iconfont icon-shuzhuo"></i>
-						<p><span>1</span>书房</p>
-					</div>
-					<div class="space-elem" id="canting"><i class="iconfont icon-canting"></i>
-						<p><span>1</span>餐厅 </p>
-					</div>
-
-					<div class="space-elem" id="chufang"><i class="iconfont icon-weibolu"></i>
-						<p><span>1</span>厨房</p>
-					</div>
-					<div class="space-elem" id="weishengjian"><i class="iconfont icon-yugang"></i>
-						<p><span>1</span>卫生间</p>
-					</div>
-					<div class="space-elem" id="yangtai"><i class="iconfont icon-chair"></i>
-						<p><span>1</span>阳台</p>
-					</div>
-					<div class="space-elem" id="chashi"><i class="iconfont icon-tea"></i>
-						<p><span>1</span>茶室</p>
-					</div>
-					<div class="space-elem" id="xiuxianqu"><i class="iconfont icon-game"></i>
-						<p><span>1</span>休闲区</p>
-					</div>
-				</div>
-			</div>
-			<div>
-				<div class="divtitle">灵感来源</div>
-				<div id="inspiration" class="innerdiv">
-					<img src="images/default-1.png" data-preview-src="" data-preview-group="1" /></div>
-			</div>
-			<div>
-				<div class="divtitle">空间亮点</div>
-				<div id="bright_spot" class="innerdiv">
-					<img src="images/default-1.png" data-preview-src="" data-preview-group="1" /></div>
-			</div>
-			<div>
-				<div class="divtitle">色彩分析</div>
-				<div id="color_analysis" class="innerdiv">
-					<img src="images/default-1.png" data-preview-src="" data-preview-group="1" /></div>
-			</div>
-
-			<div id="spaces" v-for="spaces in schemeSpaces">
+			<div id="spaces" v-for="space in spaces">
 				<div>
 					<div class="divtitle spacename">{{ spaces.space.name }}</div>
-					<div class="innerdiv"><img class="coverimg" v-bind:src="spaces.space.cover_t_img|picurl '/smart_matching/uploads/imgs/thumbs/' 's-'" data-preview-src="{{ spaces.space.cover_t_img|picurl '/smart_matching/uploads/imgs/' '' }}" data-preview-group="1" /></div>
+					<div class="innerdiv"><img class="coverimg" v-bind:src="space.cover_t_img|picurl '/smart_matching/uploads/imgs/thumbs/' 's-'" data-preview-src="{{ space.cover_t_img|picurl '/smart_matching/uploads/imgs/' '' }}" data-preview-group="1" /></div>
 				</div>
 				<div>
 					<div class="divtitle">方案设计图</div>
-					<div class="innerdiv"><img class="sjt" v-bind:src="spaces.space.design_t_img|picurl '/smart_matching/uploads/imgs/thumbs/' 's-'" data-preview-src="{{ spaces.space.design_t_img|picurl '/smart_matching/uploads/imgs/' '' }}" data-preview-group="1" /></div>
+					<div class="innerdiv"><img class="sjt" v-bind:src="space.design_t_img|picurl '/smart_matching/uploads/imgs/thumbs/' 's-'" data-preview-src="{{ space.design_t_img|picurl '/smart_matching/uploads/imgs/' '' }}" data-preview-group="1" /></div>
 				</div>
 				<div>
 					<div class="divtitle">平面图</div>
-					<div class="innerdiv"><img class="pmt" v-bind:src="spaces.space.planar_t_img|picurl '/smart_matching/uploads/imgs/thumbs/' 's-'" data-preview-src="{{ spaces.space.planar_t_img|picurl '/smart_matching/uploads/imgs/' '' }}" data-preview-group="1" /></div>
+					<div class="innerdiv"><img class="pmt" v-bind:src="space.planar_t_img|picurl '/smart_matching/uploads/imgs/thumbs/' 's-'" data-preview-src="{{ space.planar_t_img|picurl '/smart_matching/uploads/imgs/' '' }}" data-preview-group="1" /></div>
 				</div>
 				<div class="divtitle">配饰清单</div>
-				<div class="goods" v-for="products in spaces.space.spaceProducts">
-					<img class="productsimgs" data-id="{{ products.product.id }}" v-bind:src="products.product.cover_t_imgs |picurl '/smart_matching/uploads/imgs/thumbs/' 's-'">
-					<div class="productsids" style="display: none;">{{ products.product.id }}</div>
-					<p><span class="productsnames">{{ products.product.name }}</span> x <span class="productsnums">{{ products.product_num }}</span></p>
-					<p><span class="productsunitprice">{{ products.product.amount/100 }}</span>元</p>
+				<div class="goods" v-for="product in space.products">
+					<img class="productsimgs" data-id="{{ product.product_id }}" v-bind:src="product.cover_t_img |picurl '/smart_matching/uploads/imgs/thumbs/' 's-'">
+					<div class="productsids" style="display: none;">{{ product.product_id }}</div>
+					<p><span class="productsnames">{{ product.name }}</span> x <span class="productsnums">{{ product.product_num }}</span></p>
+					<p><span class="productsunitprice">{{ product.price/100 }}</span>元</p>
 					<div class="line"></div>
 				</div>
 				<div class="line"></div>
 
 			</div>
 			<div class="cont" style="bottom: 0;">方案产品总数:<span id="allnum">0</span>&nbsp;方案总金额:<span id="allprice">0</span>元</div>
-		
+
 			<div id="cataloglist">
 				<div>索引</div>
 				<ul id="potlist">
@@ -121,98 +74,23 @@
 
 	</body>
 	<script>
-		var url = window.location.search;
-		var sortid = url.substring(url.lastIndexOf('=') + 1, url.length);
-		var schemeslist = JSON.parse(localStorage.schemes)[sortid];
-		var schemename = schemeslist.name;
-		var schemeid = schemeslist.id;
-		var jsonschemes;
-		var spacedata;
+		console.log(localStorage.previewcustom)
+		var previewcustom = JSON.parse(localStorage.previewcustom);
 		var topbarHeight = 39;
-		
 		mui.ready(function() {
 			Vue.filter('picurl', function(value, url, picsize) {
 				return serverurl + url + picsize + value
 			})
-			getschemes();adaptive();mui.previewImage();
+			new Vue({
+				el: '#简介',
+				data: previewcustom,
+				compiled: function() {
+					stopload();
+				}
+			})
+			adaptive();
+			mui.previewImage();
 		})
-		
-
-		function getschemes() {
-			mui.ajax(apiurl + 'schemes/' + schemeid, {
-				data: {},
-				dataType: 'json',
-				type: 'get',
-				timeout: 6000,
-				success: function(data) {
-					if (data.success == true) {
-						jsonschemes = data.data;
-						setschemes();
-						getspacedata();
-						adaptive();
-					} else {
-						mui.alert(data.message);
-						stopload();
-					}
-				}
-			});
-		}
-
-		function setschemes() {
-			document.getElementById("cover").getElementsByTagName("img")[0].src = serverurl + '/smart_matching/uploads/imgs/thumbs/m-' + jsonschemes.cover_t_img;
-			!jsonschemes.community ? document.getElementById("title").innerHTML = jsonschemes.name + "方案" : document.getElementById("title").innerHTML = jsonschemes.community;
-			!jsonschemes.bedroom ? document.getElementById("woshi").style.display = "none" : document.getElementById("woshi").getElementsByTagName("span")[0].innerHTML = jsonschemes.bedroom;
-			!jsonschemes.livingroom ? document.getElementById("keting").style.display = "none" : document.getElementById("keting").getElementsByTagName("span")[0].innerHTML = jsonschemes.livingroom;
-			!jsonschemes.studyroom ? document.getElementById("shufang").style.display = "none" : document.getElementById("shufang").getElementsByTagName("span")[0].innerHTML = jsonschemes.studyroom;
-			!jsonschemes.diningroom ? document.getElementById("canting").style.display = "none" : document.getElementById("canting").getElementsByTagName("span")[0].innerHTML = jsonschemes.diningroom;
-			!jsonschemes.kitchen ? document.getElementById("chufang").style.display = "none" : document.getElementById("chufang").getElementsByTagName("span")[0].innerHTML = jsonschemes.kitchen;
-			!jsonschemes.bathroom ? document.getElementById("weishengjian").style.display = "none" : document.getElementById("weishengjian").getElementsByTagName("span")[0].innerHTML = jsonschemes.bathroom;
-			!jsonschemes.balcony ? document.getElementById("yangtai").style.display = "none" : document.getElementById("yangtai").getElementsByTagName("span")[0].innerHTML = jsonschemes.balcony;
-			!jsonschemes.tearoom ? document.getElementById("chashi").style.display = "none" : document.getElementById("chashi").getElementsByTagName("span")[0].innerHTML = jsonschemes.tearoom;
-			!jsonschemes.lounge ? document.getElementById("xiuxianqu").style.display = "none" : document.getElementById("xiuxianqu").getElementsByTagName("span")[0].innerHTML = jsonschemes.lounge;
-			document.getElementById("inspiration").getElementsByTagName("img")[0].src = serverurl + '/smart_matching/uploads/imgs/thumbs/m-' + jsonschemes.inspiration_t_img;
-			document.getElementById("bright_spot").getElementsByTagName("img")[0].src = serverurl + '/smart_matching/uploads/imgs/thumbs/m-' + jsonschemes.bright_spot_t_img;
-			document.getElementById("color_analysis").getElementsByTagName("img")[0].src = serverurl + '/smart_matching/uploads/imgs/thumbs/m-' + jsonschemes.color_analysis_t_img;
-			//document.getElementById("display_design").childNodes[0].src = jsonschemes.display_design_img;
-		}
-
-		function getspacedata() {
-			mui.ajax(apiurl + 'schemes/' + schemeid + '?expand=schemeSpaces.space.spaceProducts.product', {
-				data: {},
-				dataType: 'json',
-				type: 'get',
-				timeout: 6000,
-				success: function(data) {
-					if (data.success == true) {
-						spacedata = data.data;
-						new Vue({
-							el: '#spaces',
-							data: spacedata,
-							compiled: function() {
-								tempnum = document.getElementsByClassName("productsnums");
-								tempprice = document.getElementsByClassName("productsunitprice");
-								document.getElementById("allnum").innerHTML = 0;
-								document.getElementById("allprice").innerHTML = 0;
-								var tempallnum = 0;
-								var tempallprice = 0;
-								for (i = 0; i < tempnum.length; i++) {
-									tempallnum += parseInt(tempnum[i].innerHTML);
-									tempallprice += parseInt(tempnum[i].innerHTML) * parseInt(tempprice[i].innerHTML);
-								}
-								document.getElementById("allnum").innerHTML = tempallnum;
-								document.getElementById("allprice").innerHTML = tempallprice;
-								stopload()
-								makecatalog();
-							}
-						})
-						delnull();
-					} else {
-						mui.alert(data.message);
-						stopload();
-					}
-				}
-			});
-		}
 
 		function delnull() {
 			var judgelist = ["inspiration", "bright_spot", "color_analysis"];
@@ -262,7 +140,6 @@
 				}
 			}
 		}
-	
 		mui('body').on('tap', '.productsimgs', function() {
 			productid = this.getAttribute('data-id');
 			mui.openWindow({
@@ -297,6 +174,7 @@
 			document.getElementById("cataloglist").style.left = '-150px';
 		}
 		var catalog = [];
+
 		function makecatalog() {
 			spacenames = document.getElementsByClassName("divtitle spacename");
 			for (var i = 0; i < spacenames.length; i++) {
