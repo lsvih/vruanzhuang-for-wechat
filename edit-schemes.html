@@ -1,0 +1,323 @@
+﻿<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+		<meta name="format-detection" content="telephone=no">
+		<meta content="email=no" name="format-detection" />
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<script type="text/javascript" src="js/app.js"></script>
+		<script type="text/javascript" src="js/global.js"></script>
+		<script type="text/javascript" src="js/vue.js"></script>
+		<script type="text/javascript" src="js/mui.min.js"></script>
+		<script type="text/javascript" src="js/mui.zoom.js"></script>
+		<script type="text/javascript" src="js/mui.previewimage.normaltype.js"></script>
+
+		<link rel="stylesheet" href="css/mui.min.css" />
+		<link rel="stylesheet" href="css/app.css" />
+		<link rel="stylesheet" href="css/product.css" />
+
+		<title>微软装</title>
+	</head>
+
+	<body onresize="javascript:adaptive();">
+		<div id="mask"></div>
+		<div id="load">
+			<div class="loading"></div>
+			<div class="loading-text"><img src="images/load.gif" width="25px">加载中，请稍候...</div>
+		</div>
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title">编辑方案</h1>
+		</header>
+		<div id="catalog"><img src="images/app-logo.png" width="50px" height="50px"></div>
+		<div class="mui-content" id="简介">
+			<div id="cover" class="innerdiv"><img src="images/default-1.png" data-preview-src="" data-preview-group="1" /></div>
+			<div class="title">[<span id="title">...</span>]</div>
+			<div id="spaces" v-for="space in spaces">
+				<div>
+					<div class="divtitle spacename">{{ space.name }}</div>
+					<div class="innerdiv"><img class="coverimg" v-bind:src="space.cover_t_img|picurl '/smart_matching/uploads/imgs/thumbs/' 's-'" data-preview-src="{{ space.cover_t_img|picurl '/smart_matching/uploads/imgs/' '' }}" data-preview-group="1" /></div>
+				</div>
+				<div>
+					<div class="divtitle">方案设计图</div>
+					<div class="innerdiv"><img class="sjt" v-bind:src="space.design_t_img|picurl '/smart_matching/uploads/imgs/thumbs/' 's-'" data-preview-src="{{ space.design_t_img|picurl '/smart_matching/uploads/imgs/' '' }}" data-preview-group="1" /></div>
+				</div>
+				<div>
+					<div class="divtitle">平面图</div>
+					<div class="innerdiv"><img class="pmt" v-bind:src="space.planar_t_img|picurl '/smart_matching/uploads/imgs/thumbs/' 's-'" data-preview-src="{{ space.planar_t_img|picurl '/smart_matching/uploads/imgs/' '' }}" data-preview-group="1" /></div>
+				</div>
+				<div class="divtitle">配饰清单</div>
+				<div class="goods" v-for="product in space.products">
+					<div class="deleteproduct"><img></div>
+					<img class="productsimgs" data-id="{{ product.id }}" v-bind:src="product.cover_t_img |picurl '/smart_matching/uploads/imgs/thumbs/' 's-'">
+					<div class="productsids" style="display: none;">{{ product.id }}</div>
+					<p><span class="productsnames">{{ product.name }}</span> x <span class="productsnums">{{ product.num }}</span></p>
+					<p><span class="productsunitprice">{{ product.price/100 }}</span>元</p>
+					<div class="line"></div>
+				</div>
+				<div class="line"></div>
+
+			</div>
+			<div class="cont">方案产品总数:<span id="allnum">0</span>&nbsp;方案总金额:<span id="allprice">0</span>元</div>
+			<div class="footer edit" onclick="edit()"><i class="iconfont icon-buy"></i>编辑</div>
+			<div class="footer addcart" onclick="addalltocart()"><i class="iconfont icon-buy"></i>加入购物车</div>
+			<div id="cataloglist">
+				<div>索引</div>
+				<ul id="potlist">
+					<li>简介</li>
+					<span id="catalogpot"><li v-for="point in points">{{point}}</li></span>
+				</ul>
+			</div>
+		</div>
+
+	</body>
+	<script>
+		var customscheme = JSON.parse(localStorage.temp);
+		//TODO delete annotation when finish
+		//		localStorage.removeItem("temp");
+		var jsonschemes;
+		var spacedata;
+		var topbarHeight = 39;
+		mui.ready(function() {
+			Vue.filter('picurl', function(value, url, picsize) {
+				return serverurl + url + picsize + value
+			})
+			getspacedata();
+			adaptive();
+			mui.previewImage();
+			stopload();
+		})
+
+		function getspacedata() {
+			document.getElementById("cover").getElementsByTagName("img")[0].src = serverurl + '/smart_matching/uploads/imgs/thumbs/m-' + customscheme.cover_t_img;
+			document.getElementById("title").innerHTML = customscheme.name + "方案";
+			new Vue({
+				el: '#spaces',
+				data: customscheme,
+				compiled: function() {
+					tempnum = document.getElementsByClassName("productsnums");
+					tempprice = document.getElementsByClassName("productsunitprice");
+					document.getElementById("allnum").innerHTML = 0;
+					document.getElementById("allprice").innerHTML = 0;
+					var tempallnum = 0;
+					var tempallprice = 0;
+					for (i = 0; i < tempnum.length; i++) {
+						tempallnum += parseInt(tempnum[i].innerHTML);
+						tempallprice += parseInt(tempnum[i].innerHTML) * parseInt(tempprice[i].innerHTML);
+					}
+					document.getElementById("allnum").innerHTML = tempallnum;
+					document.getElementById("allprice").innerHTML = tempallprice;
+					stopload()
+					makecatalog();
+				}
+			})
+			delnull();
+		}
+
+		function delnull() {
+			coverimg = document.getElementsByClassName("coverimg");
+			for (i = 0; i < coverimg.length; i++) {
+				if ((coverimg[i].src).slice(-4) == "null" || (coverimg[i].src).slice(-2) == "s-") {
+					todeldiv = coverimg[i].parentNode;
+					todeldiv.parentNode.removeChild(todeldiv);
+				}
+			}
+			pmt = document.getElementsByClassName("pmt");
+			for (i = 0; i < pmt.length; i++) {
+				if ((pmt[i].src).slice(-4) == "null" || (pmt[i].src).slice(-2) == "s-") {
+					todeldiv = pmt[i].parentNode.parentNode;
+					todeldiv.parentNode.removeChild(todeldiv);
+				}
+			}
+			sjt = document.getElementsByClassName("sjt");
+			for (i = 0; i < sjt.length; i++) {
+				if ((sjt[i].src).slice(-4) == "null" || (sjt[i].src).slice(-2) == "s-") {
+					todeldiv = sjt[i].parentNode.parentNode;
+					todeldiv.parentNode.removeChild(todeldiv);
+				}
+			}
+		}
+
+		function adaptive() {
+			cases = document.getElementsByClassName("innerdiv");
+			goods = document.getElementsByClassName("goods");
+			bodywideth = document.body.clientWidth;
+			document.getElementsByClassName("mui-content")[0].style.width = bodywideth;
+			for (i = 0; i < cases.length; i++) {
+				cases[i].style.width = bodywideth + 'px';
+				cases[i].style.height = bodywideth * 0.56 + 'px';
+			}
+			for (i = 0; i < goods.length; i++) {
+				goods[i].style.width = bodywideth * 0.48 + 'px';
+				goods[i].style.height = bodywideth * 0.48 + 'px';
+				if (i % 2) {
+					goods[i].style.marginLeft = bodywideth * 0.02 + 'px';
+				}
+			}
+		}
+		mui('body').on('tap', '.productsimgs', function() {
+			productid = this.getAttribute('data-id');
+			mui.openWindow({
+				url: "product.html?id=" + productid,
+				id: "product",
+				show: {
+					aniShow: 'zoom-fade-out',
+					duration: 300
+				}
+			});
+			return;
+		});
+		mui('#potlist').on('tap', 'li', function() {
+			scroller(this.innerHTML, 600)
+		});
+		document.getElementById('catalog').addEventListener('tap', function() {
+			catalogOpen();
+		});
+		document.getElementById('mask').addEventListener('tap', function() {
+			catalogClose();
+		});
+
+		function catalogOpen() {
+			var el = document.getElementById("mask");
+			el.style.display = 'block';
+			document.getElementById("cataloglist").style.left = '0';
+		}
+
+		function catalogClose() {
+			var el = document.getElementById("mask");
+			el.style.display = 'none';
+			document.getElementById("cataloglist").style.left = '-150px';
+		}
+		var catalog = [];
+
+		function makecatalog() {
+			spacenames = document.getElementsByClassName("divtitle spacename");
+			for (var i = 0; i < spacenames.length; i++) {
+				searchresult = searchKeyWordAndMakeCatalog(spacenames[i].innerHTML);
+				if (searchresult)(spacenames[i].innerHTML = searchresult, spacenames[i].id = searchresult, catalog.push(searchresult))
+			}
+			new Vue({
+				el: '#catalogpot',
+				data: {
+					points: catalog
+				},
+				compiled: function() {
+					document.styleSheets[0].insertRule('#cataloglist ul::before { bottom: ' + (document.getElementById("cataloglist").offsetHeight - 80 - 42 * catalog.length) + 'px;}', 0);
+				}
+			})
+		}
+
+		function searchKeyWordAndMakeCatalog(title) {
+			var keyword = [
+				["客厅", "客厅"],
+				["餐厅", "餐厅"],
+				["卧室", "卧室"],
+				["书房", "书房"],
+				["次卧", "次卧"],
+				["老人", "老人房"],
+				["男孩", "男孩房"],
+				["女孩", "女孩房"]
+			];
+			var temparray = title.split('');
+			var words = [];
+			for (var k = 0; k < temparray.length - 1; k++) {
+				words.push(temparray[k] + temparray[k + 1])
+			}
+			for (var j = 0; j < keyword.length; j++) {
+				if (~words.indexOf(keyword[j][0])) return keyword[j][1];
+			}
+			return false;
+		}
+
+		function intval(v) {
+			v = parseInt(v);
+			return isNaN(v) ? 0 : v;
+		}
+
+		function getPos(e) {
+			var l = 0;
+			var t = 0;
+			var w = intval(e.style.width);
+			var h = intval(e.style.height);
+			var wb = e.offsetWidth;
+			var hb = e.offsetHeight;
+			while (e.offsetParent) {
+				l += e.offsetLeft + (e.currentStyle ? intval(e.currentStyle.borderLeftWidth) : 0);
+				t += e.offsetTop + (e.currentStyle ? intval(e.currentStyle.borderTopWidth) : 0);
+				e = e.offsetParent;
+			}
+			l += e.offsetLeft + (e.currentStyle ? intval(e.currentStyle.borderLeftWidth) : 0);
+			t += e.offsetTop + (e.currentStyle ? intval(e.currentStyle.borderTopWidth) : 0);
+			return {
+				x: l,
+				y: t - topbarHeight,
+				w: w,
+				h: h,
+				wb: wb,
+				hb: hb
+			};
+		}
+
+		function getScroll() {
+			var t, l, w, h;
+			if (document.documentElement && document.documentElement.scrollTop) {
+				t = document.documentElement.scrollTop;
+				l = document.documentElement.scrollLeft;
+				w = document.documentElement.scrollWidth;
+				h = document.documentElement.scrollHeight;
+			} else if (document.body) {
+				t = document.body.scrollTop;
+				l = document.body.scrollLeft;
+				w = document.body.scrollWidth;
+				h = document.body.scrollHeight;
+			}
+			return {
+				t: t,
+				l: l,
+				w: w,
+				h: h
+			};
+		}
+
+		function scroller(el, duration) {
+			catalogClose();
+			if (typeof el != 'object') {
+				el = document.getElementById(el);
+			}
+			if (!el) return;
+			var z = this;
+			z.el = el;
+			z.p = getPos(el);
+			z.s = getScroll();
+			z.clear = function() {
+				window.clearInterval(z.timer);
+				z.timer = null
+			};
+			z.t = (new Date).getTime();
+			z.step = function() {
+				var t = (new Date).getTime();
+				var p = (t - z.t) / duration;
+				if (t >= duration + z.t) {
+					z.clear();
+					window.setTimeout(function() {
+						z.scroll(z.p.y, z.p.x)
+					}, 13);
+				} else {
+					st = ((-Math.cos(p * Math.PI) / 2) + 0.5) * (z.p.y - z.s.t) + z.s.t;
+					sl = ((-Math.cos(p * Math.PI) / 2) + 0.5) * (z.p.x - z.s.l) + z.s.l;
+					z.scroll(st, sl);
+				}
+			};
+			z.scroll = function(t, l) {
+				window.scrollTo(l, t)
+			};
+			z.timer = window.setInterval(function() {
+				z.step();
+			}, 13);
+		}
+	</script>
+
+</html>

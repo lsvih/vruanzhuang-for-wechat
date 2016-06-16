@@ -111,36 +111,35 @@
 
 			</div>
 			<div class="cont">方案产品总数:<span id="allnum">0</span>&nbsp;方案总金额:<span id="allprice">0</span>元</div>
-			<button class="mui-btn-red mui-btn-block" onclick="addalltocart()"><i class="iconfont icon-buy"></i>一键加入购物车</button>
+			<div class="footer edit" onclick="edit()"><i class="iconfont icon-buy"></i>编辑</div>
+			<div class="footer addcart" onclick="addalltocart()"><i class="iconfont icon-buy"></i>加入购物车</div>
 			<div id="cataloglist">
 				<div>索引</div>
 				<ul id="potlist">
 					<li>简介</li>
 					<span id="catalogpot"><li v-for="point in points">{{point}}</li></span>
 				</ul>
-
 			</div>
 		</div>
 
 	</body>
 	<script>
-		
 		var url = window.location.search;
 		var sortid = url.substring(url.lastIndexOf('=') + 1, url.length);
-		var thisspace = new Array;
 		var schemeslist = JSON.parse(localStorage.schemes)[sortid];
 		var schemename = schemeslist.name;
 		var schemeid = schemeslist.id;
 		var jsonschemes;
+		var spacedata;
 		var topbarHeight = 39;
-		adaptive();
+		
 		mui.ready(function() {
 			Vue.filter('picurl', function(value, url, picsize) {
 				return serverurl + url + picsize + value
 			})
-			getschemes();
+			getschemes();adaptive();mui.previewImage();
 		})
-		mui.previewImage();
+		
 
 		function getschemes() {
 			mui.ajax(apiurl + 'schemes/' + schemeid, {
@@ -188,9 +187,10 @@
 				timeout: 6000,
 				success: function(data) {
 					if (data.success == true) {
+						spacedata = data.data;
 						new Vue({
 							el: '#spaces',
-							data: data.data,
+							data: spacedata,
 							compiled: function() {
 								tempnum = document.getElementsByClassName("productsnums");
 								tempprice = document.getElementsByClassName("productsunitprice");
@@ -275,6 +275,74 @@
 			pic = serverurl + '/smart_matching/uploads/imgs/thumbs/s-' + jsonschemes.cover_img;
 			cart(type, id, name, num, price, pic);
 		}
+
+		function edit() {
+			var customscheme = {
+				"name": null,
+				"cover_t_img": null,
+				"amount": null,
+				"spaces": []
+			}
+			var customspace = {
+				"id": null,
+				"name": null,
+				"cover_t_img": null,
+				"design_t_img": null,
+				"planar_t_img": null,
+				"products": []
+			}
+			var customproduct = {
+				"id": null,
+				"name": null,
+				"num": null,
+				"price": null,
+				"cover_t_img": null
+			}
+			customscheme.name = spacedata.name;
+			customscheme.cover_t_img = spacedata.cover_t_img;
+			customscheme.amount = spacedata.amount;
+			for (var i = 0; i < spacedata.schemeSpaces.length; i++) {
+				customspace.id = spacedata.schemeSpaces[i].space.id;
+				customspace.name = spacedata.schemeSpaces[i].space.name;
+				customspace.cover_t_img = spacedata.schemeSpaces[i].space.cover_t_img;
+				customspace.design_t_img = spacedata.schemeSpaces[i].space.design_t_img;
+				customspace.planar_t_img = spacedata.schemeSpaces[i].space.planar_t_img;
+				for (var j = 0; j < spacedata.schemeSpaces[i].space.spaceProducts.length; j++) {
+					customproduct.id = spacedata.schemeSpaces[i].space.spaceProducts[j].product.id;
+					customproduct.name = spacedata.schemeSpaces[i].space.spaceProducts[j].product.name;
+					customproduct.num = spacedata.schemeSpaces[i].space.spaceProducts[j].product_num;
+					customproduct.price = spacedata.schemeSpaces[i].space.spaceProducts[j].product.amount;
+					customproduct.cover_t_img = spacedata.schemeSpaces[i].space.spaceProducts[j].product.cover_t_imgs;
+					customspace.products.push(customproduct);
+					customproduct = {
+						"id": null,
+						"name": null,
+						"num": null,
+						"price": null,
+						"cover_t_img": null
+					}
+				}
+				customscheme.spaces.push(customspace);
+				customspace = {
+					"id": null,
+					"name": null,
+					"cover_t_img": null,
+					"design_t_img": null,
+					"planar_t_img": null,
+					"products": []
+				}
+			}
+			localStorage.temp = JSON.stringify(customscheme);
+			mui.openWindow({
+				url: "edit-schemes.html",
+				id: "edit-schemes",
+				show: {
+					aniShow: 'zoom-fade-out',
+					duration: 300
+				}
+			});
+			return;
+		}
 		document.getElementById('cart').addEventListener('tap', function() {
 			mui.openWindow({
 				url: "cart.html",
@@ -350,12 +418,12 @@
 				if (searchresult)(spacenames[i].innerHTML = searchresult, spacenames[i].id = searchresult, catalog.push(searchresult))
 			}
 			new Vue({
-					el: '#catalogpot',
-					data: {
-						points: catalog
-					},
-					compiled: function() {
-						document.styleSheets[0].insertRule('#cataloglist ul::before { bottom: ' + (document.getElementById("cataloglist").offsetHeight - 80 - 42 * catalog.length) + 'px;}', 0);
+				el: '#catalogpot',
+				data: {
+					points: catalog
+				},
+				compiled: function() {
+					document.styleSheets[0].insertRule('#cataloglist ul::before { bottom: ' + (document.getElementById("cataloglist").offsetHeight - 80 - 42 * catalog.length) + 'px;}', 0);
 				}
 			})
 		}
