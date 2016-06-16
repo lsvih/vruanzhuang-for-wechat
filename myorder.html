@@ -185,7 +185,7 @@
 				document.getElementById(orderx).className = "mui-control-item mui-active";
 				document.getElementById(itemx).className = "mui-control-content mui-active";
 			}
-			mui.ajax(apiurl + 'orders?access-token=' + JSON.parse(localStorage.userinfo).access_token + '&and[user_id]=' + JSON.parse(localStorage.userinfo).id + '&expand=orderSchemes.scheme,orderProducts.product', {
+			mui.ajax(apiurl + 'orders?access-token=' + JSON.parse(localStorage.userinfo).access_token + '&filter=user_id:' + JSON.parse(localStorage.userinfo).id + '&expand=orderSchemes.scheme,orderProducts.product', {
 				data: {
 					'per-page': 500000
 				},
@@ -308,7 +308,7 @@
 					case "2":
 						elem[i].innerHTML = "待付款";
 						var oDiv = document.createElement('div');
-						oDiv.innerHTML = '<div class="btn-area"><div class="cancel btn">取消订单</div><div class="pay btn active" onclick="clicksub(this)">确认付款</div></div>';
+						oDiv.innerHTML = '<div class="btn-area"><div class="cancel btn" onclick="cancelorder(this)">取消订单</div><div class="pay btn active" onclick="clicksub(this)">确认付款</div></div>';
 						elem[i].parentNode.parentNode.parentNode.appendChild(oDiv);
 						break;
 					case "3":

@@ -125,10 +125,7 @@
 	</body>
 	<script>
 		var url = window.location.search;
-		var sortid = url.substring(url.lastIndexOf('=') + 1, url.length);
-		var schemeslist = JSON.parse(localStorage.schemes)[sortid];
-		var schemename = schemeslist.name;
-		var schemeid = schemeslist.id;
+		var schemeid = url.substring(url.lastIndexOf('=') + 1, url.length);
 		var jsonschemes;
 		var spacedata;
 		var topbarHeight = 39;
@@ -269,7 +266,7 @@
 		function addalltocart() {
 			price = document.getElementById("allprice").innerHTML;
 			pic = document.getElementById("cover").getElementsByTagName("img")[0].src;
-			cart(2, schemeid, schemename, 1, price, pic, JSON.stringify(format()));
+			cart(2, schemeid, jsonschemes.name, 1, price, pic, JSON.stringify(format()));
 		}
 
 		function edit() {

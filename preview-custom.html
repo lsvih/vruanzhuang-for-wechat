@@ -39,7 +39,7 @@
 
 			<div id="spaces" v-for="space in spaces">
 				<div>
-					<div class="divtitle spacename">{{ spaces.space.name }}</div>
+					<div class="divtitle spacename">{{ space.name }}</div>
 					<div class="innerdiv"><img class="coverimg" v-bind:src="space.cover_t_img|picurl '/smart_matching/uploads/imgs/thumbs/' 's-'" data-preview-src="{{ space.cover_t_img|picurl '/smart_matching/uploads/imgs/' '' }}" data-preview-group="1" /></div>
 				</div>
 				<div>
@@ -88,18 +88,25 @@
 					stopload();
 				}
 			})
+			delnull();
+			tempnum = document.getElementsByClassName("productsnums");
+			tempprice = document.getElementsByClassName("productsunitprice");
+			document.getElementById("allnum").innerHTML = 0;
+			document.getElementById("allprice").innerHTML = 0;
+			var tempallnum = 0;
+			var tempallprice = 0;
+			for (i = 0; i < tempnum.length; i++) {
+				tempallnum += parseInt(tempnum[i].innerHTML);
+				tempallprice += parseInt(tempnum[i].innerHTML) * parseInt(tempprice[i].innerHTML);
+			}
+			document.getElementById("allnum").innerHTML = tempallnum;
+			document.getElementById("allprice").innerHTML = tempallprice;
 			adaptive();
 			mui.previewImage();
+			makecatalog();
 		})
 
 		function delnull() {
-			var judgelist = ["inspiration", "bright_spot", "color_analysis"];
-			for (var i = 0; i < judgelist.length; i++) {
-				item = document.getElementById(judgelist[i]);
-				if ((item.getElementsByTagName("img")[0].src).slice(-4) == "null" || (item.getElementsByTagName("img")[0].src).slice(-2) == "s-") {
-					item.parentNode.parentNode.removeChild(item.parentNode);
-				}
-			}
 			coverimg = document.getElementsByClassName("coverimg");
 			for (i = 0; i < coverimg.length; i++) {
 				if ((coverimg[i].src).slice(-4) == "null" || (coverimg[i].src).slice(-2) == "s-") {

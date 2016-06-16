@@ -143,6 +143,7 @@
 
 		function checkout() {
 			var count = document.getElementById("count").innerHTML;
+			var k = 0;
 			var chk = document.getElementsByName("checkbox");
 			if (count == 0) {
 				mui.toast("请选择商品结算");
@@ -156,7 +157,6 @@
 						j++;
 					}
 				}
-				console.log(JSON.stringify(b))
 				localStorage.temporder = JSON.stringify(b);
 				startload();
 				mui.ajax(apiurl + 'orders?access-token=' + JSON.parse(localStorage.userinfo).access_token, {
@@ -170,21 +170,22 @@
 						if (data.success == true) {
 							orderid = data.data.id;
 							checkcart = JSON.parse(localStorage.temporder);
-							goodslen = checkcart.length;
-							for (i = 0; i < goodslen; i++) {
-								switch (JSON.parse(localStorage.temporder)[i].type) {
+							for (i = 0; i < checkcart.length; i++) {
+								switch (checkcart[i].type) {
 									case "1":
 										mui.ajax(apiurl + 'order-products?access-token=' + JSON.parse(localStorage.userinfo).access_token, {
 											data: {
 												'order_id': orderid,
-												'product_id': JSON.parse(localStorage.temporder)[i].id,
-												'purchase_num': JSON.parse(localStorage.temporder)[i].num
+												'product_id': checkcart[i].id,
+												'purchase_num': checkcart[i].num
 											},
 											dataType: 'json',
 											type: 'post',
 											timeout: 6000,
 											success: function(data) {
-												if (data.success == true) {}
+												if (data.success == true) {
+													k++;
+												}
 											},
 											error: function(xhr, type, errorThrown, message) {
 												mui.alert("网络连接失败，请稍候再试");
@@ -196,8 +197,8 @@
 										mui.ajax(apiurl + 'order-schemes?access-token=' + JSON.parse(localStorage.userinfo).access_token, {
 											data: {
 												'order_id': orderid,
-												'scheme_id': JSON.parse(localStorage.temporder)[i].id,
-												'purchase_num': JSON.parse(localStorage.temporder)[i].num
+												'scheme_id': checkcart[i].id,
+												'purchase_num': checkcart[i].num
 											},
 											dataType: 'json',
 											type: 'post',
@@ -205,6 +206,7 @@
 											success: function(data) {
 												if (data.success == true) {
 													console.log(JSON.stringify(data.data))
+													k++;
 												}
 											},
 											error: function(xhr, type, errorThrown, message) {
@@ -214,28 +216,72 @@
 										});
 										break;
 									default:
+									schemenum = checkcart[i].num;
+										mui.ajax(apiurl + 'orders/custom-edit?access-token=' + JSON.parse(localStorage.userinfo).access_token, {
+											data: {
+												schemes: JSON.stringify([JSON.parse(localStorage.cart).goods[i].content])
+											},
+											dataType: 'json',
+											type: 'post',
+											timeout: 6000,
+											success: function(data) {
+												if (data.success == true) {
+													var oldid;
+													for(var key in data.data.schemes) {
+														oldid = key;
+													}
+													mui.ajax(apiurl + 'order-schemes?access-token=' + JSON.parse(localStorage.userinfo).access_token, {
+														data: {
+															'order_id': orderid,
+															'scheme_id': data.data.schemes[oldid].id,
+															'purchase_num':schemenum
+														},
+														dataType: 'json',
+														type: 'post',
+														timeout: 6000,
+														success: function(data) {
+															if (data.success == true) {
+																console.log(JSON.stringify(data.data))
+																k++;
+															}
+														},
+														error: function(xhr, type, errorThrown, message) {
+															mui.alert("网络连接失败，请稍候再试");
+															stopload();
+														}
+													});
+												}
+											},
+											error: function(xhr, type, errorThrown, message) {
+												mui.alert("网络连接失败，请稍候再试");
+												stopload();
+											}
+										});
 										break;
 								}
 							}
-							sleep(500)
-							mui.ajax(apiurl + 'orders/' + orderid + '?access-token=' + JSON.parse(localStorage.userinfo).access_token, {
-								data: {
-									'status': '1',
-								},
-								dataType: 'json',
-								type: 'put',
-								timeout: 6000,
-								success: function(data) {
-									if (data.success == true) {
-										localStorage.temporder = JSON.stringify(data.data);
-										window.location.href = 'orderinfo-calculated.html?orderid=' + data.data.id;
-									}
-								},
-								error: function(xhr, type, errorThrown, message) {
-									mui.alert("网络连接失败，请稍候再试");
-									stopload();
+							var iID = setTimeout(function() {
+								if (k == count) {
+									mui.ajax(apiurl + 'orders/' + orderid + '?access-token=' + JSON.parse(localStorage.userinfo).access_token, {
+										data: {
+											'status': '1',
+										},
+										dataType: 'json',
+										type: 'put',
+										timeout: 6000,
+										success: function(data) {
+											if (data.success == true) {
+												localStorage.temporder = JSON.stringify(data.data);
+												window.location.href = 'orderinfo-calculated.html?orderid=' + data.data.id;
+											}
+										},
+										error: function(xhr, type, errorThrown, message) {
+											mui.alert("网络连接失败，请稍候再试");
+											stopload();
+										}
+									});
 								}
-							});
+							}, 500);
 						} else {
 							mui.alert(data.message);
 							stopload();
@@ -251,7 +297,7 @@
 
 		function previewthis(e) {
 			type = e.parentNode.getElementsByClassName("cart-type")[0].innerHTML;
-			id = e.parentNode.getElementsByClassName("cart-id")[0].innerHTML - 1;
+			id = e.parentNode.getElementsByClassName("cart-id")[0].innerHTML;
 			sortid = e.parentNode.getElementsByClassName("sort-id")[0].innerHTML;
 			switch (type) {
 				case "1":

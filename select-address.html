@@ -61,7 +61,7 @@
 			}
 			localStorage.alladdress = JSON.stringify(alladdress);
 			startload();
-			mui.ajax(appurl + '/delivery-addresses?access-token=' + JSON.parse(localStorage.userinfo).access_token +'&and[userid]=' +JSON.parse(localStorage.userinfo).id, {
+			mui.ajax(apiurl + 'delivery-addresses?access-token=' + JSON.parse(localStorage.userinfo).access_token +'&filter=userid:' +JSON.parse(localStorage.userinfo).id, {
 				data: {},
 				dataType: 'json',
 				type: 'get',
@@ -95,6 +95,7 @@
 			});
 		} else {
 			alladdress = JSON.parse(localStorage.alladdress);
+			stopload();
 			document.getElementById("address").style.display = 'block';
 		}
 		var muid;
@@ -106,7 +107,7 @@
 				del: function(d, e) {
 					if (window.confirm('是否从删除此地址？')) {
 						startload();
-						mui.ajax(appurl + '/delivery-addresses/' + alladdress.address[e].id + '?access-token=' + JSON.parse(localStorage.userinfo).access_token, {
+						mui.ajax(apiurl + 'delivery-addresses/' + alladdress.address[e].id + '?access-token=' + JSON.parse(localStorage.userinfo).access_token, {
 							data: {},
 							dataType: 'json',
 							type: 'delete',
@@ -136,7 +137,7 @@
 					startload();
 					var newdefault = alladdress.address[k].id;
 					if (!lastdefault) {
-						mui.ajax(appurl + '/delivery-addresses/' + newdefault + '?access-token=' + JSON.parse(localStorage.userinfo).access_token, {
+						mui.ajax(apiurl + 'delivery-addresses/' + newdefault + '?access-token=' + JSON.parse(localStorage.userinfo).access_token, {
 							data: {
 								'is_default': 1
 							},
@@ -163,7 +164,7 @@
 							}
 						});
 					} else {
-						mui.ajax(appurl + '/delivery-addresses/' + lastdefault + '?access-token=' + JSON.parse(localStorage.userinfo).access_token, {
+						mui.ajax(apiurl + 'delivery-addresses/' + lastdefault + '?access-token=' + JSON.parse(localStorage.userinfo).access_token, {
 							data: {
 								'is_default': 0
 							},

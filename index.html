@@ -86,16 +86,17 @@
 				return false;
 			}
 			var createFragment = function(count) {
+				console.log(JSON.stringify(schemelist))
 				var fragment = document.createDocumentFragment();
 				var span;
 				div = document.createElement('div');
 				div.className = "indexpic";
-				div.innerHTML = '<img data-lazyload="' + serverurl + schemelist[0].preview + '" data-id="0"><p class="title">' + schemelist[0].title + '<span class="scpr"><i class="hr">/</i>￥' + schemelist[0].price + '</span></p>';
+				div.innerHTML = '<img data-lazyload="' + serverurl + schemelist[0].preview + '" data-id="'+schemelist[0].id+'"><p class="title">' + schemelist[0].title + '<span class="scpr"><i class="hr">/</i>￥' + schemelist[0].price + '</span></p>';
 				fragment.appendChild(div);
 				for (var i = 1; i < count; i++) {
 					div = document.createElement('div');
 					div.className = "indexpic margin180";
-					div.innerHTML = '<img data-lazyload="' + serverurl + schemelist[i].preview + '" data-id="' + i + '"><p class="title">' + schemelist[i].title + '<span class="scpr"><i class="hr">/</i>￥' + schemelist[i].price + '</span></p>';
+					div.innerHTML = '<img data-lazyload="' + serverurl + schemelist[i].preview + '" data-id="' + schemelist[i].id + '"><p class="title">' + schemelist[i].title + '<span class="scpr"><i class="hr">/</i>￥' + schemelist[i].price + '</span></p>';
 					fragment.appendChild(div);
 				}
 				return fragment;

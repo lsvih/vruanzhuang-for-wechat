@@ -9,7 +9,7 @@
 		<meta name="apple-mobile-web-app-capable" content="yes">
 		<meta name="apple-mobile-web-app-status-bar-style" content="black">
 		<script type="text/javascript" src="js/global.js"></script>
-		<script type="text/javascript" src="js/app.js" ></script>
+		<script type="text/javascript" src="js/app.js"></script>
 		<script type="text/javascript" src="js/mui.min.js"></script>
 		<script type="text/javascript" src="js/vue.js"></script>
 		<script type="text/javascript" src="js/mui.zoom.js"></script>
@@ -67,6 +67,7 @@
 						<p><span class="productsunitprice">{{ product.price/100 }}</span>元</p>
 						<div class="line"></div>
 					</div>
+					<div class="goods add"><img data-id="x{{$index}}" class="productsimgs" src="images/add.png"></div>
 					<div class="line"></div>
 
 				</div>
@@ -78,7 +79,6 @@
 	</body>
 	<script>
 		var customscheme = JSON.parse(localStorage.temp);
-		localStorage.removeItem("temp");
 		var jsonschemes;
 		var spacedata;
 		var topbarHeight = 39;
@@ -106,13 +106,22 @@
 		}
 
 		function contnum() {
-			var allnum = 0;
-			for (var u = 0; u < customscheme.spaces.length; u++) {
-				for (var v = 0; v < customscheme.spaces[u].products.length; v++) {
-					allnum += parseInt(customscheme.spaces[u].products[v].product_num);
+			var iID = setTimeout(function() {
+				var allnum = 0;
+				var allprice = 0;
+				for (var u = 0; u < customscheme.spaces.length; u++) {
+					for (var v = 0; v < customscheme.spaces[u].products.length; v++) {
+						allnum += parseInt(customscheme.spaces[u].products[v].product_num);
+					}
 				}
-			}
-			document.getElementById("allnum").innerHTML = allnum;
+				for (var u = 0; u < customscheme.spaces.length; u++) {
+					for (var v = 0; v < customscheme.spaces[u].products.length; v++) {
+						allprice += parseInt(customscheme.spaces[u].products[v].product_num) * parseInt(customscheme.spaces[u].products[v].price);
+					}
+				}
+				document.getElementById("allnum").innerHTML = allnum;
+				customscheme.amount = allprice;
+			}, 500);
 		}
 		mui('body').on('tap', '.deleteproduct', function() {
 			productsortid = this.getAttribute('data-id');
@@ -130,13 +139,6 @@
 			})
 			return;
 		});
-
-		function valueChange(e, f) {
-			spacesort = parseInt(e.parentNode.parentNode.parentNode.getElementsByClassName("spaceid")[1].innerHTML);
-			var changeNum = e.parentNode.getElementsByTagName("input")[0].value;
-			customscheme.spaces[spacesort].products[f].num = changeNum;
-			contnum();
-		}
 
 		function delnull() {
 			coverimg = document.getElementsByClassName("coverimg");
@@ -182,6 +184,18 @@
 		}
 		mui('body').on('tap', '.productsimgs', function() {
 			productid = this.getAttribute('data-id');
+			if (productid.substr(0, 1) == 'x') {
+				localStorage.temp = JSON.stringify(customscheme);
+				mui.openWindow({
+					url: "add-product.html?spacesortid=" + productid.substr(1),
+					id: "add-product",
+					show: {
+						aniShow: 'zoom-fade-out',
+						duration: 300
+					}
+				});
+				return;
+			}
 			localStorage.temp = JSON.stringify(customscheme);
 			mui.openWindow({
 				url: "product.html?id=" + productid,
@@ -193,8 +207,6 @@
 			});
 			return;
 		});
-
-		
 		var catalogarray = [];
 
 		function makecatalog() {
@@ -203,7 +215,6 @@
 				searchresult = searchKeyWordAndMakeCatalog(spacenames[i].innerHTML);
 				if (searchresult)(spacenames[i].innerHTML = searchresult, spacenames[i].id = searchresult, catalogarray.push(searchresult))
 			}
-		
 		}
 
 		function searchKeyWordAndMakeCatalog(title) {
@@ -227,15 +238,15 @@
 			}
 			return false;
 		}
-			
+
 		function addalltocart() {
-			name = customscheme.name +'自定义方案';
-			price = customscheme.amount/100;
+			name = customscheme.name + '自定义方案';
+			price = customscheme.amount / 100;
 			pic = document.getElementById("cover").getElementsByTagName("img")[0].src;
 			cart(3, customscheme.scheme_id, name, 1, price, pic, JSON.stringify(customscheme));
+			localStorage.removeItem("temp");
 			window.location.href = "cart.html";
 		}
-		
 	</script>
 
 </html>

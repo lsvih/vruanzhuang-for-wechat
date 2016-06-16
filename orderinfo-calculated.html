@@ -41,7 +41,7 @@
 						<div class="phonenum">{{phonenum}}</div>
 						<div class="address"><span class="province">{{province}}</span><span class="city">{{city}}</span><span class="county">{{county}}</span><span class="detailed-address">{{detailedaddress}}</span></div>
 					</div>
-					<div id="addaddress" class="savearea"><button class="mui-btn mui-btn-danger" id="save" onclick="selectaddress()'">+管理地址</button></div>
+					<div id="addaddress" class="savearea"><button class="mui-btn mui-btn-danger" id="save" onclick="selectaddress()">+管理地址</button></div>
 				</li>
 			</ul>
 			<ul class="mui-table-view">
@@ -60,7 +60,7 @@
 									<div class="scheme-item" onclick="window.location.href='preview-schemes.html?id={{item.scheme.id}}'"><img v-bind:src="item.scheme.cover_t_img|picurl '/smart_matching/uploads/imgs/thumbs/' 's-'"></div>
 								</div>
 								<div class="lineimg" id="kgoods" v-for="item in items">
-									<div class="item" onclick="list()"><img v-bind:src="item.product[0].icon_t_img|picurl '/smart_matching/uploads/imgs/thumbs/' 's-'"></div>
+									<div class="item" onclick="list()"><img v-bind:src="item.product.cover_t_imgs|picurl '/smart_matching/uploads/imgs/thumbs/' 's-'"></div>
 								</div>
 
 							</div>
@@ -80,22 +80,37 @@
 	<script>
 		mui.init();
 		var goods = new Array;
-		var goodlist;
 		var orderid = GetRequest()["orderid"];
+		mui.ajax(apiurl + 'orders/' + orderid + '?access-token=' + JSON.parse(localStorage.userinfo).access_token, {
+			dataType: 'json',
+			type: 'get',
+			timeout: 6000,
+			success: function(data) {
+				if (data.success == true) {
+					localStorage.temporder = JSON.stringify(data.data);
+				}
+			},
+			error: function(xhr, type, errorThrown, message) {
+				mui.alert("网络连接失败，请稍候再试");
+				stopload();
+			}
+		});
 		thisorder = JSON.parse(localStorage.temporder);
+		console.log(localStorage.temporder)
 		thisorder.created_at = getDate(thisorder.created_at);
 		startload();
 		Vue.filter('picurl', function(value, url, picsize) {
 			return serverurl + url + picsize + value;
 		});
-		mui.ajax(apiurl + 'order-products?access-token=' + JSON.parse(localStorage.userinfo).access_token + '&and[order_id]=' + orderid + '&expand=product', {
-			data: {},
+		mui.ajax(apiurl + 'order-products?access-token=' + JSON.parse(localStorage.userinfo).access_token + '&filter=order_id:' + orderid + '&expand=product', {
 			dataType: 'json',
 			type: 'get',
 			timeout: 6000,
 			success: function(data) {
 				if (data.success == true) {
 					thisgoods = data.data;
+					localStorage.tempgoods = JSON.stringify(thisgoods);//为商品列表
+					console.log(JSON.stringify(thisgoods))
 					var sgood = new Vue({
 						el: '#kgoods',
 						data: thisgoods
@@ -129,7 +144,7 @@
 				stopload();
 			}
 		});
-		mui.ajax(apiurl + 'order-schemes?access-token=' + JSON.parse(localStorage.userinfo).access_token + '&and[order_id]=' + orderid + '&expand=scheme', {
+		mui.ajax(apiurl + 'order-schemes?access-token=' + JSON.parse(localStorage.userinfo).access_token + '&filter=order_id:' + orderid + '&expand=scheme', {
 			data: {},
 			dataType: 'json',
 			type: 'get',
@@ -310,7 +325,7 @@
 		}
 
 		function updatesta() {
-			document.getElementById("thisallprice").innerHTML = thisorder.order_fee;
+			document.getElementById("thisallprice").innerHTML = thisorder.amount / 100;
 			document.getElementById("thisfr").innerHTML = thisorder.freight;
 		}
 

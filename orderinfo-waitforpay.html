@@ -41,7 +41,6 @@
 						<div class="phonenum">{{phonenum}}</div>
 						<div class="address"><span class="province">{{province}}</span><span class="city">{{city}}</span><span class="county">{{county}}</span><span class="detailed-address">{{detailedaddress}}</span></div>
 					</div>
-					<div id="addaddress" class="savearea"><button class="mui-btn mui-btn-danger" id="save" onclick="window.location.href='select-address.html'">+管理地址</button></div>
 				</li>
 			</ul>
 			<ul class="mui-table-view">
@@ -51,16 +50,16 @@
 						<div id="order">
 							<div class="order-state">{{status }}</div>
 							<div class="orderid">订单号:<span>{{ order_no }}</span></div>
-							<div class="ordertime">下单日期:<span>{{ created_at }}</span></div>
+							<div class="ordertime">下单日期:<span>{{created_at}}</span></div>
 							<div class="orderstate">订单状态:<span class="state">待付款</span></div>
 						</div>
 						<div class="iteminner">
 							<div class="items">
 								<div class="lineimg" id="kschemes" v-for="item in items">
-									<div class="scheme-item" onclick="window.location.href = 'preview-schemes.html?id=' + {{item.scheme.id}}"><img v-bind:src="item.scheme.cover_img|picurl '/vrz/uploads/'"></div>
+									<div class="scheme-item" onclick="window.location.href ='preview-schemes.html?id={{item.scheme.id}}'"><img v-bind:src="item.scheme.cover_t_img|picurl '/smart_matching/uploads/imgs/thumbs/' 's-'"></div>
 								</div>
 								<div class="lineimg" id="kgoods" v-for="item in items">
-									<div class="item" onclick="list()"><img v-bind:src="item.product.productImages[0].icon_img|picurl '/vrz/uploads/'"></div>
+									<div class="item" onclick="list()"><img v-bind:src="item.product.cover_t_imgs|picurl '/smart_matching/uploads/imgs/thumbs/' 's-'"></div>
 								</div>
 
 							</div>
@@ -80,9 +79,9 @@
 								</div>
 							</li>
 
-							<!--<li class="mui-table-view-cell" id="1">
+							<!--<li class="mui-table-view-cell"id="1">
 								<div class="mui-navigate-right paym">
-									<img src="images/alipay.png" style="float: left;margin-right: 7px;margin-top: 5px;">使用支付宝支付
+									<img src="images/alipay.png"style="float: left;margin-right: 7px;margin-top: 5px;">使用支付宝支付
 									<div style="font-size: 13px;color: #666666;">跳转至支付宝支付页面</div>
 								</div>
 							</li>-->
@@ -116,11 +115,10 @@
 		thisorder.created_at = getDate(thisorder.created_at);
 		console.log(localStorage.temporder)
 		startload();
-		Vue.filter('picurl', function(value, url) {
-			return serverurl + url + value
-		})
-		mui.ajax(appurl + '/order-products?access-token=' + JSON.parse(localStorage.userinfo).access_token + '&and[order_id]=' + thisorder.id + '&expand=product,product.productImages', {
-			data: {},
+		Vue.filter('picurl', function(value, url, picsize) {
+			return serverurl + url + picsize + value;
+		});
+		mui.ajax(apiurl + 'order-products?access-token=' + JSON.parse(localStorage.userinfo).access_token + '&filter=order_id:' + thisorder.id + '&expand=product', {
 			dataType: 'json',
 			type: 'get',
 			timeout: 6000,
@@ -128,7 +126,7 @@
 				if (data.success == true) {
 					goods = data.data;
 					localStorage.tempgoods = JSON.stringify(goods);
-					thisgoods = JSON.parse(localStorage.tempgoods);
+					thisgoods = data.data;
 					var sgood = new Vue({
 						el: '#kgoods',
 						data: thisgoods
@@ -144,8 +142,7 @@
 				stopload();
 			}
 		});
-		mui.ajax(appurl + '/order-schemes?access-token=' + JSON.parse(localStorage.userinfo).access_token + '&and[order_id]=' + thisorder.id + '&expand=scheme', {
-			data: {},
+		mui.ajax(apiurl + 'order-schemes?access-token=' + JSON.parse(localStorage.userinfo).access_token + '&filter=order_id:' + thisorder.id + '&expand=scheme', {
 			dataType: 'json',
 			type: 'get',
 			timeout: 6000,
@@ -153,7 +150,7 @@
 				if (data.success == true) {
 					schemes = data.data;
 					localStorage.tempschemes = JSON.stringify(schemes);
-					thisschemes = JSON.parse(localStorage.tempschemes);
+					thisschemes = data.data;
 					var sscheme = new Vue({
 						el: '#kschemes',
 						data: thisschemes
@@ -170,12 +167,6 @@
 			}
 		});
 		jsonaddress = JSON.parse(localStorage.alladdress);
-		if (!(jsonaddress.address[0])) {
-			document.getElementById("showaddress").style.display = " none";
-			thisaddress = null;
-		} else {
-			document.getElementById("addaddress").style.display = " none";
-		} //确保地址有值
 		var addresssortid = GetRequest()["selectaddress"];
 		if (!addresssortid) { //没有选择地址则搜索默认地址
 			if (!jsonaddress.selected) {
@@ -196,6 +187,8 @@
 		} else {
 			thisaddress = jsonaddress.address[addresssortid];
 		}
+		console.log(JSON.stringify(thisaddress))
+		console.log(JSON.stringify(thisorder))
 		var saddress = new Vue({
 			el: '#address',
 			data: thisaddress
@@ -256,7 +249,7 @@
 				return false;
 			}
 			startload()
-			mui.ajax(appurl + '/payments?access-token=' + JSON.parse(localStorage.userinfo).access_token, {
+			mui.ajax(apiurl + 'payments?access-token=' + JSON.parse(localStorage.userinfo).access_token, {
 				data: {
 					order_id: thisorder.id,
 					channel: payment
@@ -270,7 +263,7 @@
 						if (payment == 2) {
 							window.location.href = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx8890838a8541d848&redirect_uri=' + encodeURIComponent(frontend) + '%2Fbridge.html&response_type=code&scope=snsapi_base&state=' + data.data.id + '#wechat_redirect'
 						} else {
-							mui.ajax(appurl + '/payments/pay/' + data.data.id + '?access-token=' + JSON.parse(localStorage.userinfo).access_token, {
+							mui.ajax(apiurl + 'payments/pay/' + data.data.id + '?access-token=' + JSON.parse(localStorage.userinfo).access_token, {
 								data: {},
 								dataType: 'json',
 								type: 'get',
@@ -293,14 +286,14 @@
 						}
 					}
 					if (data.status == 422) {
-						mui.ajax(appurl + '/payments?access-token=' + JSON.parse(localStorage.userinfo).access_token + '&&and[order_id]=' + thisorder.id, {
+						mui.ajax(apiurl + 'payments?access-token=' + JSON.parse(localStorage.userinfo).access_token + '&and[order_id]=' + thisorder.id, {
 							data: {},
 							dataType: 'json',
 							type: 'get',
 							timeout: 6000,
 							success: function(data) {
 								temppayid = data.data.items[0].id;
-								mui.ajax(appurl + '/payments/' + temppayid + '?access-token=' + JSON.parse(localStorage.userinfo).access_token, {
+								mui.ajax(apiurl + 'payments/' + temppayid + '?access-token=' + JSON.parse(localStorage.userinfo).access_token, {
 									data: {
 										channel: payment
 									},
@@ -312,7 +305,7 @@
 										if (payment == 2) {
 											window.location.href = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx8890838a8541d848&redirect_uri=' + encodeURIComponent(frontend) + '%2Fbridge.html&response_type=code&scope=snsapi_base&state=' + data.data.id + '#wechat_redirect'
 										} else {
-											mui.ajax(appurl + '/payments/pay/' + temppayid + '?access-token=' + JSON.parse(localStorage.userinfo).access_token, {
+											mui.ajax(apiurl + 'payments/pay/' + temppayid + '?access-token=' + JSON.parse(localStorage.userinfo).access_token, {
 												data: {},
 												dataType: 'json',
 												type: 'get',
@@ -364,7 +357,7 @@
 					return false;
 				} else {
 					startload()
-					mui.ajax(appurl + '/orders/' + thisorder.id + '?access-token=' + JSON.parse(localStorage.userinfo).access_token, {
+					mui.ajax(apiurl + 'orders/' + thisorder.id + '?access-token=' + JSON.parse(localStorage.userinfo).access_token, {
 						data: {},
 						dataType: 'json',
 						type: 'delete',
@@ -388,7 +381,7 @@
 		}
 
 		function updatesta() {
-			document.getElementById("thisallprice").innerHTML = thisorder.order_fee;
+			document.getElementById("thisallprice").innerHTML = thisorder.amount/100;
 			document.getElementById("thisfr").innerHTML = thisorder.freight;
 		}
 

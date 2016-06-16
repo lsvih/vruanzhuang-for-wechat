@@ -33,61 +33,15 @@
 		</header>
 		<div id="catalog"><img src="images/app-logo.png" width="50px" height="50px"></div>
 		<div class="mui-content" id="简介">
-			<div id="cover" class="innerdiv"><img src="images/default-1.png" data-preview-src="" data-preview-group="1" /></div>
-			<div class="title">[<span id="title">...</span>]</div>
-			<div class="space-elems">
-				<div class="space-elems-inner">
-
-					<div class="space-elem" id="woshi"><i class="iconfont icon-chuang"></i>
-						<p><span>1</span>卧室</p>
-					</div>
-					<div class="space-elem" id="keting"><i class="iconfont icon-shafa"></i>
-						<p><span>1</span>客厅</p>
-					</div>
-					<div class="space-elem" id="shufang"><i class="iconfont icon-shuzhuo"></i>
-						<p><span>1</span>书房</p>
-					</div>
-					<div class="space-elem" id="canting"><i class="iconfont icon-canting"></i>
-						<p><span>1</span>餐厅 </p>
-					</div>
-
-					<div class="space-elem" id="chufang"><i class="iconfont icon-weibolu"></i>
-						<p><span>1</span>厨房</p>
-					</div>
-					<div class="space-elem" id="weishengjian"><i class="iconfont icon-yugang"></i>
-						<p><span>1</span>卫生间</p>
-					</div>
-					<div class="space-elem" id="yangtai"><i class="iconfont icon-chair"></i>
-						<p><span>1</span>阳台</p>
-					</div>
-					<div class="space-elem" id="chashi"><i class="iconfont icon-tea"></i>
-						<p><span>1</span>茶室</p>
-					</div>
-					<div class="space-elem" id="xiuxianqu"><i class="iconfont icon-game"></i>
-						<p><span>1</span>休闲区</p>
-					</div>
-				</div>
-			</div>
-			<div>
-				<div class="divtitle">灵感来源</div>
-				<div id="inspiration" class="innerdiv">
-					<img src="images/default-1.png" data-preview-src="" data-preview-group="1" /></div>
-			</div>
-			<div>
-				<div class="divtitle">空间亮点</div>
-				<div id="bright_spot" class="innerdiv">
-					<img src="images/default-1.png" data-preview-src="" data-preview-group="1" /></div>
-			</div>
-			<div>
-				<div class="divtitle">色彩分析</div>
-				<div id="color_analysis" class="innerdiv">
-					<img src="images/default-1.png" data-preview-src="" data-preview-group="1" /></div>
-			</div>
+			<div id="cover" class="innerdiv"><img v-bind:src="cover_t_img|picurl '/smart_matching/uploads/imgs/thumbs/' 's-'" data-preview-src="{{cover_t_img|picurl '/smart_matching/uploads/imgs/' '' }}" data-preview-group="1" /></div>
+			<div class="title">[<span id="title">{{name}}</span>]</div>
+			
+			
 
 			<div id="spaces" v-for="spaces in schemeSpaces">
 				<div>
 					<div class="divtitle spacename">{{ spaces.space.name }}</div>
-					<div class="innerdiv"><img class="coverimg" v-bind:src="spaces.space.cover_t_img|picurl '/smart_matching/uploads/imgs/thumbs/' 's-'" data-preview-src="{{ spaces.space.cover_t_img|picurl '/smart_matching/uploads/imgs/' '' }}" data-preview-group="1" /></div>
+					<div class="innerdiv"><img v-bind:src="spaces.space.cover_t_img|picurl '/smart_matching/uploads/imgs/thumbs/' 's-'" data-preview-src="{{spaces.space.cover_t_img|picurl '/smart_matching/uploads/imgs/' '' }}" data-preview-group="1" /></div>
 				</div>
 				<div>
 					<div class="divtitle">方案设计图</div>
@@ -122,10 +76,8 @@
 	</body>
 	<script>
 		var url = window.location.search;
-		var sortid = url.substring(url.lastIndexOf('=') + 1, url.length);
-		var schemeslist = JSON.parse(localStorage.schemes)[sortid];
-		var schemename = schemeslist.name;
-		var schemeid = schemeslist.id;
+		var schemeid = url.substring(url.lastIndexOf('=') + 1, url.length);
+		
 		var jsonschemes;
 		var spacedata;
 		var topbarHeight = 39;
@@ -147,7 +99,6 @@
 				success: function(data) {
 					if (data.success == true) {
 						jsonschemes = data.data;
-						setschemes();
 						getspacedata();
 						adaptive();
 					} else {
@@ -156,24 +107,6 @@
 					}
 				}
 			});
-		}
-
-		function setschemes() {
-			document.getElementById("cover").getElementsByTagName("img")[0].src = serverurl + '/smart_matching/uploads/imgs/thumbs/m-' + jsonschemes.cover_t_img;
-			!jsonschemes.community ? document.getElementById("title").innerHTML = jsonschemes.name + "方案" : document.getElementById("title").innerHTML = jsonschemes.community;
-			!jsonschemes.bedroom ? document.getElementById("woshi").style.display = "none" : document.getElementById("woshi").getElementsByTagName("span")[0].innerHTML = jsonschemes.bedroom;
-			!jsonschemes.livingroom ? document.getElementById("keting").style.display = "none" : document.getElementById("keting").getElementsByTagName("span")[0].innerHTML = jsonschemes.livingroom;
-			!jsonschemes.studyroom ? document.getElementById("shufang").style.display = "none" : document.getElementById("shufang").getElementsByTagName("span")[0].innerHTML = jsonschemes.studyroom;
-			!jsonschemes.diningroom ? document.getElementById("canting").style.display = "none" : document.getElementById("canting").getElementsByTagName("span")[0].innerHTML = jsonschemes.diningroom;
-			!jsonschemes.kitchen ? document.getElementById("chufang").style.display = "none" : document.getElementById("chufang").getElementsByTagName("span")[0].innerHTML = jsonschemes.kitchen;
-			!jsonschemes.bathroom ? document.getElementById("weishengjian").style.display = "none" : document.getElementById("weishengjian").getElementsByTagName("span")[0].innerHTML = jsonschemes.bathroom;
-			!jsonschemes.balcony ? document.getElementById("yangtai").style.display = "none" : document.getElementById("yangtai").getElementsByTagName("span")[0].innerHTML = jsonschemes.balcony;
-			!jsonschemes.tearoom ? document.getElementById("chashi").style.display = "none" : document.getElementById("chashi").getElementsByTagName("span")[0].innerHTML = jsonschemes.tearoom;
-			!jsonschemes.lounge ? document.getElementById("xiuxianqu").style.display = "none" : document.getElementById("xiuxianqu").getElementsByTagName("span")[0].innerHTML = jsonschemes.lounge;
-			document.getElementById("inspiration").getElementsByTagName("img")[0].src = serverurl + '/smart_matching/uploads/imgs/thumbs/m-' + jsonschemes.inspiration_t_img;
-			document.getElementById("bright_spot").getElementsByTagName("img")[0].src = serverurl + '/smart_matching/uploads/imgs/thumbs/m-' + jsonschemes.bright_spot_t_img;
-			document.getElementById("color_analysis").getElementsByTagName("img")[0].src = serverurl + '/smart_matching/uploads/imgs/thumbs/m-' + jsonschemes.color_analysis_t_img;
-			//document.getElementById("display_design").childNodes[0].src = jsonschemes.display_design_img;
 		}
 
 		function getspacedata() {
@@ -185,8 +118,9 @@
 				success: function(data) {
 					if (data.success == true) {
 						spacedata = data.data;
+						console.log(JSON.stringify(spacedata))
 						new Vue({
-							el: '#spaces',
+							el: '#简介',
 							data: spacedata,
 							compiled: function() {
 								tempnum = document.getElementsByClassName("productsnums");
@@ -203,9 +137,10 @@
 								document.getElementById("allprice").innerHTML = tempallprice;
 								stopload()
 								makecatalog();
+								delnull();
 							}
 						})
-						delnull();
+						
 					} else {
 						mui.alert(data.message);
 						stopload();
@@ -215,13 +150,6 @@
 		}
 
 		function delnull() {
-			var judgelist = ["inspiration", "bright_spot", "color_analysis"];
-			for (var i = 0; i < judgelist.length; i++) {
-				item = document.getElementById(judgelist[i]);
-				if ((item.getElementsByTagName("img")[0].src).slice(-4) == "null" || (item.getElementsByTagName("img")[0].src).slice(-2) == "s-") {
-					item.parentNode.parentNode.removeChild(item.parentNode);
-				}
-			}
 			coverimg = document.getElementsByClassName("coverimg");
 			for (i = 0; i < coverimg.length; i++) {
 				if ((coverimg[i].src).slice(-4) == "null" || (coverimg[i].src).slice(-2) == "s-") {

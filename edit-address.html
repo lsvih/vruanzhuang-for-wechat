@@ -87,6 +87,7 @@
 						document.getElementById("county").innerHTML = (items[2] || {}).text;
 					});
 				}, false);
+				stopload();
 			});
 		})(mui, document);
 
@@ -112,7 +113,7 @@
 				return false;
 			}
 			startload();
-			mui.ajax(appurl + '/delivery-addresses/'+ thisaddressid +'?access-token='+JSON.parse(localStorage.userinfo).access_token, {
+			mui.ajax(apiurl + 'delivery-addresses/'+ thisaddressid +'?access-token='+JSON.parse(localStorage.userinfo).access_token, {
 				data: {
 					'consignee': document.getElementById("person").value,
 					'mobile': document.getElementById("phonenum").value,
