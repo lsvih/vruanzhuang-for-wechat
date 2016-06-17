@@ -20,42 +20,71 @@
 			<div class="loading-text"><img src="images/load.gif" width="25px">加载中，请稍候...</div>
 		</div>
 		<header class="mui-bar mui-bar-nav">
-			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
 			<h1 class="mui-title">支付结果</h1>
 		</header>
 
 		<div class="mui-content">
 			<div class="mui-content">
 				<div class="mui-content-padded">
-					<button type="button" class="mui-btn mui-btn-block mui-btn-red" onclick="verpay()">支付成功！</button>
+					<button id="s" type="button" class="mui-btn mui-btn-block mui-btn-red">支付确认中...</button>
 				</div>
 			</div>
 		</div>
 
 	</body>
 	<script>
+	
+	
+	
 		mui.init();
 		startload();
 		verpay();
+		s = document.getElementById("s");
+
 		function verpay() {
-			mui.ajax(appurl + '/orders/' + localStorage.temppayorderid + '?access-token=' + JSON.parse(localStorage.userinfo).access_token, {
-				data: {},
+			mui.ajax(apiurl + 'orders/' + localStorage.temppayorderid + '?access-token=' + JSON.parse(localStorage.userinfo).access_token, {
+				data: {
+					'status': '3',
+				},
 				dataType: 'json',
-				type: 'get',
+				type: 'put',
 				timeout: 6000,
 				success: function(data) {
 					if (data.success == true) {
-						console.log(JSON.stringify(data.data))
-						if (data.data.status == 3 || data.data.status == 4) {
-							alert("支付成功！")
-							window.location.href = "myorder.html?type=3"
-						} else {
-							stopload();
-						}
+						mui.ajax(apiurl + 'orders/' + localStorage.temppayorderid + '?access-token=' + JSON.parse(localStorage.userinfo).access_token, {
+							data: {},
+							dataType: 'json',
+							type: 'get',
+							timeout: 6000,
+							success: function(data) {
+								if (data.success == true) {
+									console.log(JSON.stringify(data.data))
+									if (data.data.status == 3 || data.data.status == 4) {
+										s.innerHTML = "支付成功!点击返回订单列表";
+										stopload();
+										s.onclick = function() {
+											window.location.href = "myorder.html?type=3";
+										};
+									} else {
+										mui.alert("支付失败,请稍候重试,如果支付遇到问题请联系客服。", "微软装");
+										stopload();
+										s.innerHTML = "支付失败。点击返回订单列表";
+										s.onclick = function() {
+											window.location.href = "myorder.html?type=2";
+										};
+									}
+								}
+							},
+							error: function(xhr, type, errorThrown, message) {
+								mui.alert("网络连接失败，请稍候再试");
+								stopload();
+							}
+						});
 					}
 				},
 				error: function(xhr, type, errorThrown, message) {
-					mui.alert("网络连接失败，请稍候再试");
+					alert("网络连接失败，请稍候再试!");
+					location.href = 'myorder.html?type=2'
 					stopload();
 				}
 			});

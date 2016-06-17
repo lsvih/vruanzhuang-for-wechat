@@ -42,7 +42,7 @@
 
 	</body>
 	<script>
-	stopload()
+		stopload()
 		var lastpage;
 		var url = window.location.search;
 		var loc = url.substring(url.lastIndexOf('=') + 1, url.length);
@@ -67,7 +67,7 @@
 				return false;
 			}
 			startload();
-			mui.ajax(appurl + '/users/login', {
+			mui.ajax(apiurl + 'users/login', {
 				data: {
 					'LoginForm[mobile]': mobile,
 					'LoginForm[password]': password
@@ -105,30 +105,32 @@
 										}
 									}
 									localStorage.alladdress = JSON.stringify(alladdress);
-									mui.ajax(apiurl + 'user-photoshoots?access-token=' + JSON.parse(localStorage.userinfo).access_token, {
-										data: {},
-										dataType: 'json',
-										type: 'get',
-										timeout: 6000,
-										success: function(data) {
-											if (data.success == true) {
-												k = data.data.items;
-												b = {
-													'imgid': [],
-													'colid': []
-												};
-												for (i = 0; i < k.length; i++) {
-													b.imgid[i] = k[i].photoshoot_id;
-													b.colid[i] = k[i].id
-												}
-												localStorage.collectpic = JSON.stringify(b);
-												window.location.href = unescape(lastpage);
-											} else {
-												alert(data.message);
-												stopload();
-											}
-										}
-									});
+									//									mui.ajax(apiurl + 'user-photoshoots?access-token=' + JSON.parse(localStorage.userinfo).access_token, {
+									//										data: {},
+									//										dataType: 'json',
+									//										type: 'get',
+									//										timeout: 6000,
+									//										success: function(data) {
+									//											if (data.success == true) {
+									//												k = data.data.items;
+									//												b = {
+									//													'imgid': [],
+									//													'colid': []
+									//												};
+									//												for (i = 0; i < k.length; i++) {
+									//													b.imgid[i] = k[i].photoshoot_id;
+									//													b.colid[i] = k[i].id
+									//												}
+									//												localStorage.collectpic = JSON.stringify(b);
+									//												window.location.href = unescape(lastpage);
+									//											} else {
+									//												alert(data.message);
+									//												stopload();
+									//											}
+									//										}
+									//									});
+//									localStorage.collectpic = JSON.stringify(b);
+									window.location.href = unescape(lastpage);
 								} else {
 									alert("获取地址列表失败，请稍候再试");
 									stopload();

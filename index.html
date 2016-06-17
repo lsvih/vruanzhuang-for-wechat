@@ -41,7 +41,7 @@
 		});
 
 		function getschemes() {
-			mui.ajax(apiurl + 'schemes?fields=id,name,amount,cover_t_img-url', {
+			mui.ajax(apiurl + 'schemes?fields=id,name,amount,cover_t_img-url&filter=custom_edited:0', {
 				data: {},
 				dataType: 'json',
 				type: 'get',

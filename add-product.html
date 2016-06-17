@@ -13,7 +13,7 @@
 
 		<link rel="stylesheet" href="css/mui.min.css" />
 		<link rel="stylesheet" href="css/app.css" />
-		<link rel="stylesheet" href="css/order.css" />
+
 		<title>微软装</title>
 	</head>
 	<style>
@@ -25,12 +25,20 @@
 			top: 10px;
 		}
 		
+		.mui-search {
+			color: #000!important;
+		}
+		
 		.mui-search .mui-placeholder {
 			line-height: 39px;
 		}
 		
 		body {
-			background-color: #fff;
+			background-color: #bbb;
+		}
+		
+		.mui-grid-view.mui-grid-9 {
+			background-color: #bbb;
 		}
 	</style>
 
@@ -38,7 +46,7 @@
 		<header class="mui-bar mui-bar-nav">
 			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
 			<h1 class="mui-title"><div class="mui-input-row mui-search">
-					<input type="search" class="mui-input-clear" placeholder="搜索">
+					<input type="search" class="mui-input-clear" placeholder="搜索" onkeypress="Search()">
 				</div></h1>
 		</header>
 
@@ -47,7 +55,7 @@
 				<ul class="mui-table-view mui-grid-view mui-grid-9" id="class">
 					<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3" v-for="item in items[0].children">
 						<span class="class" data-id="{{item.id}}" root-id="{{item.root}}" name="{{item.name}}">
-							<img src="images/app-logo.png" width="100%" height="100%">
+							<img src="images/icon/{{item.name}}.png" width="100%" height="100%">
 							<div class="mui-media-body" class="name">{{item.name}}</div>
 						</span>
 					</li>
@@ -76,25 +84,14 @@
 								classid = this.getAttribute('data-id');
 								rootid = this.getAttribute('root-id');
 								name = this.getAttribute('name');
-								selectproduct = [{
-									"id": rootid,
-									"name": "产品分类",
-									"children": [{
-										"id": classid,
-										"name": name
-									}]
-								}];
-								console.log(JSON.stringify(selectproduct))
-								mui.ajax(apiurl + 'schemes/match', {
-									data: {
-										'tags': selectproduct
-									},
+								mui.ajax(apiurl + 'product-tags?filter=tag_id:' + classid + '&expand=product&per-page=30', {
 									dataType: 'json',
-									type: 'post',
+									type: 'get',
 									timeout: 6000,
 									success: function(data) {
 										if (data.success == true) {
-											console.log(JSON.stringify(data.data))
+											console.log(JSON.stringify(data.data.items));
+											!data.data.items.length ? mui.alert("本类暂无单品", "微软装") : (localStorage.tempproduct = JSON.stringify(data.data), location.href = "productlist.html?spacesortid=" + spacesortid + "&classid=" + classid);
 										} else {
 											mui.alert("获取方案失败，请稍候再试");
 										}
@@ -103,14 +100,6 @@
 										mui.alert("网络连接失败，请稍候再试");
 									}
 								});
-//								mui.openWindow({
-//									url: "product-in-class.html",
-//									id: "productinclass",
-//									show: {
-//										aniShow: 'zoom-fade-out',
-//										duration: 300
-//									}
-//								});
 								return;
 							});
 						}
@@ -125,6 +114,27 @@
 				stopload();
 			}
 		});
+
+		function Search() {
+			if (event.keyCode == 13) {
+				mui.ajax(apiurl + 'products?lfilter=name:' + document.getElementsByTagName("input")[0].value + "&per-page=30", {
+					dataType: 'json',
+					type: 'get',
+					timeout: 6000,
+					success: function(data) {
+						if (data.success == true) {
+							localStorage.filter =document.getElementsByTagName("input")[0].value;
+							!data.data.items.length ? mui.alert("没有找到符合条件的单品!", "微软装") : (localStorage.tempproduct = JSON.stringify(data.data), location.href = "productlist.html?spacesortid=" + spacesortid + "&lfilter=1");
+						} else {
+							mui.alert("获取方案失败，请稍候再试");
+						}
+					},
+					error: function(xhr, textStatus, errorThrown) {
+						mui.alert("网络连接失败，请稍候再试");
+					}
+				});
+			}
+		}
 	</script>
 
 </html>

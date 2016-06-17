@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+		<meta name="format-detection" content="telephone=no">
+		<meta content="email=no" name="format-detection" />
+		<script type="text/javascript" src="js/vue.js"></script>
+		<script type="text/javascript" src="js/app.js"></script>
+		<script type="text/javascript" src="js/global.js"></script>
+		<script type="text/javascript" src="js/mui.min.js"></script>
+		<link rel="stylesheet" href="css/mui.min.css" />
+		<link rel="stylesheet" href="css/app.css" />
+		<title>微软装</title>
+	</head>
+	<style>
+		.mui-grid-view.mui-grid-9 {
+			background-color: #fff
+		}
+		
+		.checkit {
+			position: absolute;
+			top: 10px;
+			right: 10px;
+			height: auto;
+			width: 20%;
+			display: none;
+		}
+		
+		.checkit img {
+			width: 100%;
+			height: 100%;
+		}
+		
+		.mui-grid-view.mui-grid-9 .mui-table-view-cell {
+			border: 0;
+		}
+		
+		#submit {
+			font-size: 40px;
+			padding-top: 0;
+		}
+	</style>
+
+	<body>
+		<header class="mui-bar mui-bar-nav">
+			<h1 class="mui-title">添加单品</h1>
+			<a class="mui-icon mui-icon-checkmarkempty mui-pull-right" id="submit"></a>
+		</header>
+
+		<div class="mui-content">
+			<div id="pullrefresh" class="mui-content mui-scroll-wrapper">
+				<div class="mui-scroll">
+					<!--数据列表-->
+					<ul class="mui-table-view mui-table-view-chevron">
+						<div class="mui-slider-item">
+							<ul class="mui-table-view mui-grid-view mui-grid-9" id="product1">
+								<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3" check-state="0" id="{{$index}}" data-id="{{item.product_id}}" v-for="item in items">
+									<div class="checkit"><img src="images/check.png"></div>
+									<span class="product" name="{{item.name}}">
+							<img v-bind:src="item.cover_t_imgs|picurl '/smart_matching/uploads/imgs/thumbs/' 's-'"  width="100%" height="100%">
+							<div class="mui-media-body" class="name">{{item.name}}</div>
+							<div class="mui-media-body" class="name">{{item.amount/100|currency '￥'}}元</div>
+						</span>
+								</li>
+							</ul>
+
+							<ul class="mui-table-view mui-grid-view mui-grid-9" id="product2">
+								<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3" check-state="0" id="{{$index}}" data-id="{{item.product_id}}" v-for="item in items">
+									<div class="checkit"><img src="images/check.png"></div>
+									<span class="product" name="{{item.product.name}}">
+							<img v-bind:src="item.product.cover_t_imgs|picurl '/smart_matching/uploads/imgs/thumbs/' 's-'"  width="100%" height="100%">
+							<div class="mui-media-body" class="name">{{item.product.name}}</div>
+							<div class="mui-media-body" class="name">{{item.product.amount/100|currency '￥'}}元</div>
+						</span>
+								</li>
+							</ul>
+						</div>
+					</ul>
+				</div>
+			</div>
+
+		</div>
+	</body>
+	<script>
+		mui.init({
+			pullRefresh: {
+				container: '#pullrefresh',
+				up: {
+					contentrefresh: '正在加载...',
+					callback: pullupRefresh
+				}
+			}
+		});
+		var count = 1;
+		var spacesortid = GetRequest()["spacesortid"];
+		var classid = GetRequest()["classid"];
+		var lfilter;
+		if (localStorage.filter)(lfilter = localStorage.filter, localStorage.removeItem("filter"));
+		var productsortidlist = [];
+		Vue.filter('picurl', function(value, url, picsize) {
+			return serverurl + url + picsize + value
+		})
+		productlist = JSON.parse(localStorage.tempproduct);
+		if (!lfilter) {
+			document.getElementById("product1").style.display = "none";
+			var pl = new Vue({
+				el: '#product2',
+				data: productlist
+			})
+			mui('#product2').on('tap', 'li', function() {
+				if (this.getAttribute('check-state') == 0) {
+					sort = this.getAttribute('id');
+					document.getElementById(sort).getElementsByClassName("checkit")[0].style.display = "block";
+					productid = this.getAttribute('data-id');
+					this.setAttribute('check-state', 1)
+					productsortidlist.push(sort);
+				} else {
+					sort = this.getAttribute('id');
+					document.getElementById(sort).getElementsByClassName("checkit")[0].style.display = "none";
+					productid = this.getAttribute('data-id');
+					this.setAttribute('check-state', 0);
+					productsortidlist.remove(sort);
+				}
+			});
+		} else {
+			document.getElementById("product2").style.display = "none";
+			var pl = new Vue({
+				el: '#product1',
+				data: productlist
+			})
+			mui('#product1').on('tap', 'li', function() {
+				if (this.getAttribute('check-state') == 0) {
+					sort = this.getAttribute('id');
+					document.getElementById(sort).getElementsByClassName("checkit")[0].style.display = "block";
+					productid = this.getAttribute('data-id');
+					this.setAttribute('check-state', 1)
+					productsortidlist.push(sort);
+				} else {
+					sort = this.getAttribute('id');
+					document.getElementById(sort).getElementsByClassName("checkit")[0].style.display = "none";
+					productid = this.getAttribute('data-id');
+					this.setAttribute('check-state', 0);
+					productsortidlist.remove(sort);
+				}
+			});
+		}
+		document.getElementById("submit").addEventListener("tap", function() {
+			tempproduct = JSON.parse(localStorage.temp);
+			if (!lfilter) {
+				for (var j = 0; j < productsortidlist.length; j++) {
+					additem = {
+						"product_id": productlist.items[productsortidlist[j]].product.id,
+						"name": productlist.items[productsortidlist[j]].product.name,
+						"product_num": "1",
+						"price": productlist.items[productsortidlist[j]].product.amount,
+						"cover_t_img": productlist.items[productsortidlist[j]].product.cover_t_imgs
+					}
+					tempproduct.spaces[spacesortid].products.push(additem);
+				}
+			} else {
+				for (var j = 0; j < productsortidlist.length; j++) {
+					additem = {
+						"product_id": productlist.items[productsortidlist[j]].id,
+						"name": productlist.items[productsortidlist[j]].name,
+						"product_num": "1",
+						"price": productlist.items[productsortidlist[j]].amount,
+						"cover_t_img": productlist.items[productsortidlist[j]].cover_t_imgs
+					}
+					tempproduct.spaces[spacesortid].products.push(additem);
+				}
+			}
+			localStorage.temp = JSON.stringify(tempproduct);
+			history.go(-2);
+		});
+		var maxcount;
+
+		function pullupRefresh() {
+			setTimeout(function() {
+				count++;
+				if (!lfilter) {
+					mui.ajax(apiurl + 'product-tags?filter=tag_id:' + classid + '&expand=product&per-page=30&page=' + count, {
+						dataType: 'json',
+						type: 'get',
+						timeout: 6000,
+						success: function(data) {
+							if (data.success == true) {
+								productlist.items = productlist.items.concat(data.data.items);
+								maxcount = productlist._meta.pageCount;
+							} else {
+								mui.alert("获取方案失败，请稍候再试");
+							}
+						},
+						error: function(xhr, textStatus, errorThrown) {
+							mui.alert("网络连接失败，请稍候再试");
+						}
+					});
+				} else {
+					mui.ajax(apiurl + 'products?lfilter=name:' + lfilter + '&per-page=30&page=' + count, {
+						dataType: 'json',
+						type: 'get',
+						timeout: 6000,
+						success: function(data) {
+							if (data.success == true) {
+								productlist.items = productlist.items.concat(data.data.items);
+								maxcount = productlist._meta.pageCount;
+							} else {
+								mui.alert("获取方案失败，请稍候再试");
+							}
+						},
+						error: function(xhr, textStatus, errorThrown) {
+							mui.alert("网络连接失败，请稍候再试");
+						}
+					});
+				}
+				mui('#pullrefresh').pullRefresh().endPullupToRefresh((count >= maxcount)); //true=没有更多数据
+			}, 1500);
+		}
+		if (mui.os.plus) {
+			mui.plusReady(function() {
+				setTimeout(function() {
+					mui('#pullrefresh').pullRefresh().pullupLoading();
+				}, 1000);
+			});
+		} else {
+			mui.ready(function() {
+				mui('#pullrefresh').pullRefresh().pullupLoading();
+			});
+		}
+	</script>
+
+</html>

@@ -26,7 +26,6 @@
 			<div class="loading-text"><img src="images/load.gif" width="25px">加载中，请稍候...</div>
 		</div>
 		<header class="mui-bar mui-bar-nav">
-			<a class="mui-icon mui-icon-left-nav mui-pull-left" href="usercenter.html"></a>
 			<h1 class="mui-title">我的订单</h1>
 		</header>
 
@@ -234,7 +233,7 @@
 							order.orders[i].orderid = source[i].order_no;
 							order.orders[i].orderstate = source[i].status;
 							order.orders[i].ordertime = getDate(source[i].created_at);
-							order.orders[i].price = source[i].order_fee;
+							order.orders[i].price = source[i].amount/100;
 							order.orders[i].sendprice = source[i].freight;
 							order.orders[i].address = source[i].delivery_address_id;
 							for (j = 0; j < source[i].orderProducts.length; j++) {
@@ -349,8 +348,10 @@
 								window.location.href = "orderinfo-waitforpay.html?orderid=" + e;
 								break;
 							case "3":
+								window.location.href = "orderinfo.html?orderid=" + e;
 								break;
 							default:
+								window.location.href = "orderinfo.html?orderid=" + e;
 								break;
 						}
 					}

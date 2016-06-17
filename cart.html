@@ -79,6 +79,12 @@
 				});
 			});
 			var btnArray = ['确认', '取消'];
+			var value = this.checked;
+			var chk = document.getElementsByName("checkbox")
+			for (var i = 0; i < chk.length; i++) {
+				chk[i].checked = value;
+			}
+			selectChange();
 		})(mui);
 		Vue.filter('picurl', function(value, url) {
 			return serverurl + url + value
@@ -125,7 +131,7 @@
 
 		function selectChange() {
 			var value = this.checked;
-			var chk = document.getElementsByName("checkbox")
+			var chk = document.getElementsByName("checkbox");
 			var j = 0;
 			var count = 0;
 			for (var i = 0; i < chk.length; i++) {

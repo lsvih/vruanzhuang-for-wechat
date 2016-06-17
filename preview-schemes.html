@@ -29,19 +29,18 @@
 			<div class="loading-text"><img src="images/load.gif" width="25px">加载中，请稍候...</div>
 		</div>
 		<header class="mui-bar mui-bar-nav">
-			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a><h1 class="mui-title">查看方案</h1>
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title">查看方案</h1>
 		</header>
 		<div id="catalog"><img src="images/app-logo.png" width="50px" height="50px"></div>
 		<div class="mui-content" id="简介">
 			<div id="cover" class="innerdiv"><img v-bind:src="cover_t_img|picurl '/smart_matching/uploads/imgs/thumbs/' 's-'" data-preview-src="{{cover_t_img|picurl '/smart_matching/uploads/imgs/' '' }}" data-preview-group="1" /></div>
 			<div class="title">[<span id="title">{{name}}</span>]</div>
-			
-			
 
 			<div id="spaces" v-for="spaces in schemeSpaces">
 				<div>
 					<div class="divtitle spacename">{{ spaces.space.name }}</div>
-					<div class="innerdiv"><img v-bind:src="spaces.space.cover_t_img|picurl '/smart_matching/uploads/imgs/thumbs/' 's-'" data-preview-src="{{spaces.space.cover_t_img|picurl '/smart_matching/uploads/imgs/' '' }}" data-preview-group="1" /></div>
+					<div class="innerdiv"><img class="coverimg" v-bind:src="spaces.space.cover_t_img|picurl '/smart_matching/uploads/imgs/thumbs/' 's-'" data-preview-src="{{spaces.space.cover_t_img|picurl '/smart_matching/uploads/imgs/' '' }}" data-preview-group="1" /></div>
 				</div>
 				<div>
 					<div class="divtitle">方案设计图</div>
@@ -63,7 +62,7 @@
 
 			</div>
 			<div class="cont" style="bottom: 0;">方案产品总数:<span id="allnum">0</span>&nbsp;方案总金额:<span id="allprice">0</span>元</div>
-		
+
 			<div id="cataloglist">
 				<div>索引</div>
 				<ul id="potlist">
@@ -77,18 +76,17 @@
 	<script>
 		var url = window.location.search;
 		var schemeid = url.substring(url.lastIndexOf('=') + 1, url.length);
-		
 		var jsonschemes;
 		var spacedata;
 		var topbarHeight = 39;
-		
 		mui.ready(function() {
 			Vue.filter('picurl', function(value, url, picsize) {
 				return serverurl + url + picsize + value
 			})
-			getschemes();adaptive();mui.previewImage();
+			getschemes();
+			adaptive();
+			mui.previewImage();
 		})
-		
 
 		function getschemes() {
 			mui.ajax(apiurl + 'schemes/' + schemeid, {
@@ -136,11 +134,10 @@
 								document.getElementById("allnum").innerHTML = tempallnum;
 								document.getElementById("allprice").innerHTML = tempallprice;
 								stopload()
-								makecatalog();
 								delnull();
+								makecatalog();
 							}
 						})
-						
 					} else {
 						mui.alert(data.message);
 						stopload();
@@ -190,7 +187,6 @@
 				}
 			}
 		}
-	
 		mui('body').on('tap', '.productsimgs', function() {
 			productid = this.getAttribute('data-id');
 			mui.openWindow({
@@ -225,11 +221,12 @@
 			document.getElementById("cataloglist").style.left = '-150px';
 		}
 		var catalog = [];
+
 		function makecatalog() {
 			spacenames = document.getElementsByClassName("divtitle spacename");
 			for (var i = 0; i < spacenames.length; i++) {
 				searchresult = searchKeyWordAndMakeCatalog(spacenames[i].innerHTML);
-				if (searchresult)(spacenames[i].innerHTML = searchresult, spacenames[i].id = searchresult, catalog.push(searchresult))
+				if (searchresult)(spacenames[i].innerHTML = searchresult, spacenames[i].id = searchresult, catalog.push(searchresult));
 			}
 			new Vue({
 				el: '#catalogpot',

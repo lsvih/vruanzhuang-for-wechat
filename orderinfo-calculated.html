@@ -109,7 +109,7 @@
 			success: function(data) {
 				if (data.success == true) {
 					thisgoods = data.data;
-					localStorage.tempgoods = JSON.stringify(thisgoods);//为商品列表
+					localStorage.tempgoods = JSON.stringify(thisgoods); //为商品列表
 					console.log(JSON.stringify(thisgoods))
 					var sgood = new Vue({
 						el: '#kgoods',
@@ -282,10 +282,7 @@
 				type: 'put',
 				timeout: 6000,
 				success: function(data) {
-					if (data.success == true) {
-						console.log(JSON.stringify(data.data));
-						window.location.href = "orderinfo-waitforpay.html";
-					}
+					data.success == true ? window.location.href = "orderinfo-waitforpay.html" : (mui.alert("创建支付订单失败，请稍候再试。", "微软装"), stopload());
 				},
 				error: function(xhr, type, errorThrown, message) {
 					mui.alert("网络连接失败，请稍候再试");

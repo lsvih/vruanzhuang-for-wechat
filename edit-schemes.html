@@ -67,7 +67,7 @@
 						<p><span class="productsunitprice">{{ product.price/100 }}</span>元</p>
 						<div class="line"></div>
 					</div>
-					<div class="goods add"><img data-id="x{{$index}}" class="productsimgs" src="images/add.png"></div>
+					<div class="addgoods add" data-id="{{$index}}"><span class=" mui-icon mui-icon-plus"></span></div>
 					<div class="line"></div>
 
 				</div>
@@ -78,6 +78,7 @@
 
 	</body>
 	<script>
+		if (!localStorage.temp) mui.back();
 		var customscheme = JSON.parse(localStorage.temp);
 		var jsonschemes;
 		var spacedata;
@@ -181,21 +182,29 @@
 					goods[i].style.marginLeft = bodywideth * 0.02 + 'px';
 				}
 			}
+			addgoods = document.getElementsByClassName("addgoods")
+			for (i = 0; i < addgoods.length; i++) {
+				addgoods[i].style.width = bodywideth * 0.48 + 'px';
+				addgoods[i].style.height = bodywideth * 0.48 + 'px';
+				addgoods[i].firstChild.style.fontSize = bodywideth * 0.32 + 'px';
+				addgoods[i].firstChild.style.lineHeight = bodywideth * 0.48 + 'px';
+			}
 		}
+		mui('body').on('tap', '.addgoods', function() {
+			spacesortid = this.getAttribute('data-id');
+			localStorage.temp = JSON.stringify(customscheme);
+			mui.openWindow({
+				url: "add-product.html?spacesortid=" + spacesortid,
+				id: "add-product",
+				show: {
+					aniShow: 'zoom-fade-out',
+					duration: 300
+				}
+			});
+			return;
+		});
 		mui('body').on('tap', '.productsimgs', function() {
 			productid = this.getAttribute('data-id');
-			if (productid.substr(0, 1) == 'x') {
-				localStorage.temp = JSON.stringify(customscheme);
-				mui.openWindow({
-					url: "add-product.html?spacesortid=" + productid.substr(1),
-					id: "add-product",
-					show: {
-						aniShow: 'zoom-fade-out',
-						duration: 300
-					}
-				});
-				return;
-			}
 			localStorage.temp = JSON.stringify(customscheme);
 			mui.openWindow({
 				url: "product.html?id=" + productid,

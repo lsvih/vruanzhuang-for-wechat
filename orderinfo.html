@@ -6,11 +6,16 @@
 		<meta name="viewport" content="initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
 		<meta name="format-detection" content="telephone=no">
 		<meta content="email=no" name="format-detection" />
+		<meta http-equiv="pragma" content="no-cache">
+		<meta http-equiv="Cache-Control" content="no-cache, must-revalidate">
+		<meta http-equiv="expires" content="Wed, 26 Feb 1997 08:21:57 GMT">
 		<script type="text/javascript" src="js/vue.js"></script>
-				<script type="text/javascript" src="js/app.js"></script>
-		<script type="text/javascript" src="js/global.js" ></script>
+		<script type="text/javascript" src="js/app.js"></script>
+		<script type="text/javascript" src="js/global.js"></script>
+		<script type="text/javascript" src="js/global.js"></script>
 		<script type="text/javascript" src="js/mui.min.js"></script>
-		
+		<script type="text/javascript" src="js/iflogin.js?lastpage=usercenter.html"></script>
+
 		<link rel="stylesheet" href="css/mui.min.css" />
 		<link rel="stylesheet" href="css/app.css" />
 		<link rel="stylesheet" href="css/order.css" />
@@ -19,15 +24,19 @@
 	</head>
 
 	<body>
+		<div id="load">
+			<div class="loading"></div>
+			<div class="loading-text"><img src="images/load.gif" width="25px">加载中，请稍候...</div>
+		</div>
 		<header class="mui-bar mui-bar-nav">
 			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
 			<h1 class="mui-title">订单详情</h1>
 		</header>
 
-		<div class="mui-content" id="order">
+		<div class="mui-content">
 			<ul id="address" class="mui-table-view">
-				<li class="mui-table-view-cell">
-					<div class="address-elem">
+				<li class="mui-table-view-cell" style="height: 80px;">
+					<div id="showaddress" class="address-elem">
 						<div class="person">{{person}}</div>
 						<div class="phonenum">{{phonenum}}</div>
 						<div class="address"><span class="province">{{province}}</span><span class="city">{{city}}</span><span class="county">{{county}}</span><span class="detailed-address">{{detailedaddress}}</span></div>
@@ -38,15 +47,21 @@
 				<div>
 					<div class="blank"></div>
 					<li class="orderinfo">
-						<div class="order-state">{{orderstate }}</div>
-						<div class="orderid">订单号:<span>{{orderid }}</span></div>
-						<div class="ordertime">下单日期:<span>{{ ordertime }}</span></div>
-						<div class="orderstate">订单状态:<span class="state">{{orderstate}}</span></div>
+						<div id="order">
+							<div class="order-state">{{status }}</div>
+							<div class="orderid">订单号:<span>{{ order_no }}</span></div>
+							<div class="ordertime">下单日期:<span>{{ created_at }}</span></div>
+							<div class="orderstate">订单状态:<span id="state"></span></div>
+						</div>
 						<div class="iteminner">
 							<div class="items">
-								<div class="lineimg" v-for="good in goods">
-									<div class="item" onclick="list()"><img v-bind:src="good.img_src"></div>
+								<div class="lineimg" id="kschemes" v-for="item in items">
+									<div class="scheme-item" onclick="window.location.href='preview-schemes.html?id={{item.scheme.id}}'"><img v-bind:src="item.scheme.cover_t_img|picurl '/smart_matching/uploads/imgs/thumbs/' 's-'"></div>
 								</div>
+								<div class="lineimg" id="kgoods" v-for="item in items">
+									<div class="item" onclick="list()"><img v-bind:src="item.product.cover_t_imgs|picurl '/smart_matching/uploads/imgs/thumbs/' 's-'"></div>
+								</div>
+
 							</div>
 						</div>
 
@@ -54,78 +69,135 @@
 
 				</div>
 				<div class="blank"></div>
-				<div class="paymode">支付方式：<span>{{paymode}}</span></div>
+				<!--<div class="paymode">支付方式：<span>{{paymode}}</span></div>-->
 			</ul>
-			<div class="infonum">共<span class="num">{{goods.length}}</span>件商品，合计：<span class="price info">{{price  | currency '￥'}}</span><br />运费：<span class="sendprice info">{{sendprice | currency '￥'}}</span></div>
+			<div class="infonum">合计：￥<span class="price info" id="thisallprice">...</span><br />运费：￥<span id="thisfr" class="sendprice info">...</span></div>
 		</div>
 
 	</body>
 	<script>
 		mui.init();
-		jsonaddress = JSON.parse(localStorage.alladdress);
-		jsonorder = JSON.parse(localStorage.order);
-		var url = window.location.search;
-		var orderid = url.substring(url.lastIndexOf('=') + 1, url.length);
-		for (var i = 0; i < jsonorder.orders.length; i++) {
-			if (orderid == jsonorder.orders[i].orderid) {
-				thisorder = jsonorder.orders[i];
+		var goods = new Array;
+		var orderid = GetRequest()["orderid"];
+		var addressid;
+		var thisaddress;
+		mui.ajax(apiurl + 'orders/' + orderid + '?access-token=' + JSON.parse(localStorage.userinfo).access_token, {
+			dataType: 'json',
+			type: 'get',
+			timeout: 6000,
+			success: function(data) {
+				if (data.success == true) {
+					localStorage.temporder = JSON.stringify(data.data);
+					addressid = data.data.delivery_address_id;
+					jsonaddress = JSON.parse(localStorage.alladdress);
+					for (var k = 0; k < jsonaddress.address.length; k++) {
+						if (jsonaddress.address[k].id == addressid) thisaddress = jsonaddress.address[k];
+					}
+					new Vue({
+						el: '#address',
+						data: thisaddress
+					});
+					new Vue({
+						el: '#order',
+						data: thisorder,
+						compiled: function() {
+							updatesta();
+							updatastate();
+						}
+					});
+				}
+			},
+			error: function(xhr, type, errorThrown, message) {
+				mui.alert("网络连接失败，请稍候再试");
+				stopload();
 			}
-		}
-		for (var j = 0; j < jsonaddress.address.length; j++) {
-			if (thisorder.address == jsonaddress.address[j].id) {
-				thisaddress = jsonaddress.address[j];
-			}
-		}
-		new Vue({
-			el: '#address',
-			data: thisaddress
 		});
-		new Vue({
-			el: '#order',
-			data: thisorder
-		})
-		updatastate();
+		thisorder = JSON.parse(localStorage.temporder);
+		console.log(localStorage.temporder)
+		thisorder.created_at = getDate(thisorder.created_at);
+		startload();
+		Vue.filter('picurl', function(value, url, picsize) {
+			return serverurl + url + picsize + value;
+		});
+		mui.ajax(apiurl + 'order-products?access-token=' + JSON.parse(localStorage.userinfo).access_token + '&filter=order_id:' + orderid + '&expand=product', {
+			dataType: 'json',
+			type: 'get',
+			timeout: 6000,
+			success: function(data) {
+				if (data.success == true) {
+					thisgoods = data.data;
+					localStorage.tempgoods = JSON.stringify(thisgoods); //为商品列表
+					console.log(JSON.stringify(thisgoods))
+					var sgood = new Vue({
+						el: '#kgoods',
+						data: thisgoods
+					});
+					stopload();
+				} else {
+					mui.alert(data.message);
+					stopload();
+				}
+			},
+			error: function(xhr, type, errorThrown, message) {
+				mui.alert("网络连接失败，请稍候再试");
+				stopload();
+			}
+		});
+		mui.ajax(apiurl + 'order-schemes?access-token=' + JSON.parse(localStorage.userinfo).access_token + '&filter=order_id:' + orderid + '&expand=scheme', {
+			data: {},
+			dataType: 'json',
+			type: 'get',
+			timeout: 6000,
+			success: function(data) {
+				if (data.success == true) {
+					console.log(JSON.stringify(data.data));
+					thisschemes = data.data;
+					var sgood = new Vue({
+						el: '#kschemes',
+						data: thisschemes
+					});
+					stopload();
+				} else {
+					mui.alert(data.message);
+					stopload();
+				}
+			},
+			error: function(xhr, type, errorThrown, message) {
+				mui.alert("网络连接失败，请稍候再试");
+				stopload();
+			}
+		});
 
 		function updatastate() {
-			var elem = document.getElementsByClassName("state");
-			for (var i = 0; i < elem.length; i++) {
-				switch (elem[i].innerHTML) {
-					case "1":
-						elem[i].innerHTML = "待付款";
-						var oDiv = document.createElement('div');
-						oDiv.innerHTML = '<div class="cancel innavfor2">取消订单</div><div class="pay innavfor2 active">确认付款</div>';
-						elem[i].parentNode.parentNode.parentNode.appendChild(oDiv);
-						break;
-					case "2":
-						elem[i].innerHTML = "待配送";
-						var oDiv = document.createElement('div');
-						oDiv.innerHTML = '<div class="cancel innavfor1">取消订单</div>';
-						elem[i].parentNode.parentNode.parentNode.appendChild(oDiv);
-						break;
-					default:
-						elem[i].innerHTML = "待评价";
-						var oDiv = document.createElement('div');
-						oDiv.innerHTML = '<div class="pay innavfor1 active">评价</div>';
-						elem[i].parentNode.parentNode.parentNode.appendChild(oDiv);
-						break;
-				}
-			}
-			var elem2 = document.getElementsByClassName("paymode")[0].getElementsByTagName("span")[0];
-			switch (elem2.innerHTML) {
-				case "1":
-					elem2.innerHTML = "微信支付";
+			var elem = document.getElementById("state");
+			var state = document.getElementsByClassName("order-state")[0].innerHTML;
+			switch (state) {
+				case "3":
+					elem.innerHTML = "待配送";
 					break;
-				case "2":
-					elem2.innerHTML = "支付宝";
+				case "4":
+					elem.innerHTML = "待配送";
 					break;
 				default:
-					elem2.innerHTML = "银联支付";
+					elem.innerHTML = "待评价";
+					var oDiv = document.createElement('div');
+					oDiv.innerHTML = '<div class = "pay innavfor1 active">评价 </div>';
+					elem.parentNode.parentNode.parentNode.appendChild(oDiv);
 					break;
 			}
+		}
+
+		function updatesta() {
+			document.getElementById("thisallprice").innerHTML = thisorder.amount / 100;
+			document.getElementById("thisfr").innerHTML = thisorder.freight;
 		}
 
 		function list() {
-			window.location.href = "list.html?orderid=" + thisorder.orderid;
+			window.location.href = "list.html?orderid=" + orderid;
+		}
+
+		function selectaddress() {
+			window.location.href = 'select-address.html?orderid=' + orderid;
 		}
 	</script>
 
