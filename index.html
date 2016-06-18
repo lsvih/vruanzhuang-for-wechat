@@ -77,8 +77,8 @@
 			tempindeximg = JSON.parse(localStorage.schemes);
 			schemelist = new Array;
 			for (i = 0; i < tempindeximg.length; i++) {
-				schemelist[i] = '{"title":"' + tempindeximg[i].name + '","price":' + tempindeximg[i]['amount'] / 100 + ',"preview":"' + tempindeximg[i]['cover_t_img-url'] + '","id":"' + tempindeximg[i].id + '"}'
-				schemelist[i] = JSON.parse(schemelist[i]);
+				item = '{"title":"' + tempindeximg[i].name + '","price":' + tempindeximg[i]['amount'] / 100 + ',"preview":"' + tempindeximg[i]['cover_t_img-url'] + '","id":"' + tempindeximg[i].id + '"}'
+				schemelist[i] = JSON.parse(item);
 			}
 			document.getElementById("nodata").style.display = "none";
 			if (schemelist.length == 0) {
