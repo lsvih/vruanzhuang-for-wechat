@@ -61,7 +61,7 @@
 			}
 			localStorage.alladdress = JSON.stringify(alladdress);
 			startload();
-			mui.ajax(apiurl + 'delivery-addresses?access-token=' + JSON.parse(localStorage.userinfo).access_token +'&filter=userid:' +JSON.parse(localStorage.userinfo).id, {
+			mui.ajax(apiurl + 'delivery-addresses?access-token=' + strAccessToken +'&filter=userid:' +nUserId, {
 				data: {},
 				dataType: 'json',
 				type: 'get',
@@ -70,9 +70,8 @@
 					console.log(JSON.stringify(data))
 					if (data.success == true) {
 						for (i = 0; i < data.data.items.length; i++) {
-							var jsonadd = '{"person":"' + data.data.items[i].consignee + '","phonenum": "' + data.data.items[i].mobile + '","postcode": "' + data.data.items[i].postcode + '","province": "' + data.data.items[i].province + '","city": "' + data.data.items[i].city + '","county": "' + data.data.items[i].county + '","detailedaddress": "' + data.data.items[i].address + '","id": "' + data.data.items[i].id + '"}';
-							jsonadd = JSON.parse(jsonadd);
-							alladdress.address.push(jsonadd);
+							var strItem = '{"person":"' + data.data.items[i].consignee + '","phonenum": "' + data.data.items[i].mobile + '","postcode": "' + data.data.items[i].postcode + '","province": "' + data.data.items[i].province + '","city": "' + data.data.items[i].city + '","county": "' + data.data.items[i].county + '","detailedaddress": "' + data.data.items[i].address + '","id": "' + data.data.items[i].id + '"}';
+							alladdress.address.push(JSON.parse(strItem));
 						}
 						for (i = 0; i < data.data.items.length; i++) {
 							if (data.data.items[i].is_default == 1) {
@@ -98,7 +97,6 @@
 			stopload();
 			document.getElementById("address").style.display = 'block';
 		}
-		var muid;
 		lastdefault = alladdress.selected;
 		var address = new Vue({
 			el: '#address',
@@ -107,7 +105,7 @@
 				del: function(d, e) {
 					if (window.confirm('是否从删除此地址？')) {
 						startload();
-						mui.ajax(apiurl + 'delivery-addresses/' + alladdress.address[e].id + '?access-token=' + JSON.parse(localStorage.userinfo).access_token, {
+						mui.ajax(apiurl + 'delivery-addresses/' + alladdress.address[e].id + '?access-token=' + strAccessToken, {
 							data: {},
 							dataType: 'json',
 							type: 'delete',
@@ -137,7 +135,7 @@
 					startload();
 					var newdefault = alladdress.address[k].id;
 					if (!lastdefault) {
-						mui.ajax(apiurl + 'delivery-addresses/' + newdefault + '?access-token=' + JSON.parse(localStorage.userinfo).access_token, {
+						mui.ajax(apiurl + 'delivery-addresses/' + newdefault + '?access-token=' + strAccessToken, {
 							data: {
 								'is_default': 1
 							},
@@ -164,7 +162,7 @@
 							}
 						});
 					} else {
-						mui.ajax(apiurl + 'delivery-addresses/' + lastdefault + '?access-token=' + JSON.parse(localStorage.userinfo).access_token, {
+						mui.ajax(apiurl + 'delivery-addresses/' + lastdefault + '?access-token=' + strAccessToken, {
 							data: {
 								'is_default': 0
 							},
@@ -173,7 +171,7 @@
 							timeout: 6000,
 							success: function(data) {
 								if (data.success == true) {
-									mui.ajax(appurl + '/delivery-addresses/' + newdefault + '?access-token=' + JSON.parse(localStorage.userinfo).access_token, {
+									mui.ajax(appurl + '/delivery-addresses/' + newdefault + '?access-token=' + strAccessToken, {
 										data: {
 											'is_default': 1
 										},

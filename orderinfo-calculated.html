@@ -14,7 +14,7 @@
 		<script type="text/javascript" src="js/global.js"></script>
 		<script type="text/javascript" src="js/global.js"></script>
 		<script type="text/javascript" src="js/mui.min.js"></script>
-		<script type="text/javascript" src="js/iflogin.js?lastpage=usercenter.html"></script>
+		<script type="text/javascript" src="js/iflogin.js?lastpage=myorder.html"></script>
 
 		<link rel="stylesheet" href="css/mui.min.css" />
 		<link rel="stylesheet" href="css/app.css" />
@@ -81,7 +81,7 @@
 		mui.init();
 		var goods = new Array;
 		var orderid = GetRequest()["orderid"];
-		mui.ajax(apiurl + 'orders/' + orderid + '?access-token=' + JSON.parse(localStorage.userinfo).access_token, {
+		mui.ajax(apiurl + 'orders/' + orderid + '?access-token=' + strAccessToken, {
 			dataType: 'json',
 			type: 'get',
 			timeout: 6000,
@@ -102,7 +102,7 @@
 		Vue.filter('picurl', function(value, url, picsize) {
 			return serverurl + url + picsize + value;
 		});
-		mui.ajax(apiurl + 'order-products?access-token=' + JSON.parse(localStorage.userinfo).access_token + '&filter=order_id:' + orderid + '&expand=product', {
+		mui.ajax(apiurl + 'order-products?access-token=' + strAccessToken + '&filter=order_id:' + orderid + '&expand=product', {
 			dataType: 'json',
 			type: 'get',
 			timeout: 6000,
@@ -144,7 +144,7 @@
 				stopload();
 			}
 		});
-		mui.ajax(apiurl + 'order-schemes?access-token=' + JSON.parse(localStorage.userinfo).access_token + '&filter=order_id:' + orderid + '&expand=scheme', {
+		mui.ajax(apiurl + 'order-schemes?access-token=' + strAccessToken + '&filter=order_id:' + orderid + '&expand=scheme', {
 			data: {},
 			dataType: 'json',
 			type: 'get',
@@ -186,8 +186,8 @@
 				stopload();
 			}
 		});
-		jsonaddress = JSON.parse(localStorage.alladdress);
-		if (!(jsonaddress.address[0])) {
+		jsonAddress = JSON.parse(localStorage.alladdress);
+		if (!(jsonAddress.address[0])) {
 			document.getElementById("showaddress").style.display = "none";
 			thisaddress = null;
 		} else {
@@ -195,23 +195,23 @@
 		} //确保地址有值
 		var addresssortid = GetRequest()["selectaddress"];
 		if (!addresssortid) { //没有选择地址则搜索默认地址
-			if (!jsonaddress.selected) {
-				thisaddress = jsonaddress.address[0] //没有默认则取第一个
+			if (!jsonAddress.selected) {
+				thisaddress = jsonAddress.address[0] //没有默认则取第一个
 			} else {
 				k = 0;
-				for (i = 0; i < jsonaddress.address.length; i++) {
-					if (jsonaddress.selected == jsonaddress.address[i].id) {
-						thisaddress = jsonaddress.address[i];
+				for (i = 0; i < jsonAddress.address.length; i++) {
+					if (jsonAddress.selected == jsonAddress.address[i].id) {
+						thisaddress = jsonAddress.address[i];
 						k = 1;
 						break;
 					} //有默认地址则取默认地址
 				}
 				if (k = 0) {
-					thisaddress = jsonaddress.address[0] //未搜索到默认地址则取第一个地址
+					thisaddress = jsonAddress.address[0] //未搜索到默认地址则取第一个地址
 				}
 			}
 		} else {
-			thisaddress = jsonaddress.address[addresssortid];
+			thisaddress = jsonAddress.address[addresssortid];
 		}
 		var saddress = new Vue({
 			el: '#address',
@@ -222,58 +222,13 @@
 			data: thisorder
 		});
 		updatesta();
-		//updatastate();
-		function updatastate() {
-			var elem = document.getElementsByClassName("state");
-			for (var i = 0; i < elem.length; i++) {
-				switch (elem[i].innerHTML) {
-					case "1":
-						elem[i].innerHTML = "待确认";
-						var oDiv = document.createElement('div');
-						oDiv.innerHTML = '<div class="cancel innavfor2">取消订单</div> <div class = "pay innavfor2 active"> 确认付款 </div>';
-						elem[i].parentNode.parentNode.parentNode.appendChild(oDiv);
-						break;
-					case "2":
-						elem[i].innerHTML = "待付款";
-						var oDiv = document.createElement('div');
-						oDiv.innerHTML = '<div class = "cancel innavfor2"> 取消订单 </div> <div class = "pay innavfor2 active"> 确认付款 </div>';
-						elem[i].parentNode.parentNode.parentNode.appendChild(oDiv);
-						break;
-					case "3":
-						elem[i].innerHTML = "待配送";
-						var oDiv = document.createElement('div');
-						oDiv.innerHTML = '<div class = "cancel innavfor1"> 取消订单 </div>';
-						elem[i].parentNode.parentNode.parentNode.appendChild(oDiv);
-						break;
-					default:
-						elem[i].innerHTML = "待评价";
-						var oDiv = document.createElement('div');
-						oDiv.innerHTML = '<div class = "pay innavfor1 active"> 评价 </div>';
-						elem[i].parentNode.parentNode.parentNode.appendChild(oDiv);
-						break;
-				}
-			}
-			var elem2 = document.getElementsByClassName("paymode")[0].getElementsByTagName("span")[0];
-			switch (elem2.innerHTML) {
-				case "1":
-					elem2.innerHTML = "微信支付";
-					break;
-				case "2":
-					elem2.innerHTML = "支付宝";
-					break;
-				default:
-					elem2.innerHTML = "银联支付";
-					break;
-			}
-		}
-
 		function checkpay() {
 			if (!thisaddress) {
 				alert("请选择收货地址");
 				return false;
 			}
 			startload();
-			mui.ajax(apiurl + 'orders/' + thisorder.id + '?access-token=' + JSON.parse(localStorage.userinfo).access_token, {
+			mui.ajax(apiurl + 'orders/' + thisorder.id + '?access-token=' + strAccessToken, {
 				data: {
 					'status': '2',
 					'delivery_address_id': thisaddress.id
@@ -298,7 +253,7 @@
 					return false;
 				} else {
 					startload();
-					mui.ajax(apiurl + 'orders/' + thisorder.id + '?access-token=' + JSON.parse(localStorage.userinfo).access_token, {
+					mui.ajax(apiurl + 'orders/' + thisorder.id + '?access-token=' + strAccessToken, {
 						data: {},
 						dataType: 'json',
 						type: 'delete',

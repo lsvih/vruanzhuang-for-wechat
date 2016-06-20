@@ -70,8 +70,7 @@
 		mui.init();
 		(function($) {
 			$('#cart').on('tap', '.delete', function(event) {
-				var elem = this;
-				var li = elem.parentNode.parentNode;
+				var li = this.parentNode.parentNode;
 				mui.confirm('是否从购物车中删除该商品？', '微软装', btnArray, function(e) {
 					e.index == 0 ? (del(li), li.parentNode.removeChild(li), selectChange()) : setTimeout(function() {
 						$.swipeoutClose(li)
@@ -109,24 +108,22 @@
 		});
 
 		function del(e) {
-			var delId = e.getElementsByClassName("mui-slider-handle")[0].getElementsByClassName("cart-id")[0].innerHTML;
-			var cartJson = JSON.parse(localStorage.getItem("cart"));
-			for (i = 0; i < cartJson.goods.length; i++) {
-				if (cartJson.goods[i].id == delId) {
-					cartJson.goods.splice(i, 1)
+			var nDelId = e.getElementsByClassName("mui-slider-handle")[0].getElementsByClassName("cart-id")[0].innerHTML;
+			var jsonCart = JSON.parse(localStorage.getItem("cart"));
+			for (i = 0; i < jsonCart.goods.length; i++) {
+				if (jsonCart.goods[i].id == nDelId) {
+					jsonCart.goods.splice(i, 1)
 					break;
 				}
 			}
-			localStorage.cart = JSON.stringify(cartJson);
+			localStorage.cart = JSON.stringify(jsonCart);
 			return true;
 		}
 
 		function valueChange(e) {
-			var changeId = e.parentNode.parentNode.getElementsByClassName("sort-id")[0].innerHTML;
-			var changeNum = e.parentNode.getElementsByTagName("input")[0].value;
-			var cartJson = JSON.parse(localStorage.getItem("cart"));
-			cartJson.goods[changeId].num = changeNum;
-			localStorage.cart = JSON.stringify(cartJson);
+			var jsonCart = JSON.parse(localStorage.getItem("cart"));
+			jsonCart.goods[e.parentNode.parentNode.getElementsByClassName("sort-id")[0].innerHTML].num = e.parentNode.getElementsByTagName("input")[0].value;
+			localStorage.cart = JSON.stringify(jsonCart);
 		}
 
 		function selectChange() {
@@ -165,9 +162,9 @@
 				}
 				localStorage.temporder = JSON.stringify(b);
 				startload();
-				mui.ajax(apiurl + 'orders?access-token=' + JSON.parse(localStorage.userinfo).access_token, {
+				mui.ajax(apiurl + 'orders?access-token=' + strAccessToken, {
 					data: {
-						'user_id': JSON.parse(localStorage.userinfo).id
+						'user_id': nUserId
 					},
 					dataType: 'json',
 					type: 'post',
@@ -179,7 +176,7 @@
 							for (i = 0; i < checkcart.length; i++) {
 								switch (checkcart[i].type) {
 									case "1":
-										mui.ajax(apiurl + 'order-products?access-token=' + JSON.parse(localStorage.userinfo).access_token, {
+										mui.ajax(apiurl + 'order-products?access-token=' + strAccessToken, {
 											data: {
 												'order_id': orderid,
 												'product_id': checkcart[i].id,
@@ -200,7 +197,7 @@
 										});
 										break;
 									case "2":
-										mui.ajax(apiurl + 'order-schemes?access-token=' + JSON.parse(localStorage.userinfo).access_token, {
+										mui.ajax(apiurl + 'order-schemes?access-token=' + strAccessToken, {
 											data: {
 												'order_id': orderid,
 												'scheme_id': checkcart[i].id,
@@ -223,7 +220,7 @@
 										break;
 									default:
 									schemenum = checkcart[i].num;
-										mui.ajax(apiurl + 'orders/custom-edit?access-token=' + JSON.parse(localStorage.userinfo).access_token, {
+										mui.ajax(apiurl + 'orders/custom-edit?access-token=' + strAccessToken, {
 											data: {
 												schemes: JSON.stringify([JSON.parse(localStorage.cart).goods[i].content])
 											},
@@ -236,7 +233,7 @@
 													for(var key in data.data.schemes) {
 														oldid = key;
 													}
-													mui.ajax(apiurl + 'order-schemes?access-token=' + JSON.parse(localStorage.userinfo).access_token, {
+													mui.ajax(apiurl + 'order-schemes?access-token=' + strAccessToken, {
 														data: {
 															'order_id': orderid,
 															'scheme_id': data.data.schemes[oldid].id,
@@ -268,7 +265,7 @@
 							}
 							var iID = setTimeout(function() {
 								if (k == count) {
-									mui.ajax(apiurl + 'orders/' + orderid + '?access-token=' + JSON.parse(localStorage.userinfo).access_token, {
+									mui.ajax(apiurl + 'orders/' + orderid + '?access-token=' + strAccessToken, {
 										data: {
 											'status': '1',
 										},
@@ -289,12 +286,12 @@
 								}
 							}, 500);
 						} else {
-							mui.alert(data.message);
+							mui.alert(data.message,"微软装");
 							stopload();
 						}
 					},
 					error: function(xhr, type, errorThrown, message) {
-						mui.alert("网络连接失败，请稍候再试");
+						mui.alert("网络连接失败，请稍候再试","微软装");
 						stopload();
 					}
 				});

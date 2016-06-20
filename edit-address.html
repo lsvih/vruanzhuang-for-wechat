@@ -62,19 +62,19 @@
 	</body>
 	<script>
 		mui.init();
-		var jsonaddress = JSON.parse(localStorage.alladdress);
+		var jsonAddress = JSON.parse(localStorage.alladdress);
 		var url = window.location.search;
 		var loc = url.substring(url.lastIndexOf('=') + 1, url.length);
-		var thisaddressid = jsonaddress.address[loc].id;
+		var thisaddressid = jsonAddress.address[loc].id;
 		(function($, doc) {
 			$.ready(function() {
-				document.getElementById("person").value = jsonaddress.address[loc].person;
-				document.getElementById("phonenum").value = jsonaddress.address[loc].phonenum;
-				document.getElementById("postcode").value = jsonaddress.address[loc].postcode;
-				document.getElementById("province").innerHTML = jsonaddress.address[loc].province;
-				document.getElementById("city").innerHTML = jsonaddress.address[loc].city;
-				document.getElementById("county").innerHTML = jsonaddress.address[loc].county;
-				document.getElementById("detailedaddress").value = jsonaddress.address[loc].detailedaddress;
+				document.getElementById("person").value = jsonAddress.address[loc].person;
+				document.getElementById("phonenum").value = jsonAddress.address[loc].phonenum;
+				document.getElementById("postcode").value = jsonAddress.address[loc].postcode;
+				document.getElementById("province").innerHTML = jsonAddress.address[loc].province;
+				document.getElementById("city").innerHTML = jsonAddress.address[loc].city;
+				document.getElementById("county").innerHTML = jsonAddress.address[loc].county;
+				document.getElementById("detailedaddress").value = jsonAddress.address[loc].detailedaddress;
 				var pickcity = new $.PopPicker({
 					layer: 3
 				});
@@ -113,7 +113,7 @@
 				return false;
 			}
 			startload();
-			mui.ajax(apiurl + 'delivery-addresses/'+ thisaddressid +'?access-token='+JSON.parse(localStorage.userinfo).access_token, {
+			mui.ajax(apiurl + 'delivery-addresses/'+ thisaddressid +'?access-token='+strAccessToken, {
 				data: {
 					'consignee': document.getElementById("person").value,
 					'mobile': document.getElementById("phonenum").value,
@@ -128,14 +128,14 @@
 				timeout: 6000,
 				success: function(data) {
 					if (data.success == true) {
-						jsonaddress.address[loc].person = document.getElementById("person").value;
-						jsonaddress.address[loc].phonenum = document.getElementById("phonenum").value;
-						jsonaddress.address[loc].postcode = document.getElementById("postcode").value;
-						jsonaddress.address[loc].province = document.getElementById("province").innerHTML;
-						jsonaddress.address[loc].city = document.getElementById("city").innerHTML;
-						jsonaddress.address[loc].county = document.getElementById("county").innerHTML;
-						jsonaddress.address[loc].detailedaddress = document.getElementById("detailedaddress").value;
-						localStorage.alladdress = JSON.stringify(jsonaddress);
+						jsonAddress.address[loc].person = document.getElementById("person").value;
+						jsonAddress.address[loc].phonenum = document.getElementById("phonenum").value;
+						jsonAddress.address[loc].postcode = document.getElementById("postcode").value;
+						jsonAddress.address[loc].province = document.getElementById("province").innerHTML;
+						jsonAddress.address[loc].city = document.getElementById("city").innerHTML;
+						jsonAddress.address[loc].county = document.getElementById("county").innerHTML;
+						jsonAddress.address[loc].detailedaddress = document.getElementById("detailedaddress").value;
+						localStorage.alladdress = JSON.stringify(jsonAddress);
 						history.go(-1);
 					} else {
 						mui.alert("修改地址失败，请稍候再试");

@@ -25,7 +25,7 @@
 		startload()
 		var openid;
 		var code = GetRequest()["code"];
-		mui.ajax(apiurl + 'users/get-openid?access-token=' + JSON.parse(localStorage.userinfo).access_token, {
+		mui.ajax(apiurl + 'users/get-openid?access-token=' + strAccessToken, {
 			data: {
 				code: code
 			},
@@ -34,7 +34,7 @@
 			timeout: 6000,
 			success: function(data) {
 				openid = data;
-				mui.ajax(apiurl + 'payments?access-token=' + JSON.parse(localStorage.userinfo).access_token, {
+				mui.ajax(apiurl + 'payments?access-token=' + strAccessToken, {
 					data: {
 						order_id: localStorage.temppayorderid,
 						channel:"wx_pub" 
@@ -44,7 +44,7 @@
 					timeout: 6000,
 					success: function(data) {
 						if (data.status == 201) {
-							mui.ajax(apiurl + 'payments/pay?id=' + data.data.id + '&open_id=' + openid + '&access-token=' + JSON.parse(localStorage.userinfo).access_token, {
+							mui.ajax(apiurl + 'payments/pay?id=' + data.data.id + '&open_id=' + openid + '&access-token=' + strAccessToken, {
 								dataType: 'json',
 								type: 'get',
 								timeout: 6000,
@@ -88,7 +88,7 @@
 		//		
 		//		
 		//		
-		////		mui.ajax(apiurl + 'jspackage?access-token=' + JSON.parse(localStorage.userinfo).access_token, {
+		////		mui.ajax(apiurl + 'jspackage?access-token=' + strAccessToken, {
 		////			data: {
 		////				this_url: encodeURIComponent(location.href.split('#')[0])
 		////			},
@@ -120,7 +120,7 @@
 		////		});
 		//
 		//		function onBridgeReady() {
-		//			mui.ajax(apiurl + 'payments/pay/' + payid + '?access-token=' + JSON.parse(localStorage.userinfo).access_token, {
+		//			mui.ajax(apiurl + 'payments/pay/' + payid + '?access-token=' + strAccessToken, {
 		//				data: {
 		//					code: code
 		//				},
@@ -136,7 +136,7 @@
 		//						function(res) {
 		//							if (res.err_msg == "get_brand_wcpay_request:ok") {
 		//								location.href = "judge-order.html"
-		////								mui.ajax(appurl + '/orders/' + localStorage.temppayorderid + '?access-token=' + JSON.parse(localStorage.userinfo).access_token, {
+		////								mui.ajax(appurl + '/orders/' + localStorage.temppayorderid + '?access-token=' + strAccessToken, {
 		////									data: {
 		////										'status': '3',
 		////									},

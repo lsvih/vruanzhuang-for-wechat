@@ -61,7 +61,7 @@
 	</body>
 	<script>
 		mui.init();
-		var jsonaddress = JSON.parse(localStorage.alladdress);
+		var jsonAddress = JSON.parse(localStorage.alladdress);
 		(function($, doc) {
 			mui.init();
 			$.ready(function() {
@@ -103,9 +103,9 @@
 				return false;
 			}
 			startload();
-			mui.ajax(apiurl + 'delivery-addresses?access-token=' + JSON.parse(localStorage.userinfo).access_token, {
+			mui.ajax(apiurl + 'delivery-addresses?access-token=' + strAccessToken, {
 				data: {
-					'user_id': JSON.parse(localStorage.userinfo).id,
+					'user_id': nUserId,
 					'consignee': document.getElementById("person").value,
 					'mobile': document.getElementById("phonenum").value,
 					'postcode': document.getElementById("postcode").value,
@@ -119,11 +119,9 @@
 				timeout: 6000,
 				success: function(data) {
 					if (data.success == true) {
-						var id = data.data.id;
-						var jsonadd = '{"person":"' + document.getElementById("person").value + '","phonenum": "' + document.getElementById("phonenum").value + '","postcode": "'+ document.getElementById("postcode").value + '","province": "' + document.getElementById("province").innerHTML + '","city": "' + document.getElementById("city").innerHTML + '","county": "' + document.getElementById("county").innerHTML + '","detailedaddress": "' + document.getElementById("detailedaddress").value + '","id": "' + id + '"}';
-						jsonadd = JSON.parse(jsonadd);
-						jsonaddress.address.push(jsonadd);
-						localStorage.alladdress = JSON.stringify(jsonaddress);
+						var strItem = '{"person":"' + document.getElementById("person").value + '","phonenum": "' + document.getElementById("phonenum").value + '","postcode": "'+ document.getElementById("postcode").value + '","province": "' + document.getElementById("province").innerHTML + '","city": "' + document.getElementById("city").innerHTML + '","county": "' + document.getElementById("county").innerHTML + '","detailedaddress": "' + document.getElementById("detailedaddress").value + '","id": "' + data.data.id + '"}';
+						jsonAddress.address.push(JSON.parse(strItem));
+						localStorage.alladdress = JSON.stringify(jsonAddress);
 						history.go(-1);
 					} else {
 						mui.alert("增加地址失败，请稍候再试");

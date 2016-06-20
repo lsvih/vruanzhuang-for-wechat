@@ -74,36 +74,34 @@
 		}
 
 		function lazyload() {
-			tempindeximg = JSON.parse(localStorage.schemes);
-			schemelist = new Array;
-			for (i = 0; i < tempindeximg.length; i++) {
-				item = '{"title":"' + tempindeximg[i].name + '","price":' + tempindeximg[i]['amount'] / 100 + ',"preview":"' + tempindeximg[i]['cover_t_img-url'] + '","id":"' + tempindeximg[i].id + '"}'
-				schemelist[i] = JSON.parse(item);
+			jsonItem = JSON.parse(localStorage.schemes);
+			arrjsonScheme = new Array;
+			for (i = 0; i < jsonItem.length; i++) {
+				strItem = '{"title":"' + jsonItem[i].name + '","price":' + jsonItem[i]['amount'] / 100 + ',"preview":"' + jsonItem[i]['cover_t_img-url'] + '","id":"' + jsonItem[i].id + '"}'
+				arrjsonScheme[i] = JSON.parse(strItem);
 			}
 			document.getElementById("nodata").style.display = "none";
-			if (schemelist.length == 0) {
+			if (arrjsonScheme.length == 0) {
 				document.getElementById("nodata").style.display = "block";
 				return false;
 			}
 			var createFragment = function(count) {
-				console.log(JSON.stringify(schemelist))
 				var fragment = document.createDocumentFragment();
-				var span;
 				div = document.createElement('div');
 				div.className = "indexpic";
-				div.innerHTML = '<img data-lazyload="' + serverurl + schemelist[0].preview + '" data-id="'+schemelist[0].id+'"><p class="title">' + schemelist[0].title + '<span class="scpr"><i class="hr">/</i>￥' + schemelist[0].price + '</span></p>';
+				div.innerHTML = '<img data-lazyload="' + serverurl + arrjsonScheme[0].preview + '" data-id="'+arrjsonScheme[0].id+'"><p class="title">' + arrjsonScheme[0].title + '<span class="scpr"><i class="hr">/</i>￥' + arrjsonScheme[0].price + '</span></p>';
 				fragment.appendChild(div);
 				for (var i = 1; i < count; i++) {
 					div = document.createElement('div');
 					div.className = "indexpic margin180";
-					div.innerHTML = '<img data-lazyload="' + serverurl + schemelist[i].preview + '" data-id="' + schemelist[i].id + '"><p class="title">' + schemelist[i].title + '<span class="scpr"><i class="hr">/</i>￥' + schemelist[i].price + '</span></p>';
+					div.innerHTML = '<img data-lazyload="' + serverurl + arrjsonScheme[i].preview + '" data-id="' + arrjsonScheme[i].id + '"><p class="title">' + arrjsonScheme[i].title + '<span class="scpr"><i class="hr">/</i>￥' + arrjsonScheme[i].price + '</span></p>';
 					fragment.appendChild(div);
 				}
 				return fragment;
 			};
 			(function($) {
 				var list = document.getElementById("list");
-				list.appendChild(createFragment(schemelist.length));
+				list.appendChild(createFragment(arrjsonScheme.length));
 				$(document).imageLazyload({
 					placeholder: 'images/default-1.png'
 				});
@@ -141,11 +139,6 @@
 			});
 			return;
 		});
-
-		function enterschemes(e) {
-			location.href = "schemes.html?id=" + e;
-			return;
-		}
 	</script>
 
 </html>

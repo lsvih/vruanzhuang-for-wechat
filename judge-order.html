@@ -42,7 +42,7 @@
 		s = document.getElementById("s");
 
 		function verpay() {
-			mui.ajax(apiurl + 'orders/' + localStorage.temppayorderid + '?access-token=' + JSON.parse(localStorage.userinfo).access_token, {
+			mui.ajax(apiurl + 'orders/' + localStorage.temppayorderid + '?access-token=' + strAccessToken, {
 				data: {
 					'status': '3',
 				},
@@ -51,7 +51,7 @@
 				timeout: 6000,
 				success: function(data) {
 					if (data.success == true) {
-						mui.ajax(apiurl + 'orders/' + localStorage.temppayorderid + '?access-token=' + JSON.parse(localStorage.userinfo).access_token, {
+						mui.ajax(apiurl + 'orders/' + localStorage.temppayorderid + '?access-token=' + strAccessToken, {
 							data: {},
 							dataType: 'json',
 							type: 'get',

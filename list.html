@@ -40,8 +40,6 @@
 	</body>
 	<script>
 		mui.init();
-		var url = window.location.search;
-		var orderid = url.substring(url.lastIndexOf('=') + 1, url.length);
 		Vue.filter('picurl', function(value, url, picsize) {
 			return serverurl + url + picsize + value;
 		});

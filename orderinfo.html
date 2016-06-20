@@ -14,7 +14,7 @@
 		<script type="text/javascript" src="js/global.js"></script>
 		<script type="text/javascript" src="js/global.js"></script>
 		<script type="text/javascript" src="js/mui.min.js"></script>
-		<script type="text/javascript" src="js/iflogin.js?lastpage=usercenter.html"></script>
+		<script type="text/javascript" src="js/iflogin.js?lastpage=myorder.html"></script>
 
 		<link rel="stylesheet" href="css/mui.min.css" />
 		<link rel="stylesheet" href="css/app.css" />
@@ -81,7 +81,7 @@
 		var orderid = GetRequest()["orderid"];
 		var addressid;
 		var thisaddress;
-		mui.ajax(apiurl + 'orders/' + orderid + '?access-token=' + JSON.parse(localStorage.userinfo).access_token, {
+		mui.ajax(apiurl + 'orders/' + orderid + '?access-token=' + strAccessToken, {
 			dataType: 'json',
 			type: 'get',
 			timeout: 6000,
@@ -89,9 +89,9 @@
 				if (data.success == true) {
 					localStorage.temporder = JSON.stringify(data.data);
 					addressid = data.data.delivery_address_id;
-					jsonaddress = JSON.parse(localStorage.alladdress);
-					for (var k = 0; k < jsonaddress.address.length; k++) {
-						if (jsonaddress.address[k].id == addressid) thisaddress = jsonaddress.address[k];
+					jsonAddress = JSON.parse(localStorage.alladdress);
+					for (var k = 0; k < jsonAddress.address.length; k++) {
+						if (jsonAddress.address[k].id == addressid) thisaddress = jsonAddress.address[k];
 					}
 					new Vue({
 						el: '#address',
@@ -119,7 +119,7 @@
 		Vue.filter('picurl', function(value, url, picsize) {
 			return serverurl + url + picsize + value;
 		});
-		mui.ajax(apiurl + 'order-products?access-token=' + JSON.parse(localStorage.userinfo).access_token + '&filter=order_id:' + orderid + '&expand=product', {
+		mui.ajax(apiurl + 'order-products?access-token=' + strAccessToken + '&filter=order_id:' + orderid + '&expand=product', {
 			dataType: 'json',
 			type: 'get',
 			timeout: 6000,
@@ -143,7 +143,7 @@
 				stopload();
 			}
 		});
-		mui.ajax(apiurl + 'order-schemes?access-token=' + JSON.parse(localStorage.userinfo).access_token + '&filter=order_id:' + orderid + '&expand=scheme', {
+		mui.ajax(apiurl + 'order-schemes?access-token=' + strAccessToken + '&filter=order_id:' + orderid + '&expand=scheme', {
 			data: {},
 			dataType: 'json',
 			type: 'get',

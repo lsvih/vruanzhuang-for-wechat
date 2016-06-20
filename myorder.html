@@ -184,7 +184,7 @@
 				document.getElementById(orderx).className = "mui-control-item mui-active";
 				document.getElementById(itemx).className = "mui-control-content mui-active";
 			}
-			mui.ajax(apiurl + 'orders?access-token=' + JSON.parse(localStorage.userinfo).access_token + '&filter=user_id:' + JSON.parse(localStorage.userinfo).id + '&expand=orderSchemes.scheme,orderProducts.product', {
+			mui.ajax(apiurl + 'orders?access-token=' + strAccessToken + '&filter=user_id:' + nUserId + '&expand=orderSchemes.scheme,orderProducts.product', {
 				data: {
 					'per-page': 500000
 				},
@@ -332,7 +332,7 @@
 
 		function orderinfo(e, f) {
 			startload()
-			mui.ajax(apiurl + 'orders/' + e + '?access-token=' + JSON.parse(localStorage.userinfo).access_token, {
+			mui.ajax(apiurl + 'orders/' + e + '?access-token=' + strAccessToken, {
 				data: {},
 				dataType: 'json',
 				type: 'get',
@@ -371,7 +371,7 @@
 					return false;
 				} else {
 					startload()
-					mui.ajax(apiurl + 'orders/' + thisid + '?access-token=' + JSON.parse(localStorage.userinfo).access_token, {
+					mui.ajax(apiurl + 'orders/' + thisid + '?access-token=' + strAccessToken, {
 						data: {},
 						dataType: 'json',
 						type: 'delete',

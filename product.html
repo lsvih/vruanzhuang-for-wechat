@@ -246,17 +246,17 @@
 		function adaptive() {
 			cases = document.getElementsByClassName("innerdiv");
 			goods = document.getElementsByClassName("goods");
-			bodywideth = document.body.clientWidth;
-			document.getElementsByClassName("mui-content")[0].style.width = bodywideth;
+			nBodyWidth = document.body.clientWidth;
+			document.getElementsByClassName("mui-content")[0].style.width = nBodyWidth;
 			for (i = 0; i < cases.length; i++) {
-				cases[i].style.width = bodywideth + 'px';
-				cases[i].style.height = bodywideth * 0.56 + 'px';
+				cases[i].style.width = nBodyWidth + 'px';
+				cases[i].style.height = nBodyWidth * 0.56 + 'px';
 			}
 			for (i = 0; i < goods.length; i++) {
-				goods[i].style.width = bodywideth * 0.48 + 'px';
-				goods[i].style.height = bodywideth * 0.48 + 'px';
+				goods[i].style.width = nBodyWidth * 0.48 + 'px';
+				goods[i].style.height = nBodyWidth * 0.48 + 'px';
 				if (i % 2) {
-					goods[i].style.marginLeft = bodywideth * 0.02 + 'px';
+					goods[i].style.marginLeft = nBodyWidth * 0.02 + 'px';
 				}
 			}
 		}

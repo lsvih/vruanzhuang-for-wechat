@@ -93,101 +93,96 @@
 				}
 			}
 		});
-		var count = 1;
-		var spacesortid = GetRequest()["spacesortid"];
-		var classid = GetRequest()["classid"];
+		var nCount = 1;
+		var nSpaceSortId = GetRequest()["nSpaceSortId"];
+		var nClassId = GetRequest()["classid"];
 		var lfilter;
 		if (localStorage.filter)(lfilter = localStorage.filter, localStorage.removeItem("filter"));
-		var productsortidlist = [];
+		var arrnProductSortId = [];
 		Vue.filter('picurl', function(value, url, picsize) {
 			return serverurl + url + picsize + value
 		})
-		productlist = JSON.parse(localStorage.tempproduct);
+		jsonSearchProductList = JSON.parse(localStorage.tempproduct);
 		if (!lfilter) {
 			document.getElementById("product1").style.display = "none";
 			var pl = new Vue({
 				el: '#product2',
-				data: productlist
+				data: jsonSearchProductList
 			})
 			mui('#product2').on('tap', 'li', function() {
 				if (this.getAttribute('check-state') == 0) {
-					sort = this.getAttribute('id');
-					document.getElementById(sort).getElementsByClassName("checkit")[0].style.display = "block";
-					productid = this.getAttribute('data-id');
+					nSortId = this.getAttribute('id');
+					document.getElementById(nSortId).getElementsByClassName("checkit")[0].style.display = "block";
 					this.setAttribute('check-state', 1)
-					productsortidlist.push(sort);
+					arrnProductSortId.push(nSortId);
 				} else {
-					sort = this.getAttribute('id');
-					document.getElementById(sort).getElementsByClassName("checkit")[0].style.display = "none";
-					productid = this.getAttribute('data-id');
+					nSortId = this.getAttribute('id');
+					document.getElementById(nSortId).getElementsByClassName("checkit")[0].style.display = "none";
 					this.setAttribute('check-state', 0);
-					productsortidlist.remove(sort);
+					arrnProductSortId.remove(nSortId);
 				}
 			});
 		} else {
 			document.getElementById("product2").style.display = "none";
 			var pl = new Vue({
 				el: '#product1',
-				data: productlist
+				data: jsonSearchProductList
 			})
 			mui('#product1').on('tap', 'li', function() {
 				if (this.getAttribute('check-state') == 0) {
-					sort = this.getAttribute('id');
-					document.getElementById(sort).getElementsByClassName("checkit")[0].style.display = "block";
-					productid = this.getAttribute('data-id');
+					nSortId = this.getAttribute('id');
+					document.getElementById(nSortId).getElementsByClassName("checkit")[0].style.display = "block";
 					this.setAttribute('check-state', 1)
-					productsortidlist.push(sort);
+					arrnProductSortId.push(nSortId);
 				} else {
-					sort = this.getAttribute('id');
-					document.getElementById(sort).getElementsByClassName("checkit")[0].style.display = "none";
-					productid = this.getAttribute('data-id');
+					nSortId = this.getAttribute('id');
+					document.getElementById(nSortId).getElementsByClassName("checkit")[0].style.display = "none";
 					this.setAttribute('check-state', 0);
-					productsortidlist.remove(sort);
+					arrnProductSortId.remove(nSortId);
 				}
 			});
 		}
 		document.getElementById("submit").addEventListener("tap", function() {
-			tempproduct = JSON.parse(localStorage.temp);
+			jsonProductList = JSON.parse(localStorage.temp);
 			if (!lfilter) {
-				for (var j = 0; j < productsortidlist.length; j++) {
-					additem = {
-						"product_id": productlist.items[productsortidlist[j]].product.id,
-						"name": productlist.items[productsortidlist[j]].product.name,
+				for (var j = 0; j < arrnProductSortId.length; j++) {
+					jsonItem = {
+						"product_id": jsonSearchProductList.items[arrnProductSortId[j]].product.id,
+						"name": jsonSearchProductList.items[arrnProductSortId[j]].product.name,
 						"product_num": "1",
-						"price": productlist.items[productsortidlist[j]].product.amount,
-						"cover_t_img": productlist.items[productsortidlist[j]].product.cover_t_imgs
+						"price": jsonSearchProductList.items[arrnProductSortId[j]].product.amount,
+						"cover_t_img": jsonSearchProductList.items[arrnProductSortId[j]].product.cover_t_imgs
 					}
-					tempproduct.spaces[spacesortid].products.push(additem);
+					jsonProductList.spaces[nSpaceSortId].products.push(jsonItem);
 				}
 			} else {
-				for (var j = 0; j < productsortidlist.length; j++) {
-					additem = {
-						"product_id": productlist.items[productsortidlist[j]].id,
-						"name": productlist.items[productsortidlist[j]].name,
+				for (var j = 0; j < arrnProductSortId.length; j++) {
+					jsonItem = {
+						"product_id": jsonSearchProductList.items[arrnProductSortId[j]].id,
+						"name": jsonSearchProductList.items[arrnProductSortId[j]].name,
 						"product_num": "1",
-						"price": productlist.items[productsortidlist[j]].amount,
-						"cover_t_img": productlist.items[productsortidlist[j]].cover_t_imgs
+						"price": jsonSearchProductList.items[arrnProductSortId[j]].amount,
+						"cover_t_img": jsonSearchProductList.items[arrnProductSortId[j]].cover_t_imgs
 					}
-					tempproduct.spaces[spacesortid].products.push(additem);
+					jsonProductList.spaces[nSpaceSortId].products.push(jsonItem);
 				}
 			}
-			localStorage.temp = JSON.stringify(tempproduct);
+			localStorage.temp = JSON.stringify(jsonProductList);
 			history.go(-2);
 		});
 		var maxcount;
-
 		function pullupRefresh() {
 			setTimeout(function() {
-				count++;
+				nCount++;
 				if (!lfilter) {
-					mui.ajax(apiurl + 'product-tags?filter=tag_id:' + classid + '&expand=product&per-page=30&page=' + count, {
+					mui.ajax(apiurl + 'product-tags?filter=tag_id:' + nClassId + '&expand=product&per-page=30&page=' + nCount, {
 						dataType: 'json',
 						type: 'get',
 						timeout: 6000,
 						success: function(data) {
 							if (data.success == true) {
-								productlist.items = productlist.items.concat(data.data.items);
-								maxcount = productlist._meta.pageCount;
+								jsonSearchProductList.items = jsonSearchProductList.items.concat(data.data.items);
+								maxcount = jsonSearchProductList._meta.pageCount;
 							} else {
 								mui.alert("获取方案失败，请稍候再试");
 							}
@@ -197,14 +192,14 @@
 						}
 					});
 				} else {
-					mui.ajax(apiurl + 'products?lfilter=name:' + lfilter + '&per-page=30&page=' + count, {
+					mui.ajax(apiurl + 'products?lfilter=name:' + lfilter + '&per-page=30&page=' + nCount, {
 						dataType: 'json',
 						type: 'get',
 						timeout: 6000,
 						success: function(data) {
 							if (data.success == true) {
-								productlist.items = productlist.items.concat(data.data.items);
-								maxcount = productlist._meta.pageCount;
+								jsonSearchProductList.items = jsonSearchProductList.items.concat(data.data.items);
+								maxcount = jsonSearchProductList._meta.pageCount;
 							} else {
 								mui.alert("获取方案失败，请稍候再试");
 							}
@@ -214,7 +209,7 @@
 						}
 					});
 				}
-				mui('#pullrefresh').pullRefresh().endPullupToRefresh((count >= maxcount)); //true=没有更多数据
+				mui('#pullrefresh').pullRefresh().endPullupToRefresh((nCount >= maxcount)); //true=没有更多数据
 			}, 1500);
 		}
 		if (mui.os.plus) {

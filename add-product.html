@@ -67,31 +67,26 @@
 	<script>
 		mui.init();
 		var url = window.location.search;
-		var spacesortid = url.substring(url.lastIndexOf('=') + 1, url.length);
+		var nSpaceSortId = url.substring(url.lastIndexOf('=') + 1, url.length);
 		mui.ajax(apiurl + 'tags/multi-children?name=产品分类', {
 			dataType: 'json',
 			type: 'get',
 			timeout: 6000,
 			success: function(data) {
 				if (data.success == true) {
-					taglist = data.data;
-					console.log(JSON.stringify(taglist));
 					new Vue({
 						el: '#class',
-						data: taglist,
+						data: data.data,
 						compiled: function() {
 							mui('#class').on('tap', '.class', function() {
-								classid = this.getAttribute('data-id');
-								rootid = this.getAttribute('root-id');
-								name = this.getAttribute('name');
-								mui.ajax(apiurl + 'product-tags?filter=tag_id:' + classid + '&expand=product&per-page=30', {
+								nClassId = this.getAttribute('data-id');
+								mui.ajax(apiurl + 'product-tags?filter=tag_id:' + nClassId + '&expand=product&per-page=30', {
 									dataType: 'json',
 									type: 'get',
 									timeout: 6000,
 									success: function(data) {
 										if (data.success == true) {
-											console.log(JSON.stringify(data.data.items));
-											!data.data.items.length ? mui.alert("本类暂无单品", "微软装") : (localStorage.tempproduct = JSON.stringify(data.data), location.href = "productlist.html?spacesortid=" + spacesortid + "&classid=" + classid);
+											!data.data.items.length ? mui.alert("本类暂无单品", "微软装") : (localStorage.tempproduct = JSON.stringify(data.data), location.href = "productlist.html?spacesortid=" + nSpaceSortId + "&classid=" + nClassId);
 										} else {
 											mui.alert("获取方案失败，请稍候再试");
 										}
@@ -116,15 +111,16 @@
 		});
 
 		function Search() {
+			var strSearchKey = document.getElementsByTagName("input")[0].value;
 			if (event.keyCode == 13) {
-				mui.ajax(apiurl + 'products?lfilter=name:' + document.getElementsByTagName("input")[0].value + "&per-page=30", {
+				mui.ajax(apiurl + 'products?lfilter=name:' + strSearchKey + "&per-page=30", {
 					dataType: 'json',
 					type: 'get',
 					timeout: 6000,
 					success: function(data) {
 						if (data.success == true) {
-							localStorage.filter =document.getElementsByTagName("input")[0].value;
-							!data.data.items.length ? mui.alert("没有找到符合条件的单品!", "微软装") : (localStorage.tempproduct = JSON.stringify(data.data), location.href = "productlist.html?spacesortid=" + spacesortid + "&lfilter=1");
+							localStorage.filter = strSearchKey;
+							!data.data.items.length ? mui.alert("没有找到符合条件的单品!", "微软装") : (localStorage.tempproduct = JSON.stringify(data.data), location.href = "productlist.html?spacesortid=" + nSpaceSortId + "&lfilter=1");
 						} else {
 							mui.alert("获取方案失败，请稍候再试");
 						}

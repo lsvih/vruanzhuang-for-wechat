@@ -43,7 +43,7 @@
 					</a>
 				</li>
 				<li class="mui-table-view-cell">
-					<a id="sex" class="mui-navigate-right" href="#"><span id="showsex" class="mui-badge" >...</span>
+					<a id="sex" class="mui-navigate-right" href="#"><span id="sexContent" class="mui-badge" >...</span>
 						性别
 					</a>
 				</li>
@@ -79,16 +79,17 @@
 		(function($, doc) {
 			//性别
 			$.ready(function() {
+				var strSex = document.getElementById('sexContent').innerHTML;
 				!jsonuserinfo.fullname?document.getElementById("showname").innerHTML = "立即填写":document.getElementById("showname").innerHTML = jsonuserinfo.fullname;
 				switch (jsonuserinfo.sex) {
 					case 0:
-						document.getElementById("showsex").innerHTML = "男";
+						strSex = "男";
 						break;
 					case 1:
-						document.getElementById("showsex").innerHTML = "女";
+						strSex = "女";
 						break;
 					default:
-						document.getElementById("showsex").innerHTML = "未知";
+						strSex = "未知";
 				}
 				document.getElementById("phonenum").innerHTML = jsonuserinfo.mobile;
 				var sexPicker = new $.PopPicker();
@@ -100,7 +101,6 @@
 					text: '女'
 				}]);
 				var piker = document.getElementById('sex');
-				var userResult = document.getElementById('showsex');
 				piker.addEventListener('tap', function(event) {
 					sexPicker.show(function(items) {
 						if (items[0].value == 1) {
@@ -110,7 +110,7 @@
 							editsex = 1;
 						} //女
 						startload();
-						mui.ajax(appurl + '/users/' + jsonuserinfo.id + '?access-token=' + jsonuserinfo.access_token, {
+						mui.ajax(appurl + '/users/' + nUserId + '?access-token=' + strAccessToken, {
 							data: {
 								'sex': editsex
 							},
@@ -122,7 +122,7 @@
 									mui.toast("修改成功");
 									jsonuserinfo.sex = editsex;
 									localStorage.userinfo = JSON.stringify(jsonuserinfo);
-									userResult.innerText = items[0].text;
+									strSex = items[0].text;
 									stopload();
 								} else {
 									mui.alert(data.message);
@@ -150,9 +150,9 @@
 					//新的用户名为e.value
 					//修改用户名的ajax过程
 					startload();
-					mui.ajax(appurl + '/users/' + jsonuserinfo.id + '?access-token=' + jsonuserinfo.access_token, {
+					mui.ajax(appurl + '/users/' + nUserId + '?access-token=' + strAccessToken, {
 						data: {
-							'id': jsonuserinfo.id,
+							'id': nUserId,
 							'fullname': e.value
 						},
 						dataType: 'json',
@@ -180,9 +180,6 @@
 				}
 			})
 		});
-		//		document.getElementById("phone").addEventListener('tap', function(e) {
-		//			window.location.href = "change-phonenumber.html"
-		//		});
 		document.getElementById("loginout").addEventListener('tap', function(e) {
 			localStorage.removeItem("userinfo");
 			localStorage.removeItem("alladdress");
