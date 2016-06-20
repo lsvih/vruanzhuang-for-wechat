@@ -84,7 +84,7 @@
 								classid = this.getAttribute('data-id');
 								rootid = this.getAttribute('root-id');
 								name = this.getAttribute('name');
-								mui.ajax(apiurl + 'product-tags?filter=tag_id:' + classid + '&expand=product&max-per-page=30', {
+								mui.ajax(apiurl + 'product-tags?filter=tag_id:' + classid + '&expand=product&per-page=30', {
 									dataType: 'json',
 									type: 'get',
 									timeout: 6000,
@@ -117,7 +117,7 @@
 
 		function Search() {
 			if (event.keyCode == 13) {
-				mui.ajax(apiurl + 'products?lfilter=name:' + document.getElementsByTagName("input")[0].value + "&max-per-page=40", {
+				mui.ajax(apiurl + 'products?lfilter=name:' + document.getElementsByTagName("input")[0].value + "&per-page=30", {
 					dataType: 'json',
 					type: 'get',
 					timeout: 6000,

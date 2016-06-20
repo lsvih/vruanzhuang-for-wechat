@@ -180,7 +180,7 @@
 			setTimeout(function() {
 				count++;
 				if (!lfilter) {
-					mui.ajax(apiurl + 'product-tags?filter=tag_id:' + classid + '&expand=product&max-per-page=40&page=' + count, {
+					mui.ajax(apiurl + 'product-tags?filter=tag_id:' + classid + '&expand=product&per-page=30&page=' + count, {
 						dataType: 'json',
 						type: 'get',
 						timeout: 6000,
@@ -197,7 +197,7 @@
 						}
 					});
 				} else {
-					mui.ajax(apiurl + 'products?lfilter=name:' + lfilter + '&max-per-page=40&page=' + count, {
+					mui.ajax(apiurl + 'products?lfilter=name:' + lfilter + '&per-page=30&page=' + count, {
 						dataType: 'json',
 						type: 'get',
 						timeout: 6000,

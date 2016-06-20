@@ -186,7 +186,7 @@
 			}
 			mui.ajax(apiurl + 'orders?access-token=' + JSON.parse(localStorage.userinfo).access_token + '&filter=user_id:' + JSON.parse(localStorage.userinfo).id + '&expand=orderSchemes.scheme,orderProducts.product', {
 				data: {
-					'max-per-page': 500000
+					'per-page': 500000
 				},
 				dataType: 'json',
 				type: 'get',
