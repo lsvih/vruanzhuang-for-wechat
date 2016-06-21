@@ -32,14 +32,6 @@
 				<button id='pickcity' class="mui-btn mui-btn-block" type='button'><span id="province"></span><span id="city">所在城市</span><span id="county"></span></button>
 			</div>
 
-			<div id="tag-list">
-				<div class="tagtype" v-for="tagtype in items">
-					<div class="tag-name">{{tagtype.name}}</div>
-					<div class="tags"><span class="sortid">{{$index}}</span>
-						<span class="tag" v-for="tag in tagtype.children" data-type="tag" data-id="{{tag.id}}">{{tag.name}}</span>
-					</div>
-				</div>
-			</div>
 
 			<div id="spacetype">
 				<div class="tagtype" v-for="tagtype in items">
@@ -83,19 +75,7 @@
 				array.splice(index, 1);
 			}
 		};
-		mui.ajax(apiurl + 'tags/multi-children?name=家庭状态,装修价格', {
-			dataType: 'json',
-			type: 'get',
-			timeout: 6000,
-			success: function(data) {
-				if (data.success == true) {
-					taglist = data.data;
-					list = new Vue({
-						el: '#tag-list',
-						data: taglist
-					});
-					var selectobj = new Array(parseInt(taglist.items.length));
-					var selectobjid = new Array(parseInt(taglist.items.length));
+		
 					mui.ajax(apiurl + 'tags/multi-children?name=空间类型', {
 						dataType: 'json',
 						type: 'get',
@@ -120,16 +100,7 @@
 							stopload();
 						}
 					});
-				} else {
-					mui.alert("获取标签失败，请稍候再试");
-					stopload();
-				}
-			},
-			error: function(xhr, textStatus, errorThrown) {
-				mui.alert("网络连接失败，请稍候再试");
-				stopload();
-			}
-		});
+				
 		(function($, doc) {
 			mui.init();
 			$.ready(function() {
@@ -162,7 +133,7 @@
 			window.history.back()
 		});
 		document.getElementById('next-step').addEventListener('tap', function() {
-			document.getElementById("city").innerHTML == "所在城市" ? mui.alert('请选择您的地址', '微软装') : !taglist.items.length == selected ? mui.alert('请完成标签选择', '微软装') : !spaceselect.length ? mui.alert('请至少选择一种空间类型', '微软装') : next();
+			document.getElementById("city").innerHTML == "所在城市" ? mui.alert('请选择您的地址', '微软装') : !spaceselect.length ? mui.alert('请至少选择一种空间类型', '微软装') : next();
 		});
 		mui.ready(function() {
 			localStorage.removeItem('IC');
@@ -180,7 +151,7 @@
 
 		function changecolor() {
 			tagtype = document.getElementsByClassName("tagtype");
-			for (var i = 0; i < (taglist.items.length + spacelist.items.length); i++) {
+			for (var i = 0; i < (spacelist.items.length); i++) {
 				colorset.push(colorpallte[Math.floor(Math.random() * colorpallte.length)]);
 				tagtype[i].style.color = colorset[i]
 				tag = tagtype[i].getElementsByClassName("tag");
@@ -217,9 +188,7 @@
 		function next() {
 			var spacechildren = [];
 			var step1_info = [];
-			for (var i = 0; i < taglist.items.length; i++) {
-				step1_info.push(JSON.parse('{"id":' + taglist.items[i].id + ',"name":"' + taglist.items[i].name + '","children":{"id":' + selectobjid[i] + ',"name":"' + selectobj[i] + '"}}'))
-			}
+			
 			step1_info.push()
 			step1_info.push({
 				"id": 1,
