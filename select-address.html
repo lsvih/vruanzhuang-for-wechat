@@ -6,11 +6,6 @@
 		<meta name="viewport" content="initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
 		<meta name="format-detection" content="telephone=no">
 		<meta content="email=no" name="format-detection" />
-		<script type="text/javascript" src="js/vue.js"></script>
-				<script type="text/javascript" src="js/app.js"></script>
-		<script type="text/javascript" src="js/global.js" ></script>
-		<script type="text/javascript" src="js/mui.min.js"></script>
-		
 		<link rel="stylesheet" href="css/mui.min.css" />
 		<link rel="stylesheet" href="css/app.css" />
 		<link rel="stylesheet" href="css/address.css" />
@@ -31,7 +26,7 @@
 			<ul id="address" class="mui-table-view hidden">
 				<div v-for="address in address">
 					<div class="sort-id">{{ $index }}</div>
-					<li class="mui-table-view-cell"  v-on:click="choose($index)">
+					<li class="mui-table-view-cell" v-on:click="choose($index)">
 						<div class="address-elem">
 							<div class="person">{{address.person}}</div>
 							<div class="phonenum">{{address.phonenum}}</div>
@@ -51,17 +46,22 @@
 		<div class="savearea"><button class="mui-btn mui-btn-danger" id="save" onclick="addaddress()">+新增地址</button></div>
 
 	</body>
+	<script src="js/vue.js"></script>
+	<script src="js/app.js"></script>
+	<script src="js/global.js"></script>
+	<script src="js/mui.min.js"></script>
 	<script>
+		"use strict";
 		mui.init();
 		var orderid = GetRequest()["orderid"];
 		if (!localStorage.alladdress) {
-			var alladdress = {
+			var jsonAddress = {
 				"selected": null,
 				"address": []
 			}
-			localStorage.alladdress = JSON.stringify(alladdress);
+			localStorage.alladdress = JSON.stringify(jsonAddress);
 			startload();
-			mui.ajax(apiurl + 'delivery-addresses?access-token=' + strAccessToken +'&filter=userid:' +nUserId, {
+			mui.ajax(apiurl + 'delivery-addresses?access-token=' + strAccessToken + '&filter=userid:' + nUserId, {
 				data: {},
 				dataType: 'json',
 				type: 'get',
@@ -71,15 +71,15 @@
 					if (data.success == true) {
 						for (i = 0; i < data.data.items.length; i++) {
 							var strItem = '{"person":"' + data.data.items[i].consignee + '","phonenum": "' + data.data.items[i].mobile + '","postcode": "' + data.data.items[i].postcode + '","province": "' + data.data.items[i].province + '","city": "' + data.data.items[i].city + '","county": "' + data.data.items[i].county + '","detailedaddress": "' + data.data.items[i].address + '","id": "' + data.data.items[i].id + '"}';
-							alladdress.address.push(JSON.parse(strItem));
+							jsonAddress.address.push(JSON.parse(strItem));
 						}
 						for (i = 0; i < data.data.items.length; i++) {
 							if (data.data.items[i].is_default == 1) {
-								alladdress.selected = data.data.items[i].id;
+								jsonAddress.selected = data.data.items[i].id;
 								break;
 							}
 						}
-						localStorage.alladdress = JSON.stringify(alladdress);
+						localStorage.alladdress = JSON.stringify(jsonAddress);
 						document.getElementById("address").style.display = 'block';
 						stopload();
 					} else {
@@ -93,19 +93,19 @@
 				}
 			});
 		} else {
-			alladdress = JSON.parse(localStorage.alladdress);
+			jsonAddress = JSON.parse(localStorage.alladdress);
 			stopload();
 			document.getElementById("address").style.display = 'block';
 		}
-		lastdefault = alladdress.selected;
+		var lastdefault = jsonAddress.selected;
 		var address = new Vue({
 			el: '#address',
-			data: alladdress,
+			data: jsonAddress,
 			methods: {
 				del: function(d, e) {
 					if (window.confirm('是否从删除此地址？')) {
 						startload();
-						mui.ajax(apiurl + 'delivery-addresses/' + alladdress.address[e].id + '?access-token=' + strAccessToken, {
+						mui.ajax(apiurl + 'delivery-addresses/' + jsonAddress.address[e].id + '?access-token=' + strAccessToken, {
 							data: {},
 							dataType: 'json',
 							type: 'delete',
@@ -125,7 +125,7 @@
 							}
 						});
 						this.address.$remove(d);
-						localStorage.alladdress = JSON.stringify(alladdress);
+						localStorage.alladdress = JSON.stringify(jsonAddress);
 					}
 				},
 				edit: function(d) {
@@ -133,7 +133,7 @@
 				},
 				setdefault: function(k) {
 					startload();
-					var newdefault = alladdress.address[k].id;
+					var newdefault = jsonAddress.address[k].id;
 					if (!lastdefault) {
 						mui.ajax(apiurl + 'delivery-addresses/' + newdefault + '?access-token=' + strAccessToken, {
 							data: {
@@ -147,18 +147,18 @@
 									stopload();
 									mui.toast("修改默认地址成功");
 									lastdefault = newdefault;
-									alladdress.selected = newdefault;
-									localStorage.alladdress = JSON.stringify(alladdress)
+									jsonAddress.selected = newdefault;
+									localStorage.alladdress = JSON.stringify(jsonAddress)
 								} else {
 									mui.alert("修改默认地址失败，请稍候再试");
 									stopload();
-									alladdress.selected = lastdefault;
+									jsonAddress.selected = lastdefault;
 								}
 							},
 							error: function(xhr, textStatus, errorThrown) {
 								mui.alert("网络连接失败，请稍候再试");
 								stopload();
-								alladdress.selected = lastdefault;
+								jsonAddress.selected = lastdefault;
 							}
 						});
 					} else {
@@ -183,39 +183,37 @@
 												stopload();
 												mui.toast("修改默认地址成功");
 												lastdefault = newdefault;
-												alladdress.selected = newdefault;
-												localStorage.alladdress = JSON.stringify(alladdress)
+												jsonAddress.selected = newdefault;
+												localStorage.alladdress = JSON.stringify(jsonAddress)
 											} else {
 												mui.alert("修改默认地址失败，请稍候再试");
 												stopload();
-												alladdress.selected = lastdefault;
+												jsonAddress.selected = lastdefault;
 											}
 										},
 										error: function(xhr, textStatus, errorThrown) {
 											mui.alert("网络连接失败，请稍候再试");
 											stopload();
-											alladdress.selected = lastdefault;
+											jsonAddress.selected = lastdefault;
 										}
 									});
 								} else {
 									mui.alert("修改默认地址失败，请稍候再试");
 									stopload();
-									alladdress.selected = lastdefault;
+									jsonAddress.selected = lastdefault;
 								}
 							},
 							error: function(xhr, textStatus, errorThrown) {
 								mui.alert("网络连接失败，请稍候再试");
 								stopload();
-								alladdress.selected = lastdefault;
+								jsonAddress.selected = lastdefault;
 							}
 						});
 					}
-				
 				},
 				choose: function(d) {
-					window.location.href = 'orderinfo-calculated.html?orderid='+ orderid +'&selectaddress='+d;
+					window.location.href = 'orderinfo-calculated.html?orderid=' + orderid + '&selectaddress=' + d;
 				}
-				
 			}
 		})
 

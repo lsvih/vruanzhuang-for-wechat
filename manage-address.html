@@ -51,7 +51,7 @@
 	<script src="js/global.js"></script>
 	<script src="js/mui.min.js"></script>
 	<script>
-		use strict;
+		"use strict";
 		mui.init();
 		if (!localStorage.alladdress) {
 			var jsonAddress = {
@@ -104,7 +104,7 @@
 			document.getElementById("address").style.display = 'block';
 			stopload();
 		}
-		nLastDefault = jsonAddress.selected;
+		var nLastDefault = jsonAddress.selected;
 		var address = new Vue({
 			el: '#address',
 			data: jsonAddress,

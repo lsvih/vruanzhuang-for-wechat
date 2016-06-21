@@ -78,7 +78,7 @@
 	<script src="js/mui.zoom.js"></script>
 	<script src="js/mui.previewimage.normaltype.js"></script>
 	<script>
-	use strict;
+		"use strict";
 		if (!localStorage.temp) mui.back();
 		var jsonCustomScheme = JSON.parse(localStorage.temp);
 		mui.ready(function() {
@@ -91,7 +91,7 @@
 		})
 
 		function getspacedata() {
-			data = new Vue({
+			new Vue({
 				el: '#custom',
 				data: jsonCustomScheme,
 				compiled: function() {
@@ -106,8 +106,8 @@
 
 		function contnum() {
 			setTimeout(function() {
-				var allnum = 0;
-				var allprice = 0;
+				let allnum = 0;
+				let allprice = 0;
 				for (let u = 0; u < jsonCustomScheme.spaces.length; u++) {
 					for (let v = 0; v < jsonCustomScheme.spaces[u].products.length; v++) {
 						allnum += parseInt(jsonCustomScheme.spaces[u].products[v].product_num);
@@ -123,15 +123,15 @@
 			}, 500);
 		}
 		mui('body').on('tap', '.deleteproduct', function() {
-			productsortid = this.getAttribute('data-id');
-			spacesort = parseInt(this.parentNode.parentNode.getElementsByClassName("spaceid")[1].innerHTML);
+			let nProductSortId = this.getAttribute('data-id');
+			let nSpaceSortId = parseInt(this.parentNode.parentNode.getElementsByClassName("spaceid")[1].innerHTML);
 			var btnArray = ['是', '否'];
 			mui.confirm('是否删除单品？', '微软装', btnArray, function(s) {
 				if (!s.index) {
-					jsonCustomScheme.amount -= parseInt(jsonCustomScheme.spaces[spacesort].products[productsortid].product_num * jsonCustomScheme.spaces[spacesort].products[productsortid].amount)
-					jsonCustomScheme.spaces[spacesort].products.splice(productsortid, 1)
+					jsonCustomScheme.amount -= parseInt(jsonCustomScheme.spaces[nSpaceSortId].products[nProductSortId].product_num * jsonCustomScheme.spaces[nSpaceSortId].products[nProductSortId].amount)
+					jsonCustomScheme.spaces[nSpaceSortId].products.splice(nProductSortId, 1)
 					contnum();
-					if (!jsonCustomScheme.spaces[spacesort].products.length) jsonCustomScheme.spaces.splice(spacesort, 1);
+					if (!jsonCustomScheme.spaces[nSpaceSortId].products.length) jsonCustomScheme.spaces.splice(nSpaceSortId, 1);
 				} else {
 					return;
 				}
@@ -140,21 +140,21 @@
 		});
 
 		function delnull() {
-			arrobjCoverImg = document.getElementsByClassName("coverimg");
+			let arrobjCoverImg = document.getElementsByClassName("coverimg");
 			for (let i = 0; i < arrobjCoverImg.length; i++) {
 				if ((arrobjCoverImg[i].src).slice(-4) == "null" || (arrobjCoverImg[i].src).slice(-2) == "s-") {
 					objToDel = arrobjCoverImg[i].parentNode;
 					objToDel.parentNode.removeChild(objToDel);
 				}
 			}
-			arrobjPlan = document.getElementsByClassName("plan");
+			let arrobjPlan = document.getElementsByClassName("plan");
 			for (let i = 0; i < arrobjPlan.length; i++) {
 				if ((arrobjPlan[i].src).slice(-4) == "null" || (arrobjPlan[i].src).slice(-2) == "s-") {
 					objToDel = arrobjPlan[i].parentNode.parentNode;
 					objToDel.parentNode.removeChild(objToDel);
 				}
 			}
-			arrobjDesign = document.getElementsByClassName("design");
+			let arrobjDesign = document.getElementsByClassName("design");
 			for (let i = 0; i < arrobjDesign.length; i++) {
 				if ((arrobjDesign[i].src).slice(-4) == "null" || (arrobjDesign[i].src).slice(-2) == "s-") {
 					objToDel = arrobjDesign[i].parentNode.parentNode;
@@ -164,9 +164,9 @@
 		}
 
 		function adaptive() {
-			arrobjCases = document.getElementsByClassName("innerdiv");
-			arrobjGoods = document.getElementsByClassName("goods");
-			nBodyWidth = document.body.clientWidth;
+			let arrobjCases = document.getElementsByClassName("innerdiv");
+			let arrobjGoods = document.getElementsByClassName("goods");
+			let nBodyWidth = document.body.clientWidth;
 			document.getElementsByClassName("mui-content")[0].style.width = nBodyWidth;
 			for (let i = 0; i < arrobjCases.length; i++) {
 				arrobjCases[i].style.width = nBodyWidth + 'px';
@@ -180,7 +180,7 @@
 					arrobjGoods[i].style.marginLeft = nBodyWidth * 0.02 + 'px';
 				}
 			}
-			arrobjAddGoods = document.getElementsByClassName("addgoods")
+			let arrobjAddGoods = document.getElementsByClassName("addgoods")
 			for (let i = 0; i < arrobjAddGoods.length; i++) {
 				arrobjAddGoods[i].style.width = nBodyWidth * 0.48 + 'px';
 				arrobjAddGoods[i].style.height = nBodyWidth * 0.48 + 'px';
@@ -189,19 +189,17 @@
 			}
 		}
 		mui('body').on('tap', '.addgoods', function() {
-			nSpaceSortId = this.getAttribute('data-id');
 			localStorage.temp = JSON.stringify(jsonCustomScheme);
 			mui.openWindow({
-				url: "add-product.html?spacesortid=" + nSpaceSortId,
+				url: "add-product.html?spacesortid=" + this.getAttribute('data-id'),
 				id: "add-product"
 			});
 			return;
 		});
 		mui('body').on('tap', '.productsimgs', function() {
-			nProductId = this.getAttribute('data-id');
 			localStorage.temp = JSON.stringify(jsonCustomScheme);
 			mui.openWindow({
-				url: "product.html?id=" + nProductId,
+				url: "product.html?id=" + this.getAttribute('data-id'),
 				id: "product"
 			});
 			return;
@@ -209,10 +207,10 @@
 		const catalogarray = [];
 
 		function makecatalog() {
-			spacenames = document.getElementsByClassName("divtitle spacename");
-			for (let i = 0; i < spacenames.length; i++) {
-				searchresult = searchKeyWordAndMakeCatalog(spacenames[i].innerHTML);
-				if (searchresult)(spacenames[i].innerHTML = searchresult, spacenames[i].id = searchresult, catalogarray.push(searchresult))
+			let arrobjSpaceNames = document.getElementsByClassName("divtitle spacename");
+			for (let i = 0; i < arrobjSpaceNames.length; i++) {
+				let strSearchResult = searchKeyWordAndMakeCatalog(arrobjSpaceNames[i].innerHTML);
+				if (strSearchResult)(arrobjSpaceNames[i].innerHTML = strSearchResult, arrobjSpaceNames[i].id = strSearchResult, catalogarray.push(strSearchResult))
 			}
 		}
 
@@ -239,9 +237,9 @@
 		}
 
 		function addalltocart() {
-			name = jsonCustomScheme.name + '自定义方案';
-			price = jsonCustomScheme.amount / 100;
-			pic = document.getElementById("cover").getElementsByTagName("img")[0].src;
+			let name = jsonCustomScheme.name + '自定义方案';
+			let price = jsonCustomScheme.amount / 100;
+			let pic = document.getElementById("cover").getElementsByTagName("img")[0].src;
 			cart(3, jsonCustomScheme.scheme_id, name, 1, price, pic, JSON.stringify(jsonCustomScheme));
 			localStorage.removeItem("temp");
 			mui.openWindow({

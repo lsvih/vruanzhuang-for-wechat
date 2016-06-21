@@ -40,6 +40,10 @@
 	</style>
 
 	<body>
+		<div id="load">
+			<div class="loading"></div>
+			<div class="loading-text"><img src="images/load.gif" width="25px">加载中，请稍候...</div>
+		</div>
 		<header class="mui-bar mui-bar-nav">
 			<h1 class="mui-title">添加单品</h1>
 			<a class="mui-icon mui-icon-checkmarkempty mui-pull-right" id="submit"></a>
@@ -79,11 +83,12 @@
 
 		</div>
 	</body>
-	<script type="text/javascript" src="js/vue.js"></script>
-	<script type="text/javascript" src="js/app.js"></script>
-	<script type="text/javascript" src="js/global.js"></script>
-	<script type="text/javascript" src="js/mui.min.js"></script>
+	<script src="js/vue.js"></script>
+	<script src="js/app.js"></script>
+	<script src="js/global.js"></script>
+	<script src="js/mui.min.js"></script>
 	<script>
+		"use strict";
 		mui.init({
 			pullRefresh: {
 				container: '#pullrefresh',
@@ -102,15 +107,18 @@
 		Vue.filter('picurl', function(value, url, picsize) {
 			return serverurl + url + picsize + value
 		})
-		jsonSearchProductList = JSON.parse(localStorage.tempproduct);
+		var jsonSearchProductList = JSON.parse(localStorage.tempproduct);
 		if (!lfilter) {
 			document.getElementById("product1").style.display = "none";
-			var pl = new Vue({
+			new Vue({
 				el: '#product2',
-				data: jsonSearchProductList
+				data: jsonSearchProductList,
+				compiled: function() {
+					stopload();
+				}
 			})
 			mui('#product2').on('tap', 'li', function() {
-				nSortId = this.getAttribute('id');
+				let nSortId = this.getAttribute('id');
 				if (this.getAttribute('check-state') == 0) {
 					document.getElementById(nSortId).getElementsByClassName("checkit")[0].style.display = "block";
 					this.setAttribute('check-state', 1)
@@ -118,17 +126,20 @@
 				} else {
 					document.getElementById(nSortId).getElementsByClassName("checkit")[0].style.display = "none";
 					this.setAttribute('check-state', 0);
-					arrnProductSortId.remove(nSortId);
+					arrnProductSortId.removetheitem(nSortId);
 				}
 			});
 		} else {
 			document.getElementById("product2").style.display = "none";
-			var pl = new Vue({
+			new Vue({
 				el: '#product1',
-				data: jsonSearchProductList
+				data: jsonSearchProductList,
+				compiled: function() {
+					stopload();
+				}
 			})
 			mui('#product1').on('tap', 'li', function() {
-				nSortId = this.getAttribute('id');
+				let nSortId = this.getAttribute('id');
 				if (this.getAttribute('check-state') == 0) {
 					document.getElementById(nSortId).getElementsByClassName("checkit")[0].style.display = "block";
 					this.setAttribute('check-state', 1)
@@ -136,15 +147,15 @@
 				} else {
 					document.getElementById(nSortId).getElementsByClassName("checkit")[0].style.display = "none";
 					this.setAttribute('check-state', 0);
-					arrnProductSortId.remove(nSortId);
+					arrnProductSortId.removetheitem(nSortId);
 				}
 			});
 		}
 		document.getElementById("submit").addEventListener("tap", function() {
-			jsonProductList = JSON.parse(localStorage.temp);
+			let jsonProductList = JSON.parse(localStorage.temp);
 			if (!lfilter) {
 				for (let j = 0; j < arrnProductSortId.length; j++) {
-					jsonItem = {
+					let jsonItem = {
 						"product_id": jsonSearchProductList.items[arrnProductSortId[j]].product.id,
 						"name": jsonSearchProductList.items[arrnProductSortId[j]].product.name,
 						"product_num": "1",
@@ -155,7 +166,7 @@
 				}
 			} else {
 				for (let j = 0; j < arrnProductSortId.length; j++) {
-					jsonItem = {
+					let jsonItem = {
 						"product_id": jsonSearchProductList.items[arrnProductSortId[j]].id,
 						"name": jsonSearchProductList.items[arrnProductSortId[j]].name,
 						"product_num": "1",
@@ -169,6 +180,7 @@
 			history.go(-2);
 		});
 		var nMaxCount;
+
 		function pullupRefresh() {
 			setTimeout(function() {
 				nCount++;

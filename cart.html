@@ -48,9 +48,9 @@
 						<div class="cart-name">{{ goods.name }}</div>
 						<div class="cart-price">￥<span class="price">{{ goods.price }}</span></div>
 						<div class="mui-numbox" data-numbox-min='1'>
-							<button class="mui-btn mui-btn-numbox-minus" type="button" v-on:click="valueChange(this)">-</button>
+							<button class="mui-btn mui-btn-numbox-minus" type="button" onclick="valueChange(this)">-</button>
 							<input class="mui-input-numbox" type="number" v-bind:value="goods.num" onchange="valueChange(this)" />
-							<button class="mui-btn mui-btn-numbox-plus" type="button" v-on:click="valueChange(this)">+</button>
+							<button class="mui-btn mui-btn-numbox-plus" type="button" onclick="valueChange(this)">+</button>
 						</div>
 					</div>
 					<div class="blank"></div>
@@ -65,8 +65,9 @@
 	<script src="js/mui.min.js"></script>
 	<script src="js/iflogin.js?url=index.html"></script>
 	<script>
-	use strict;
 		mui.init();
+		var jsonCart;
+		const todel = [];
 		(function($) {
 			$('#cart').on('tap', '.delete', function(event) {
 				var li = this.parentNode.parentNode;
@@ -77,9 +78,10 @@
 				});
 			});
 			var btnArray = ['确认', '取消'];
+			var value = this.checked;
 			var chk = document.getElementsByName("checkbox")
-			for (let i = 0; i < chk.length; i++) {
-				chk[i].checked = this.checked;
+			for (var i = 0; i < chk.length; i++) {
+				chk[i].checked = value;
 			}
 			selectChange();
 		})(mui);
@@ -88,25 +90,24 @@
 		})
 		var cart = new Vue({
 			el: '#cart',
-			data: JSON.parse(localStorage.cart),
+			data: jsonCart = JSON.parse(localStorage.cart),
 			compiled: function() {
 				stopload();
 			}
 		})
 		mui('.pay').on('change', 'input', function() {
+			var value = this.checked;
 			var chk = document.getElementsByName("checkbox")
-			for (let i = 0; i < chk.length; i++) {
-				chk[i].checked = this.checked;
+			for (var i = 0; i < chk.length; i++) {
+				chk[i].checked = value;
 			}
 			selectChange();
 		});
 		mui('.mui-slider-handle').on('change', 'input', function() {
 			selectChange();
 		});
-
 		function del(e) {
 			var nDelId = e.getElementsByClassName("mui-slider-handle")[0].getElementsByClassName("cart-id")[0].innerHTML;
-			var jsonCart = JSON.parse(localStorage.getItem("cart"));
 			for (i = 0; i < jsonCart.goods.length; i++) {
 				if (jsonCart.goods[i].id == nDelId) {
 					jsonCart.goods.splice(i, 1)
@@ -116,28 +117,27 @@
 			localStorage.cart = JSON.stringify(jsonCart);
 			return true;
 		}
-
 		function valueChange(e) {
-			var jsonCart = JSON.parse(localStorage.getItem("cart"));
 			jsonCart.goods[e.parentNode.parentNode.getElementsByClassName("sort-id")[0].innerHTML].num = e.parentNode.getElementsByTagName("input")[0].value;
 			localStorage.cart = JSON.stringify(jsonCart);
 		}
-
 		function selectChange() {
-			var arrobjCheckBox = document.getElementsByName("checkbox");
+			var value = this.checked;
+			var chk = document.getElementsByName("checkbox");
 			var j = 0;
 			var count = 0;
-			for (let i = 0; i < arrobjCheckBox.length; i++) {
-				if (arrobjCheckBox[i].checked) {
+			for (var i = 0; i < chk.length; i++) {
+				if (chk[i].checked) {
 					j++;
-					count = Number(arrobjCheckBox[i].parentNode.getElementsByClassName("cart-price")[0].getElementsByTagName("span")[0].innerHTML) * Number(arrobjCheckBox[i].parentNode.getElementsByClassName("mui-numbox")[0].getElementsByTagName("input")[0].value) + Number(count);
+					a = chk[i].parentNode.getElementsByClassName("cart-price")[0].getElementsByTagName("span")[0].innerHTML;
+					b = chk[i].parentNode.getElementsByClassName("mui-numbox")[0].getElementsByTagName("input")[0].value;
+					count = Number(a) * Number(b) + Number(count);
 				}
 			}
 			j ? document.getElementById("count").parentNode.style.backgroundColor = "#c51919" : document.getElementById("count").parentNode.style.backgroundColor = "gray";
 			document.getElementById("count").innerHTML = j;
 			document.getElementById("allPrice").innerHTML = "￥" + count;
 		}
-
 		function checkout() {
 			var count = document.getElementById("count").innerHTML;
 			var k = 0;
@@ -147,9 +147,10 @@
 			} else {
 				var b = new Array(count);
 				var j = 0;
-				for (let i = 0; i < chk.length; i++) {
+				for (var i = 0; i < chk.length; i++) {
 					if (chk[i].checked) {
 						a = chk[i].parentNode.getElementsByClassName("sort-id")[0].innerHTML;
+						todel.push(a);
 						b[j] = JSON.parse(localStorage.cart).goods[a];
 						j++;
 					}
@@ -202,6 +203,7 @@
 											timeout: 6000,
 											success: function(data) {
 												if (data.success == true) {
+													console.log(JSON.stringify(data.data))
 													k++;
 												}
 											},
@@ -212,7 +214,7 @@
 										});
 										break;
 									default:
-										schemenum = checkcart[i].num;
+									schemenum = checkcart[i].num;
 										mui.ajax(apiurl + 'orders/custom-edit?access-token=' + strAccessToken, {
 											data: {
 												schemes: JSON.stringify([JSON.parse(localStorage.cart).goods[i].content])
@@ -223,20 +225,21 @@
 											success: function(data) {
 												if (data.success == true) {
 													var oldid;
-													for (var key in data.data.schemes) {
+													for(var key in data.data.schemes) {
 														oldid = key;
 													}
 													mui.ajax(apiurl + 'order-schemes?access-token=' + strAccessToken, {
 														data: {
 															'order_id': orderid,
 															'scheme_id': data.data.schemes[oldid].id,
-															'purchase_num': schemenum
+															'purchase_num':schemenum
 														},
 														dataType: 'json',
 														type: 'post',
 														timeout: 6000,
 														success: function(data) {
 															if (data.success == true) {
+																console.log(JSON.stringify(data.data))
 																k++;
 															}
 														},
@@ -267,7 +270,7 @@
 										success: function(data) {
 											if (data.success == true) {
 												localStorage.temporder = JSON.stringify(data.data);
-												window.location.href = 'orderinfo-calculated.html?orderid=' + data.data.id;
+												window.location.href = 'orderinfo-calculated.html?orderid=' + data.data.id + '&cartsort=' + todel;
 											}
 										},
 										error: function(xhr, type, errorThrown, message) {
@@ -276,25 +279,22 @@
 										}
 									});
 								}
-							}, 500);
+							}, 700);
 						} else {
-							mui.alert(data.message, "微软装");
+							mui.alert(data.message,"微软装");
 							stopload();
 						}
 					},
 					error: function(xhr, type, errorThrown, message) {
-						mui.alert("网络连接失败，请稍候再试", "微软装");
+						mui.alert("网络连接失败，请稍候再试","微软装");
 						stopload();
 					}
 				});
 			}
 		}
-
 		function previewthis(e) {
-			nType = e.parentNode.getElementsByClassName("cart-type")[0].innerHTML;
-			nId = e.parentNode.getElementsByClassName("cart-id")[0].innerHTML;
-			nSortId = e.parentNode.getElementsByClassName("sort-id")[0].innerHTML;
-			switch (nType) {
+			let nId = e.parentNode.getElementsByClassName("cart-id")[0].innerHTML;
+			switch (e.parentNode.getElementsByClassName("cart-type")[0].innerHTML) {
 				case "1":
 					window.location.href = 'product.html?preview&id=' + nId;
 					break;
@@ -303,7 +303,7 @@
 					break;
 				default:
 					window.location.href = 'preview-custom.html';
-					localStorage.previewcustom = JSON.stringify(JSON.parse(localStorage.cart).goods[nSortId].content);
+					localStorage.previewcustom = JSON.stringify(JSON.parse(localStorage.cart).goods[e.parentNode.getElementsByClassName("sort-id")[0].innerHTML].content);
 					break;
 			}
 		}

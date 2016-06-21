@@ -18,6 +18,8 @@
 			top: 50%;
 			left: 50%;
 			margin: -100px;
+			width: 200px;
+			height: 200px;
 		}
 		
 		.note {
@@ -39,26 +41,28 @@
 	<script src="js/global.js"></script>
 	<script src="js/mui.min.js"></script>
 	<script>
-		use strict;
+		"use strict";
 		if (!localStorage.IC) mui.openWindow({
 			url: "match.html",
 			id: "match"
 		});
-		var w = c.width =
-			h = c.height = 200,
-			ctx = c.getContext('2d'),
-			total = 20,
-			particlesParRow = 10,
-			minValue = 30,
-			updatesBeforeStart = 500,
-			repaintColor = 'rgba(235, 235, 235, 0.1)',
-			templateColor = 'hsl(hue, 80%, 50%)',
-			particles = [],
-			colors = [],
-			radiants = [],
-			colorPart = 360 / total,
-			radiantPart = Math.PI * 2 / total,
-			alphaValue = true;
+		c.width = 200;
+		c.height = 200;
+		var w = c.width;
+		var h = c.height;
+		var ctx = c.getContext('2d');
+		var total = 20;
+		var particlesParRow = 10;
+		var minValue = 30;
+		var updatesBeforeStart = 500;
+		var repaintColor = 'rgba(235, 235, 235, 0.1)';
+		var templateColor = 'hsl(hue, 80%, 50%)';
+		const particles = [];
+		const colors = [];
+		const radiants = [];
+		var colorPart = 360 / total;
+		var radiantPart = Math.PI * 2 / total;
+		var alphaValue = true;
 		for (let i = 0; i < total; ++i) {
 			var array = [];
 			particles.push(array);
@@ -109,13 +113,14 @@
 				}
 			}
 		}
+		var timestamp;
 		mui.ready(function() {
-			var timestamp = parseInt(new Date().getTime() / 1000);
+			timestamp = parseInt(new Date().getTime() / 1000);
 			IC_data();
 		});
 
 		function IC_data() {
-			data = localStorage.IC;
+			let data = localStorage.IC;
 			localStorage.removeItem("IC");
 			mui.ajax(apiurl + 'schemes/match', {
 				data: {
@@ -127,12 +132,20 @@
 				success: function(data) {
 					if (data.success == true) {
 						localStorage.schemes = JSON.stringify(data.data);
-						setTimeout(function() {
+						var newtimestamp = parseInt(new Date().getTime() / 1000);
+						if (newtimestamp - timestamp < 2) {
+							setTimeout(function() {
+								mui.openWindow({
+									url: "index.html?IntelligentCollocation",
+									id: "index"
+								});
+							}, 1000);
+						} else {
 							mui.openWindow({
 								url: "index.html?IntelligentCollocation",
 								id: "index"
 							});
-						}, 3000);
+						}
 					} else {
 						mui.alert("获取方案失败，请稍候再试");
 					}

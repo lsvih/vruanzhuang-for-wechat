@@ -44,7 +44,7 @@
 	<script src="js/vue.js"></script>
 	<script src="js/city.data.js"></script>
 	<script>
-		use strict;
+		"use strict";
 		var jsonSpaceList;
 		const arrSpaceSelectId = [];
 		var spaceselect = [];
@@ -59,9 +59,9 @@
 			var theRequest = new Object();
 			if (url.indexOf("?") != -1) {
 				var str = url.substr(1);
-				strs = str.split("&");
-				for (let i = 0; i < strs.length; i++) {
-					theRequest[strs[i].split("=")[0]] = unescape(strs[i].split("=")[1]);
+				let arrStrs = str.split("&");
+				for (let i = 0; i < arrStrs.length; i++) {
+					theRequest[arrStrs[i].split("=")[0]] = unescape(arrStrs[i].split("=")[1]);
 				}
 			}
 			return theRequest;
@@ -69,7 +69,7 @@
 		if (!("layer" in GetRequest())) document.getElementById("close").style.display = 'none';
 
 		function removeitem(array, val) {
-			var index = array.indexOf(val);
+			let index = array.indexOf(val);
 			if (index > -1) {
 				array.splice(index, 1);
 			}
@@ -80,13 +80,11 @@
 			timeout: 6000,
 			success: function(data) {
 				if (data.success == true) {
-					list = new Vue({
+					new Vue({
 						el: '#spacetype',
 						data: jsonSpaceList = data.data
 					});
-					adaptive();
-					changecolor();
-					stopload();
+					(adaptive(),changecolor(),stopload());
 				} else {
 					mui.alert("获取标签失败，请稍候再试");
 					stopload();
@@ -136,9 +134,9 @@
 		});
 
 		function adaptive() {
-			tagtype = document.getElementsByClassName("tagtype");
-			tags = document.getElementsByClassName("tags");
-			tagname = document.getElementsByClassName("tag-name");
+			let tagtype = document.getElementsByClassName("tagtype");
+			let tags = document.getElementsByClassName("tags");
+			let tagname = document.getElementsByClassName("tag-name");
 			for (let i = 0; i < tagtype.length; i++) {
 				tagname[i].style.top = tags[i].offsetHeight / 2 - 15 + 'px';
 				tagtype[i].style.height = tags[i].offsetHeight + 'px';
@@ -146,35 +144,34 @@
 		}
 
 		function changecolor() {
-			tagtype = document.getElementsByClassName("tagtype");
+			let tagtype = document.getElementsByClassName("tagtype");
 			for (let i = 0; i < (jsonSpaceList.items.length); i++) {
 				arrColorSet.push(colorpallte[Math.floor(Math.random() * colorpallte.length)]);
 				tagtype[i].style.color = arrColorSet[i]
-				tag = tagtype[i].getElementsByClassName("tag");
-				for (let j = 0; j < tag.length; j++) {
-					tag[j].style.border = '1px solid' + arrColorSet[i];
+				let arrobjTag = tagtype[i].getElementsByClassName("tag");
+				for (let j = 0; j < arrobjTag.length; j++) {
+					arrobjTag[j].style.border = '1px solid' + arrColorSet[i];
 				}
 			}
 		}
 		mui('body').on('tap', '.tag', function() {
-			type = this.getAttribute('data-type');
-			id = this.getAttribute('data-id');
-			type == 'tag' ? selectatag(id, this) : selectspace(id, this)
+			let nId = this.getAttribute('data-id');
+			this.getAttribute('data-type') == 'tag' ? selectatag(nId, this) : selectspace(nId, this)
 			return;
 		});
 
 		function selectatag(e, f) {
-			thistagtype = f.parentNode;
-			sortid = thistagtype.getElementsByClassName("sortid")[0].innerHTML;
-			if (!selectobj[sortid]) selected++;
-			selectobj[sortid] = f.innerHTML;
-			selectobjid[sortid] = e;
-			for (let i = 0; i < thistagtype.getElementsByClassName("tag").length; i++) {
-				thistagtype.getElementsByClassName("tag")[i].style.backgroundColor = "#fff";
-				thistagtype.getElementsByClassName("tag")[i].style.color = arrColorSet[sortid];
+			let objThis = f.parentNode;
+			let nSortId = objThis.getElementsByClassName("sortid")[0].innerHTML;
+			if (!selectobj[nSortId]) selected++;
+			selectobj[nSortId] = f.innerHTML;
+			selectobjid[nSortId] = e;
+			for (let i = 0; i < objThis.getElementsByClassName("tag").length; i++) {
+				objThis.getElementsByClassName("tag")[i].style.backgroundColor = "#fff";
+				objThis.getElementsByClassName("tag")[i].style.color = arrColorSet[nSortId];
 			}
 			f.style.color = '#fff';
-			f.style.backgroundColor = arrColorSet[sortid];
+			f.style.backgroundColor = arrColorSet[nSortId];
 		}
 
 		function selectspace(e, f) {
@@ -182,9 +179,8 @@
 		}
 
 		function next() {
-			var spacechildren = [];
-			var step1_info = [];
-			step1_info.push()
+			const spacechildren = [];
+			const step1_info = [];
 			step1_info.push({
 				"id": 1,
 				"name": "城市",
@@ -205,7 +201,10 @@
 				"children": spacechildren
 			});
 			localStorage.IC = JSON.stringify(step1_info);
-			location.href = "match-step2.html"
+			mui.openWindow({
+				url: "match-step2.html",
+				id: "match-step2"
+			});
 		}
 	</script>
 

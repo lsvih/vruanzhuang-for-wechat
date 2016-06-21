@@ -49,7 +49,7 @@
 	<script src="js/mui.min.js"></script>
 	<script src="js/vue.js"></script>
 	<script>
-		use strict;
+		"use strict";
 		var stylelist = [{
 			"name": "现代",
 			"id": 17
@@ -112,9 +112,11 @@
 		var colorselect = [];
 		var colorselectid = [];
 		var stylename;
+		var stylename;
+		var styleid;
 		var styleid;
 		mui.ready(function() {
-			colorlist = new Vue({
+			new Vue({
 				el: '#colorlist',
 				data: {
 					'colors': colorstyle
@@ -138,30 +140,30 @@
 		});
 
 		function selectstyle(e) {
-			borthers = e.parentNode.getElementsByClassName("circle");
-			for (i = 0; i < borthers.length; i++) {
-				borthers[i].getElementsByTagName("span")[0].style.backgroundColor = 'rgba(255,255,255,0.6)'
+			let arrobjBorthers = e.parentNode.getElementsByClassName("circle");
+			for (let i = 0; i < arrobjBorthers.length; i++) {
+				arrobjBorthers[i].getElementsByTagName("span")[0].style.backgroundColor = 'rgba(255,255,255,0.6)'
 			}
 			e.getElementsByTagName("span")[0].style.backgroundColor = 'rgba(255,255,255,0)'
-			sortid = e.className.split("grid-")[1] - 1;
-			stylename = stylelist[sortid].name;
-			styleid = stylelist[sortid].id;
+			let nSortId = e.className.split("grid-")[1] - 1;
+			stylename = stylelist[nSortId].name;
+			styleid = stylelist[nSortId].id;
 		}
 
 		function selectcolor(e) {
-			!e.style.border ? (e.style.border = '2px solid#0000EE', colorselect.push(e.innerHTML), colorselectid.push(e.id)) : (e.style.border = '', colorselect.remove(e.innerHTML), colorselectid.remove(e.id))
+			!e.style.border ? (e.style.border = '2px solid#0000EE', colorselect.push(e.innerHTML), colorselectid.push(e.id)) : (e.style.border = '', colorselect.removetheitem(e.innerHTML), colorselectid.removetheitem(e.id))
 		}
 
 		function changecolor() {
-			item = document.getElementsByClassName("color");
-			for (let i = 0; i < item.length; i++) {
-				item[i].style.backgroundColor = item[i].getAttribute('data');
+			let arrobjColor = document.getElementsByClassName("color");
+			for (let i = 0; i < arrobjColor.length; i++) {
+				arrobjColor[i].style.backgroundColor = arrobjColor[i].getAttribute('data');
 			}
 		}
 
 		function next() {
-			var colorchildren = [];
-			IC = JSON.parse(localStorage.IC);
+			const colorchildren = [];
+			const IC = JSON.parse(localStorage.IC);
 			IC.push({
 				"id": 10,
 				"name": "装修风格",
@@ -182,7 +184,10 @@
 				"children": colorchildren
 			});
 			localStorage.IC = JSON.stringify(IC);
-			location.href = "match-step3.html";
+			mui.openWindow({
+				url: "match-step3.html",
+				id: "match-step3"
+			});
 		}
 	</script>
 

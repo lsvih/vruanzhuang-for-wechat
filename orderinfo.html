@@ -9,13 +9,6 @@
 		<meta http-equiv="pragma" content="no-cache">
 		<meta http-equiv="Cache-Control" content="no-cache, must-revalidate">
 		<meta http-equiv="expires" content="Wed, 26 Feb 1997 08:21:57 GMT">
-		<script type="text/javascript" src="js/vue.js"></script>
-		<script type="text/javascript" src="js/app.js"></script>
-		<script type="text/javascript" src="js/global.js"></script>
-		<script type="text/javascript" src="js/global.js"></script>
-		<script type="text/javascript" src="js/mui.min.js"></script>
-		<script type="text/javascript" src="js/iflogin.js?lastpage=myorder.html"></script>
-
 		<link rel="stylesheet" href="css/mui.min.css" />
 		<link rel="stylesheet" href="css/app.css" />
 		<link rel="stylesheet" href="css/order.css" />
@@ -75,9 +68,15 @@
 		</div>
 
 	</body>
+	<script src="js/vue.js"></script>
+	<script src="js/app.js"></script>
+	<script src="js/global.js"></script>
+	<script src="js/global.js"></script>
+	<script src="js/mui.min.js"></script>
+	<script src="js/iflogin.js?lastpage=myorder.html"></script>
 	<script>
+		"use strict";
 		mui.init();
-		var goods = new Array;
 		var orderid = GetRequest()["orderid"];
 		var addressid;
 		var thisaddress;

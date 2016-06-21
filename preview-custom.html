@@ -48,7 +48,7 @@
 					<img class="productsimgs" data-id="{{ product.product_id }}" v-bind:src="product.cover_t_imgs|picurl '/smart_matching/uploads/imgs/thumbs/' 's-'">
 					<div class="productsids" style="display: none;">{{ product.product_id }}</div>
 					<p><span class="productsnames">{{ product.name }}</span> x <span class="productsnums">{{ product.product_num }}</span></p>
-					<p><span class="productsunitprice">{{ product.price/100 }}</span>元</p>
+					<p><span class="productsunitprice">{{ product.amount/100 }}</span>元</p>
 					<div class="line"></div>
 				</div>
 				<div class="line"></div>
@@ -66,12 +66,12 @@
 		</div>
 
 	</body>
-	<script type="text/javascript" src="js/app.js"></script>
-	<script type="text/javascript" src="js/global.js"></script>
-	<script type="text/javascript" src="js/vue.js"></script>
-	<script type="text/javascript" src="js/mui.min.js"></script>
-	<script type="text/javascript" src="js/mui.zoom.js"></script>
-	<script type="text/javascript" src="js/mui.previewimage.normaltype.js"></script>
+	<script src="js/app.js"></script>
+	<script src="js/global.js"></script>
+	<script src="js/vue.js"></script>
+	<script src="js/mui.min.js"></script>
+	<script src="js/mui.zoom.js"></script>
+	<script src="js/mui.previewimage.normaltype.js"></script>
 	<script>
 		var topbarHeight = 39;
 		mui.ready(function() {
@@ -86,15 +86,13 @@
 				}
 			})
 			delnull();
-			tempnum = document.getElementsByClassName("productsnums");
-			tempprice = document.getElementsByClassName("productsunitprice");
-			document.getElementById("allnum").innerHTML = 0;
-			document.getElementById("allprice").innerHTML = 0;
-			var tempallnum = 0;
-			var tempallprice = 0;
-			for (let i = 0; i < tempnum.length; i++) {
-				tempallnum += parseInt(tempnum[i].innerHTML);
-				tempallprice += parseInt(tempnum[i].innerHTML) * parseInt(tempprice[i].innerHTML);
+			let arrobjProductsNums = document.getElementsByClassName("productsnums");
+			let arrobjProductsPrices = document.getElementsByClassName("productsunitprice");
+			let tempallnum = 0;
+			let tempallprice = 0;
+			for (let i = 0; i < arrobjProductsNums.length; i++) {
+				tempallnum += parseInt(arrobjProductsNums[i].innerHTML);
+				tempallprice += parseInt(arrobjProductsNums[i].innerHTML) * parseInt(arrobjProductsPrices[i].innerHTML);
 			}
 			document.getElementById("allnum").innerHTML = tempallnum;
 			document.getElementById("allprice").innerHTML = tempallprice;
@@ -104,21 +102,21 @@
 		})
 
 		function delnull() {
-			coverimg = document.getElementsByClassName("coverimg");
+			let coverimg = document.getElementsByClassName("coverimg");
 			for (let i = 0; i < coverimg.length; i++) {
 				if ((coverimg[i].src).slice(-4) == "null" || (coverimg[i].src).slice(-2) == "s-") {
 					objToDel = coverimg[i].parentNode;
 					objToDel.parentNode.removeChild(objToDel);
 				}
 			}
-			arrobjPlan = document.getElementsByClassName("plan");
+			let arrobjPlan = document.getElementsByClassName("plan");
 			for (let i = 0; i < arrobjPlan.length; i++) {
 				if ((arrobjPlan[i].src).slice(-4) == "null" || (arrobjPlan[i].src).slice(-2) == "s-") {
 					objToDel = arrobjPlan[i].parentNode.parentNode;
 					objToDel.parentNode.removeChild(objToDel);
 				}
 			}
-			arrobjDesign = document.getElementsByClassName("design");
+			let arrobjDesign = document.getElementsByClassName("design");
 			for (let i = 0; i < arrobjDesign.length; i++) {
 				if ((arrobjDesign[i].src).slice(-4) == "null" || (arrobjDesign[i].src).slice(-2) == "s-") {
 					objToDel = arrobjDesign[i].parentNode.parentNode;
@@ -128,9 +126,9 @@
 		}
 
 		function adaptive() {
-			cases = document.getElementsByClassName("innerdiv");
-			goods = document.getElementsByClassName("goods");
-			nBodyWidth = document.body.clientWidth;
+			let cases = document.getElementsByClassName("innerdiv");
+			let goods = document.getElementsByClassName("goods");
+			let nBodyWidth = document.body.clientWidth;
 			document.getElementsByClassName("mui-content")[0].style.width = nBodyWidth;
 			for (let i = 0; i < cases.length; i++) {
 				cases[i].style.width = nBodyWidth + 'px';
@@ -145,14 +143,9 @@
 			}
 		}
 		mui('body').on('tap', '.productsimgs', function() {
-			productid = this.getAttribute('data-id');
 			mui.openWindow({
-				url: "product.html?preview&id=" + productid,
-				id: "product",
-				show: {
-					aniShow: 'zoom-fade-out',
-					duration: 300
-				}
+				url: "product.html?preview&id=" + this.getAttribute('data-id'),
+				id: "product"
 			});
 			return;
 		});
@@ -180,10 +173,10 @@
 		const arrCatalog = [];
 
 		function makecatalog() {
-			spacenames = document.getElementsByClassName("divtitle spacename");
-			for (let i = 0; i < spacenames.length; i++) {
-				searchresult = searchKeyWordAndMakeCatalog(spacenames[i].innerHTML);
-				if (searchresult)(spacenames[i].innerHTML = searchresult, spacenames[i].id = searchresult, arrCatalog.push(searchresult))
+			let arrobjSpaceNames = document.getElementsByClassName("divtitle spacename");
+			for (let i = 0; i < arrobjSpaceNames.length; i++) {
+				let strSearchResult = searchKeyWordAndMakeCatalog(arrobjSpaceNames[i].innerHTML);
+				if (strSearchResult)(arrobjSpaceNames[i].innerHTML = strSearchResult, arrobjSpaceNames[i].id = strSearchResult, arrCatalog.push(strSearchResult))
 			}
 			new Vue({
 				el: '#catalogpot',

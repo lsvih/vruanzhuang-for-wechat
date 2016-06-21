@@ -20,7 +20,7 @@
 		<header class="mui-bar mui-bar-nav">
 			<span id="cart" class="iconfont icon-gouwuche icon-left-nav mui-icon mui-pull-right"></span>
 			<span id="intelligent" class="mui-icon mui-icon-pengyouquan icon-left-nav mui-icon mui-pull-right">&nbsp;&nbsp;&nbsp;</span>
-			<span class="mui-icon mui-icon-home icon-left-nav mui-icon mui-pull-right" style="color: #ccc;">&nbsp;&nbsp;&nbsp;</span>
+			<span id="home" class="mui-icon mui-icon-home icon-left-nav mui-icon mui-pull-right" style="color: #ccc;">&nbsp;&nbsp;&nbsp;</span>
 		</header>
 		<div class="mui-content">
 			<div id="nodata"><span>暂无数据</span></div>
@@ -35,14 +35,18 @@
 	<script src="js/mui.lazyload.js"></script>
 	<script src="js/mui.lazyload.img.js"></script>
 	<script>
-	use strict;
+		"use strict";
 		mui.ready(function() {
 			startload();
-			("IntelligentCollocation" in GetRequest()) ? ((JSON.parse(localStorage.schemes).length) ? (lazyload(), adaptive(), stopload(), addtapevent()) : (lazyload(), stopload())) : getschemes();
+			if("IntelligentCollocation" in GetRequest()){
+				document.getElementById("home").style.color = "#000";
+				document.getElementById("home").onclick = function(){window.location.href = 'index.html' };
+			}
+			("IntelligentCollocation" in GetRequest()) ? ((JSON.parse(localStorage.schemes).length) ? (setTimeout(lazyload(), 300), adaptive(), stopload(), addtapevent()) : (setTimeout(lazyload(), 300), stopload())) : getschemes();
 		});
 
 		function getschemes() {
-			mui.ajax(apiurl + 'schemes?fields=id,name,amount,cover_t_img-url&filter=custom_edited:0&per-page=100&max-page-size=100', {
+			mui.ajax(apiurl + 'schemes?fields=id,name,amount,cover_t_img&filter=custom_edited:0&per-page=100&max-page-size=100', {
 				data: {},
 				dataType: 'json',
 				type: 'get',
@@ -61,9 +65,8 @@
 
 		function addtapevent() {
 			mui('#list').on('tap', '.indexpic img', function() {
-				nId = this.getAttribute('data-id');
 				mui.openWindow({
-					url: "schemes.html?id=" + nId,
+					url: "schemes.html?id=" + this.getAttribute('data-id'),
 					id: "schemes"
 				});
 				return;
@@ -71,16 +74,16 @@
 		}
 
 		function lazyload() {
-			arrjsonItem = JSON.parse(localStorage.schemes);
-			arrjsonScheme = new Array;
+			const arrjsonItem = JSON.parse(localStorage.schemes);
+			const arrjsonScheme = [];
 			for (let i = 0; i < arrjsonItem.length; i++) {
-				jsonItem = {
+				let jsonItem = {
 					"title": arrjsonItem[i].name,
 					"price": arrjsonItem[i]['amount'] / 100,
-					"preview": arrjsonItem[i]['cover_t_img-url'],
+					"preview": arrjsonItem[i]['cover_t_img'],
 					"id": arrjsonItem[i].id
 				};
-				arrjsonScheme[i] = jsonItem;
+				arrjsonScheme.push(jsonItem);
 			}
 			document.getElementById("nodata").style.display = "none";
 			if (!arrjsonScheme.length) {
@@ -89,14 +92,14 @@
 			}
 			var createFragment = function(count) {
 				var fragment = document.createDocumentFragment();
-				objFirstDiv = document.createElement('div');
+				let objFirstDiv = document.createElement('div');
 				objFirstDiv.className = "indexpic";
-				objFirstDiv.innerHTML = '<img data-lazyload="' + serverurl + arrjsonScheme[0].preview + '" data-id="' + arrjsonScheme[0].id + '"><p class="title">' + arrjsonScheme[0].title + '<span class="scpr"><i class="hr">/</i>￥' + arrjsonScheme[0].price + '</span></p>';
+				objFirstDiv.innerHTML = '<img data-lazyload="' + serverurl + '/smart_matching/uploads/imgs/thumbs/m-' + arrjsonScheme[0].preview + '" data-id="' + arrjsonScheme[0].id + '"><p class="title">' + arrjsonScheme[0].title + '<span class="scpr"><i class="hr">/</i>￥' + arrjsonScheme[0].price + '</span></p>';
 				fragment.appendChild(objFirstDiv);
-				for (var i = 1; i < count; i++) {
-					objDiv = document.createElement('div');
+				for (let i = 1; i < count; i++) {
+					let objDiv = document.createElement('div');
 					objDiv.className = "indexpic margin180";
-					objDiv.innerHTML = '<img data-lazyload="' + serverurl + arrjsonScheme[i].preview + '" data-id="' + arrjsonScheme[i].id + '"><p class="title">' + arrjsonScheme[i].title + '<span class="scpr"><i class="hr">/</i>￥' + arrjsonScheme[i].price + '</span></p>';
+					objDiv.innerHTML = '<img data-lazyload="' + serverurl + '/smart_matching/uploads/imgs/thumbs/m-' + arrjsonScheme[i].preview + '" data-id="' + arrjsonScheme[i].id + '"><p class="title">' + arrjsonScheme[i].title + '<span class="scpr"><i class="hr">/</i>￥' + arrjsonScheme[i].price + '</span></p>';
 					fragment.appendChild(objDiv);
 				}
 				return fragment;
@@ -112,9 +115,9 @@
 		}
 
 		function adaptive() {
-			arrobjCases = document.getElementsByClassName("indexpic");
-			fCasesHeight = 0.611 * arrobjCases[0].scrollWidth;
-			for (i = 0; i < arrobjCases.length; i++) {
+			let arrobjCases = document.getElementsByClassName("indexpic");
+			let fCasesHeight = 0.611 * arrobjCases[0].scrollWidth;
+			for (let i = 0; i < arrobjCases.length; i++) {
 				arrobjCases[i].style.height = fCasesHeight + 'px';
 			}
 		}
@@ -132,10 +135,6 @@
 			});
 			return;
 		});
-		
-		
-		
-		
 	</script>
 
 </html>

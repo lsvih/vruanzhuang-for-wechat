@@ -9,13 +9,6 @@
 		<meta http-equiv="pragma" content="no-cache">
 		<meta http-equiv="Cache-Control" content="no-cache, must-revalidate">
 		<meta http-equiv="expires" content="Wed, 26 Feb 1997 08:21:57 GMT">
-		<script type="text/javascript" src="js/vue.js"></script>
-		<script type="text/javascript" src="js/app.js"></script>
-		<script type="text/javascript" src="js/global.js"></script>
-		<script type="text/javascript" src="js/global.js"></script>
-		<script type="text/javascript" src="js/mui.min.js"></script>
-		<script type="text/javascript" src="js/iflogin.js?lastpage=myorder.html"></script>
-
 		<link rel="stylesheet" href="css/mui.min.css" />
 		<link rel="stylesheet" href="css/app.css" />
 		<link rel="stylesheet" href="css/order.css" />
@@ -70,16 +63,25 @@
 
 				</div>
 				<div class="blank"></div>
-				<!--<div class="paymode">支付方式：<span>{{paymode}}</span></div>-->
 			</ul>
 			<div class="infonum">合计：￥<span class="price info" id="thisallprice">...</span><br />运费：￥<span id="thisfr" class="sendprice info">...</span></div>
 		</div>
 		<div class="cancel innavfor2" onclick="cancelorder()">取消订单</div>
 		<div class="pay innavfor2 active" onclick="checkpay()">确认订单</div>
 	</body>
+	<script src="js/vue.js"></script>
+	<script src="js/app.js"></script>
+	<script src="js/global.js"></script>
+	<script src="js/global.js"></script>
+	<script src="js/mui.min.js"></script>
+	<script src="js/iflogin.js?lastpage=myorder.html"></script>
 	<script>
+		"use strict";
 		mui.init();
 		var nOrderId = GetRequest()["orderid"];
+		if(GetRequest()["cartsort"]){
+			delcart(GetRequest()["cartsort"]);
+		}
 		mui.ajax(apiurl + 'orders/' + nOrderId + '?access-token=' + strAccessToken, {
 			dataType: 'json',
 			type: 'get',
@@ -94,7 +96,8 @@
 				stopload();
 			}
 		});
-		jsonThisOrder = JSON.parse(localStorage.temporder);
+		var jsonThisOrder = JSON.parse(localStorage.temporder);
+		var jsonThisGoods;
 		jsonThisOrder.created_at = getDate(jsonThisOrder.created_at);
 		startload();
 		Vue.filter('picurl', function(value, url, picsize) {
@@ -112,7 +115,6 @@
 						el: '#kgoods',
 						data: jsonThisGoods
 					});
-					delcart();
 					stopload();
 				} else {
 					mui.alert(data.message);
@@ -125,7 +127,6 @@
 			}
 		});
 		mui.ajax(apiurl + 'order-schemes?access-token=' + strAccessToken + '&filter=order_id:' + nOrderId + '&expand=scheme', {
-			data: {},
 			dataType: 'json',
 			type: 'get',
 			timeout: 6000,
@@ -135,7 +136,6 @@
 						el: '#kschemes',
 						data: data.data
 					});
-					delcart();
 					stopload();
 				} else {
 					mui.alert(data.message);
@@ -147,7 +147,8 @@
 				stopload();
 			}
 		});
-		jsonAddress = JSON.parse(localStorage.alladdress);
+		var jsonAddress = JSON.parse(localStorage.alladdress);
+		var jsonThisAddress;
 		if (!(jsonAddress.address[0])) {
 			document.getElementById("showaddress").style.display = "none";
 			jsonThisAddress = null;
@@ -160,7 +161,7 @@
 				jsonThisAddress = jsonAddress.address[0] //没有默认则取第一个
 			} else {
 				k = 0;
-				for (i = 0; i < jsonAddress.address.length; i++) {
+				for (let i = 0; i < jsonAddress.address.length; i++) {
 					if (jsonAddress.selected == jsonAddress.address[i].id) {
 						jsonThisAddress = jsonAddress.address[i];
 						k = 1;
@@ -199,7 +200,7 @@
 				type: 'put',
 				timeout: 6000,
 				success: function(data) {
-					data.success == true ? window.location.href = "orderinfo-waitforpay.html" : (mui.alert("创建支付订单失败，请稍候再试。", "微软装"), stopload());
+					data.success == true ? mui.openWindow({url: "orderinfo-waitforpay.html",id: "orderinfo-waitforpay"}) : (mui.alert("创建支付订单失败，请稍候再试。", "微软装"), stopload());
 				},
 				error: function(xhr, type, errorThrown, message) {
 					mui.alert("网络连接失败，请稍候再试");
@@ -225,7 +226,7 @@
 								alert("订单已删除！");
 								mui.openWindow({
 									url: "myorder.html",
-									id: "myorder "
+									id: "myorder"
 								});
 							} else {
 								mui.alert("订单删除失败");
@@ -240,9 +241,15 @@
 				}
 			})
 		}
-		function delcart(){
-			return false;
+
+		function delcart(e) {
+			let jsonCart = JSON.parse(localStorage.cart);
+			for(let i = 0;i<e.length;i++){
+				jsonCart.goods.remove(e[i])
+			}
+			localStorage.cart=JSON.stringify(jsonCart)
 		}
+
 		function updatesta() {
 			document.getElementById("thisallprice").innerHTML = jsonThisOrder.amount / 100;
 			document.getElementById("thisfr").innerHTML = jsonThisOrder.freight;
@@ -251,14 +258,14 @@
 		function list() {
 			mui.openWindow({
 				url: "list.html",
-				id: "list "
+				id: "list"
 			});
 		}
 
 		function selectaddress() {
 			mui.openWindow({
 				url: "select-address.html?orderid=" + nOrderId,
-				id: "select-address "
+				id: "select-address"
 			});
 		}
 	</script>

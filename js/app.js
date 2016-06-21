@@ -30,11 +30,22 @@ function saveArray(e, f) {
 	localStorage.setItem(e, JSON.stringify(value));
 }
 
-Array.prototype.remove = function(val) {
+Array.prototype.removetheitem = function(val) {
 	var index = this.indexOf(val);
 	if (index > -1) {
 		this.splice(index, 1);
 	}
+};
+Array.prototype.remove = function(dx) {
+	if (isNaN(dx) || dx > this.length) {
+		return false;
+	}
+	for (var i = 0, n = 0; i < this.length; i++) {
+		if (this[i] != this[dx]) {
+			this[n++] = this[i]
+		}
+	}
+	this.length -= 1
 };
 
 function GetRequest() {
@@ -43,7 +54,7 @@ function GetRequest() {
 	if (url.indexOf("?") != -1) {
 		var str = url.substr(1);
 		strs = str.split("&");
-		for (let i = 0; i < strs.length; i++) {
+		for (var i = 0; i < strs.length; i++) {
 			theRequest[strs[i].split("=")[0]] = unescape(strs[i].split("=")[1]);
 		}
 	}

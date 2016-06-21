@@ -37,7 +37,7 @@
 	<script src="js/global.js"></script>
 	<script src="js/mui.min.js"></script>
 	<script>
-		use strict;
+		"use strict";
 		mui.init();
 		Vue.filter('picurl', function(value, url, picsize) {
 			return serverurl + url + picsize + value;

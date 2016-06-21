@@ -37,6 +37,10 @@
 	</style>
 
 	<body>
+		<div id="load">
+			<div class="loading"></div>
+			<div class="loading-text"><img src="images/load.gif" width="25px">加载中，请稍候...</div>
+		</div>
 		<header class="mui-bar mui-bar-nav">
 			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
 			<h1 class="mui-title"><div class="mui-input-row mui-search">
@@ -61,7 +65,7 @@
 	<script src="js/mui.min.js"></script>
 	<script src="js/vue.js"></script>
 	<script>
-	use strict;
+		"use strict";
 		mui.init();
 		var url = window.location.search;
 		var nSpaceSortId = url.substring(url.lastIndexOf('=') + 1, url.length);
@@ -78,8 +82,9 @@
 						el: '#class',
 						data: data.data,
 						compiled: function() {
+							stopload();
 							mui('#class').on('tap', '.class', function() {
-								nClassId = this.getAttribute('data-id');
+								let nClassId = this.getAttribute('data-id');
 								mui.ajax(apiurl + 'product-tags?filter=tag_id:' + nClassId + '&expand=product&per-page=30', {
 									dataType: 'json',
 									type: 'get',
@@ -88,7 +93,7 @@
 										data.success == true ? (!data.data.items.length ? mui.alert("本类暂无单品", "微软装") : (localStorage.tempproduct = JSON.stringify(data.data), location.href = "productlist.html?spacesortid=" + nSpaceSortId + "&classid=" + nClassId)) : mui.alert("获取方案失败，请稍候再试");
 									},
 									error: function(xhr, textStatus, errorThrown) {
-										mui.alert("网络连接失败，请稍候再试","微软装");
+										mui.alert("网络连接失败，请稍候再试", "微软装");
 									}
 								});
 								return;
@@ -96,12 +101,12 @@
 						}
 					})
 				} else {
-					mui.alert("获取标签失败，请稍候再试","微软装");
+					mui.alert("获取标签失败，请稍候再试", "微软装");
 					stopload();
 				}
 			},
 			error: function(xhr, textStatus, errorThrown) {
-				mui.alert("网络连接失败，请稍候再试","微软装");
+				mui.alert("网络连接失败，请稍候再试", "微软装");
 				stopload();
 			}
 		});
