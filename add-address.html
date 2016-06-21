@@ -6,11 +6,6 @@
 		<meta name="viewport" content="initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
 		<meta name="format-detection" content="telephone=no">
 		<meta content="email=no" name="format-detection" />
-		<script type="text/javascript" src="js/global.js" ></script>
-		<script type="text/javascript" src="js/mui.min.js"></script>
-		<script type="text/javascript" src="js/mui.picker.js" ></script>
-		<script type="text/javascript" src="js/mui.poppicker.js" ></script>
-		<script src="js/city.data.js" type="text/javascript" charset="utf-8"></script>
 		<link rel="stylesheet" href="css/mui.min.css" />
 		<link rel="stylesheet" href="css/app.css" />
 		<link rel="stylesheet" href="css/address.css" />
@@ -59,7 +54,13 @@
 		</div>
 
 	</body>
+	<script src="js/global.js"></script>
+	<script src="js/mui.min.js"></script>
+	<script src="js/mui.picker.js"></script>
+	<script src="js/mui.poppicker.js"></script>
+	<script src="js/city.data.js" ></script>
 	<script>
+	use strict;
 		mui.init();
 		var jsonAddress = JSON.parse(localStorage.alladdress);
 		(function($, doc) {
@@ -90,10 +91,20 @@
 				alert("请填写手机号码");
 				return false;
 			}
+			var regPhone = /^0?1[3|4|5|8][0-9]\d{8}$/;
+			if (!regPhone.test(document.getElementById("phonenum").value)) {
+				alert("请输入正确的手机号码");
+				return false;
+			};
 			if (!document.getElementById("postcode").value) {
 				alert("请填写邮政号码");
 				return false;
 			}
+			var regPostcode = /[0-9]{6}$/;
+			if (!regPostcode.test(document.getElementById("postcode").value)) {
+				alert("请输入正确的邮政号码");
+				return false;
+			};
 			if (!document.getElementById("city").innerHTML) {
 				alert("请选择省市区");
 				return false;
@@ -119,10 +130,19 @@
 				timeout: 6000,
 				success: function(data) {
 					if (data.success == true) {
-						var strItem = '{"person":"' + document.getElementById("person").value + '","phonenum": "' + document.getElementById("phonenum").value + '","postcode": "'+ document.getElementById("postcode").value + '","province": "' + document.getElementById("province").innerHTML + '","city": "' + document.getElementById("city").innerHTML + '","county": "' + document.getElementById("county").innerHTML + '","detailedaddress": "' + document.getElementById("detailedaddress").value + '","id": "' + data.data.id + '"}';
-						jsonAddress.address.push(JSON.parse(strItem));
+						var jsonItem = {
+							"person": document.getElementById("person").value,
+							"phonenum": document.getElementById("phonenum").value,
+							"postcode": document.getElementById("postcode").value,
+							"province": document.getElementById("province").innerHTML,
+							"city": document.getElementById("city").innerHTML,
+							"county": document.getElementById("county").innerHTML,
+							"detailedaddress": document.getElementById("detailedaddress").value,
+							"id": data.data.id
+						};
+						jsonAddress.address.push(jsonItem);
 						localStorage.alladdress = JSON.stringify(jsonAddress);
-						history.go(-1);
+						mui.back();
 					} else {
 						mui.alert("增加地址失败，请稍候再试");
 						stopload();

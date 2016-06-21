@@ -6,12 +6,6 @@
 		<meta name="viewport" content="initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
 		<meta name="format-detection" content="telephone=no">
 		<meta content="email=no" name="format-detection" />
-		<script type="text/javascript" src="js/global.js" ></script>
-		<script type="text/javascript" src="js/mui.min.js"></script>
-		<script src="js/mui.picker.js"></script>
-		<script src="js/mui.poppicker.js"></script>
-		<script src="js/city.data.js" type="text/javascript" charset="utf-8"></script>
-		
 		<link rel="stylesheet" href="css/mui.min.css" />
 		<link rel="stylesheet" href="css/app.css" />
 		<link rel="stylesheet" href="css/address.css" />
@@ -60,21 +54,28 @@
 		</div>
 
 	</body>
+	<script src="js/global.js"></script>
+	<script src="js/mui.min.js"></script>
+	<script src="js/mui.picker.js"></script>
+	<script src="js/mui.poppicker.js"></script>
+	<script src="js/city.data.js"></script>
 	<script>
+	use strict;
 		mui.init();
 		var jsonAddress = JSON.parse(localStorage.alladdress);
 		var url = window.location.search;
 		var loc = url.substring(url.lastIndexOf('=') + 1, url.length);
 		var thisaddressid = jsonAddress.address[loc].id;
+		var arrValueContent = ["person", "phonenum", "postcode", "detailedaddress"];
+		var arrHTMLContent = ["province", "city", "county"];
 		(function($, doc) {
 			$.ready(function() {
-				document.getElementById("person").value = jsonAddress.address[loc].person;
-				document.getElementById("phonenum").value = jsonAddress.address[loc].phonenum;
-				document.getElementById("postcode").value = jsonAddress.address[loc].postcode;
-				document.getElementById("province").innerHTML = jsonAddress.address[loc].province;
-				document.getElementById("city").innerHTML = jsonAddress.address[loc].city;
-				document.getElementById("county").innerHTML = jsonAddress.address[loc].county;
-				document.getElementById("detailedaddress").value = jsonAddress.address[loc].detailedaddress;
+				for (let i = 0; i < arrValueContent.length; i++) {
+					document.getElementById(arrValueContent[i]).value = jsonAddress.address[loc][arrValueContent[i]]
+				}
+				for (let i = 0; i < arrHTMLContent.length; i++) {
+					document.getElementById(arrHTMLContent[i]).innerHTML = jsonAddress.address[loc][arrHTMLContent[i]]
+				}
 				var pickcity = new $.PopPicker({
 					layer: 3
 				});
@@ -100,10 +101,20 @@
 				alert("请填写手机号码");
 				return false;
 			}
+			var regPhone = /^0?1[3|4|5|8][0-9]\d{8}$/;
+			if (!regPhone.test(document.getElementById("phonenum").value)) {
+				alert("请输入正确的手机号码");
+				return false;
+			};
 			if (!document.getElementById("postcode").value) {
 				alert("请填写邮政号码");
 				return false;
 			}
+			var regPostcode = /[0-9]{6}$/;
+			if (!regPostcode.test(document.getElementById("postcode").value)) {
+				alert("请输入正确的邮政号码");
+				return false;
+			};
 			if (!document.getElementById("city").innerHTML) {
 				alert("请选择省市区");
 				return false;
@@ -113,7 +124,7 @@
 				return false;
 			}
 			startload();
-			mui.ajax(apiurl + 'delivery-addresses/'+ thisaddressid +'?access-token='+strAccessToken, {
+			mui.ajax(apiurl + 'delivery-addresses/' + thisaddressid + '?access-token=' + strAccessToken, {
 				data: {
 					'consignee': document.getElementById("person").value,
 					'mobile': document.getElementById("phonenum").value,
@@ -128,15 +139,14 @@
 				timeout: 6000,
 				success: function(data) {
 					if (data.success == true) {
-						jsonAddress.address[loc].person = document.getElementById("person").value;
-						jsonAddress.address[loc].phonenum = document.getElementById("phonenum").value;
-						jsonAddress.address[loc].postcode = document.getElementById("postcode").value;
-						jsonAddress.address[loc].province = document.getElementById("province").innerHTML;
-						jsonAddress.address[loc].city = document.getElementById("city").innerHTML;
-						jsonAddress.address[loc].county = document.getElementById("county").innerHTML;
-						jsonAddress.address[loc].detailedaddress = document.getElementById("detailedaddress").value;
+						for (let i = 0; i < arrValueContent.length; i++) {
+							jsonAddress.address[loc][arrValueContent[i]] = document.getElementById(arrValueContent[i]).value;
+						}
+						for (let i = 0; i < arrHTMLContent.length; i++) {
+							jsonAddress.address[loc][arrHTMLContent[i]] = document.getElementById(arrHTMLContent[i]).innerHTML;
+						}
 						localStorage.alladdress = JSON.stringify(jsonAddress);
-						history.go(-1);
+						mui.back();
 					} else {
 						mui.alert("修改地址失败，请稍候再试");
 						stopload();

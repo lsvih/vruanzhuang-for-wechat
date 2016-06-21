@@ -7,12 +7,6 @@
 		<meta name="viewport" content="initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
 		<meta name="format-detection" content="telephone=no">
 		<meta content="email=no" name="format-detection" />
-		<script type="text/javascript" src="js/vue.js"></script>
-		<script type="text/javascript" src="js/app.js"></script>
-		<script type="text/javascript" src="js/global.js"></script>
-		<script type="text/javascript" src="js/mui.min.js"></script>
-		<script type="text/javascript" src="js/iflogin.js?url=cart.html"></script>
-
 		<link rel="stylesheet" href="css/mui.min.css" />
 		<link rel="stylesheet" href="css/app.css" />
 		<link rel="stylesheet" href="css/cart.css" />
@@ -54,9 +48,9 @@
 						<div class="cart-name">{{ goods.name }}</div>
 						<div class="cart-price">￥<span class="price">{{ goods.price }}</span></div>
 						<div class="mui-numbox" data-numbox-min='1'>
-							<button class="mui-btn mui-btn-numbox-minus" type="button" onclick="valueChange(this)">-</button>
+							<button class="mui-btn mui-btn-numbox-minus" type="button" v-on:click="valueChange(this)">-</button>
 							<input class="mui-input-numbox" type="number" v-bind:value="goods.num" onchange="valueChange(this)" />
-							<button class="mui-btn mui-btn-numbox-plus" type="button" onclick="valueChange(this)">+</button>
+							<button class="mui-btn mui-btn-numbox-plus" type="button" v-on:click="valueChange(this)">+</button>
 						</div>
 					</div>
 					<div class="blank"></div>
@@ -66,7 +60,12 @@
 		</div>
 
 	</body>
+	<script src="js/vue.js"></script>
+	<script src="js/global.js"></script>
+	<script src="js/mui.min.js"></script>
+	<script src="js/iflogin.js?url=index.html"></script>
 	<script>
+	use strict;
 		mui.init();
 		(function($) {
 			$('#cart').on('tap', '.delete', function(event) {
@@ -78,10 +77,9 @@
 				});
 			});
 			var btnArray = ['确认', '取消'];
-			var value = this.checked;
 			var chk = document.getElementsByName("checkbox")
-			for (var i = 0; i < chk.length; i++) {
-				chk[i].checked = value;
+			for (let i = 0; i < chk.length; i++) {
+				chk[i].checked = this.checked;
 			}
 			selectChange();
 		})(mui);
@@ -96,10 +94,9 @@
 			}
 		})
 		mui('.pay').on('change', 'input', function() {
-			var value = this.checked;
 			var chk = document.getElementsByName("checkbox")
-			for (var i = 0; i < chk.length; i++) {
-				chk[i].checked = value;
+			for (let i = 0; i < chk.length; i++) {
+				chk[i].checked = this.checked;
 			}
 			selectChange();
 		});
@@ -127,16 +124,13 @@
 		}
 
 		function selectChange() {
-			var value = this.checked;
-			var chk = document.getElementsByName("checkbox");
+			var arrobjCheckBox = document.getElementsByName("checkbox");
 			var j = 0;
 			var count = 0;
-			for (var i = 0; i < chk.length; i++) {
-				if (chk[i].checked) {
+			for (let i = 0; i < arrobjCheckBox.length; i++) {
+				if (arrobjCheckBox[i].checked) {
 					j++;
-					a = chk[i].parentNode.getElementsByClassName("cart-price")[0].getElementsByTagName("span")[0].innerHTML;
-					b = chk[i].parentNode.getElementsByClassName("mui-numbox")[0].getElementsByTagName("input")[0].value;
-					count = Number(a) * Number(b) + Number(count);
+					count = Number(arrobjCheckBox[i].parentNode.getElementsByClassName("cart-price")[0].getElementsByTagName("span")[0].innerHTML) * Number(arrobjCheckBox[i].parentNode.getElementsByClassName("mui-numbox")[0].getElementsByTagName("input")[0].value) + Number(count);
 				}
 			}
 			j ? document.getElementById("count").parentNode.style.backgroundColor = "#c51919" : document.getElementById("count").parentNode.style.backgroundColor = "gray";
@@ -153,7 +147,7 @@
 			} else {
 				var b = new Array(count);
 				var j = 0;
-				for (var i = 0; i < chk.length; i++) {
+				for (let i = 0; i < chk.length; i++) {
 					if (chk[i].checked) {
 						a = chk[i].parentNode.getElementsByClassName("sort-id")[0].innerHTML;
 						b[j] = JSON.parse(localStorage.cart).goods[a];
@@ -208,7 +202,6 @@
 											timeout: 6000,
 											success: function(data) {
 												if (data.success == true) {
-													console.log(JSON.stringify(data.data))
 													k++;
 												}
 											},
@@ -219,7 +212,7 @@
 										});
 										break;
 									default:
-									schemenum = checkcart[i].num;
+										schemenum = checkcart[i].num;
 										mui.ajax(apiurl + 'orders/custom-edit?access-token=' + strAccessToken, {
 											data: {
 												schemes: JSON.stringify([JSON.parse(localStorage.cart).goods[i].content])
@@ -230,21 +223,20 @@
 											success: function(data) {
 												if (data.success == true) {
 													var oldid;
-													for(var key in data.data.schemes) {
+													for (var key in data.data.schemes) {
 														oldid = key;
 													}
 													mui.ajax(apiurl + 'order-schemes?access-token=' + strAccessToken, {
 														data: {
 															'order_id': orderid,
 															'scheme_id': data.data.schemes[oldid].id,
-															'purchase_num':schemenum
+															'purchase_num': schemenum
 														},
 														dataType: 'json',
 														type: 'post',
 														timeout: 6000,
 														success: function(data) {
 															if (data.success == true) {
-																console.log(JSON.stringify(data.data))
 																k++;
 															}
 														},
@@ -263,7 +255,7 @@
 										break;
 								}
 							}
-							var iID = setTimeout(function() {
+							setTimeout(function() {
 								if (k == count) {
 									mui.ajax(apiurl + 'orders/' + orderid + '?access-token=' + strAccessToken, {
 										data: {
@@ -286,12 +278,12 @@
 								}
 							}, 500);
 						} else {
-							mui.alert(data.message,"微软装");
+							mui.alert(data.message, "微软装");
 							stopload();
 						}
 					},
 					error: function(xhr, type, errorThrown, message) {
-						mui.alert("网络连接失败，请稍候再试","微软装");
+						mui.alert("网络连接失败，请稍候再试", "微软装");
 						stopload();
 					}
 				});
@@ -299,19 +291,19 @@
 		}
 
 		function previewthis(e) {
-			type = e.parentNode.getElementsByClassName("cart-type")[0].innerHTML;
-			id = e.parentNode.getElementsByClassName("cart-id")[0].innerHTML;
-			sortid = e.parentNode.getElementsByClassName("sort-id")[0].innerHTML;
-			switch (type) {
+			nType = e.parentNode.getElementsByClassName("cart-type")[0].innerHTML;
+			nId = e.parentNode.getElementsByClassName("cart-id")[0].innerHTML;
+			nSortId = e.parentNode.getElementsByClassName("sort-id")[0].innerHTML;
+			switch (nType) {
 				case "1":
-					window.location.href = 'product.html?preview&id=' + id;
+					window.location.href = 'product.html?preview&id=' + nId;
 					break;
 				case "2":
-					window.location.href = 'preview-schemes.html?id=' + id;
+					window.location.href = 'preview-schemes.html?id=' + nId;
 					break;
 				default:
 					window.location.href = 'preview-custom.html';
-					localStorage.previewcustom = JSON.stringify(JSON.parse(localStorage.cart).goods[sortid].content);
+					localStorage.previewcustom = JSON.stringify(JSON.parse(localStorage.cart).goods[nSortId].content);
 					break;
 			}
 		}

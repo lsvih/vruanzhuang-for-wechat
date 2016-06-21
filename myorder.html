@@ -165,7 +165,7 @@
 		</div>
 	</body>
 	<script>
-		var order = {
+		var jsonOrder = {
 			"orders": []
 		};
 		var url = window.location.search;
@@ -175,15 +175,10 @@
 		}
 		startload()
 		mui.ready(function() {
-			if (GetQueryString() == "") {
-				document.getElementById('order1').className = "mui-control-item mui-active";
-				document.getElementById('item1').className = "mui-control-item mui-active";
-			} else {
-				var orderx = 'order' + GetQueryString();
-				var itemx = 'item' + GetQueryString();
-				document.getElementById(orderx).className = "mui-control-item mui-active";
-				document.getElementById(itemx).className = "mui-control-content mui-active";
-			}
+			var nOrderPadId = 'order' + GetQueryString();
+			var nItemPadId = 'item' + GetQueryString();
+			document.getElementById(nOrderPadId).className = "mui-control-item mui-active";
+			document.getElementById(nItemPadId).className = "mui-control-content mui-active";
 			mui.ajax(apiurl + 'orders?access-token=' + strAccessToken + '&filter=user_id:' + nUserId + '&expand=orderSchemes.scheme,orderProducts.product', {
 				data: {
 					'per-page': 500000
@@ -195,78 +190,78 @@
 					if (data.success == true) {
 						source = data.data.items;
 						for (i = 0; i < source.length; i++) {
-							newjson = {
-								"order_id": "x",
-								"orderid": "x",
-								"orderstate": "x",
-								"ordertime": "x",
-								"price": "x",
-								"sendprice": "x",
-								"address": "x",
+							jsonOrderItem = {
+								"order_id": null,
+								"orderid": null,
+								"orderstate": null,
+								"ordertime": null,
+								"price": null,
+								"sendprice": null,
+								"address": null,
 								"goods": [],
 								"schemes": []
 							};
-							order.orders.push(newjson);
+							jsonOrder.orders.push(jsonOrderItem);
 							for (j = 0; j < source[i].orderProducts.length; j++) {
-								addgoodjson = {
-									"id": "x",
-									"name": "x",
-									"price": "x",
-									"num": "x",
-									"img_src": "x"
+								jsonGoodItem = {
+									"id": null,
+									"name": null,
+									"price": null,
+									"num": null,
+									"img_src": null
 								}
-								order.orders[i].goods.push(addgoodjson);
+								jsonOrder.orders[i].goods.push(jsonGoodItem);
 							}
 							for (j = 0; j < source[i].orderSchemes.length; j++) {
-								addgoodjson = {
-									"id": "x",
-									"name": "x",
-									"price": "x",
-									"num": "x",
-									"img_src": "x"
+								jsonSchemeItem = {
+									"id": null,
+									"name": null,
+									"price": null,
+									"num": null,
+									"img_src": null
 								}
-								order.orders[i].schemes.push(addgoodjson);
+								jsonOrder.orders[i].schemes.push(jsonSchemeItem);
 							}
 						}
 						for (i = 0; i < source.length; i++) {
-							order.orders[i].order_id = source[i].id;
-							order.orders[i].orderid = source[i].order_no;
-							order.orders[i].orderstate = source[i].status;
-							order.orders[i].ordertime = getDate(source[i].created_at);
-							order.orders[i].price = source[i].amount/100;
-							order.orders[i].sendprice = source[i].freight;
-							order.orders[i].address = source[i].delivery_address_id;
+							jsonOrder.orders[i].order_id = source[i].id;
+							jsonOrder.orders[i].orderid = source[i].order_no;
+							jsonOrder.orders[i].orderstate = source[i].status;
+							jsonOrder.orders[i].ordertime = getDate(source[i].created_at);
+							jsonOrder.orders[i].price = source[i].amount / 100;
+							jsonOrder.orders[i].sendprice = source[i].freight;
+							jsonOrder.orders[i].address = source[i].delivery_address_id;
 							for (j = 0; j < source[i].orderProducts.length; j++) {
-								order.orders[i].goods[j].id = source[i].orderProducts[j].product_id;
-								order.orders[i].goods[j].name = source[i].orderProducts[j].product_name;
-								order.orders[i].goods[j].price = source[i].orderProducts[j].product_price;
-								order.orders[i].goods[j].num = source[i].orderProducts[j].purchase_num;
-								!source[i].orderProducts[j].product.cover_t_imgs ? order.orders[i].goods[j].img_src = null : order.orders[i].goods[j].img_src = serverurl + "/smart_matching/uploads/imgs/" + source[i].orderProducts[j].product.cover_t_imgs;
+								jsonOrder.orders[i].goods[j].id = source[i].orderProducts[j].product_id;
+								jsonOrder.orders[i].goods[j].name = source[i].orderProducts[j].product_name;
+								jsonOrder.orders[i].goods[j].price = source[i].orderProducts[j].product_price;
+								jsonOrder.orders[i].goods[j].num = source[i].orderProducts[j].purchase_num;
+								!source[i].orderProducts[j].product.cover_t_imgs ? jsonOrder.orders[i].goods[j].img_src = null : jsonOrder.orders[i].goods[j].img_src = serverurl + "/smart_matching/uploads/imgs/" + source[i].orderProducts[j].product.cover_t_imgs;
 							}
 							for (j = 0; j < source[i].orderSchemes.length; j++) {
-								order.orders[i].schemes[j].id = source[i].orderSchemes[j].scheme_id;
-								order.orders[i].schemes[j].name = source[i].orderSchemes[j].scheme_name;
-								order.orders[i].schemes[j].price = source[i].orderSchemes[j].scheme_price;
-								order.orders[i].schemes[j].num = source[i].orderSchemes[j].purchase_num;
-								!source[i].orderSchemes[j].scheme.cover_t_img ? order.orders[i].schemes[j].img_src = null : order.orders[i].schemes[j].img_src = serverurl + "/smart_matching/uploads/imgs/" + source[i].orderSchemes[j].scheme.cover_t_img;
+								jsonOrder.orders[i].schemes[j].id = source[i].orderSchemes[j].scheme_id;
+								jsonOrder.orders[i].schemes[j].name = source[i].orderSchemes[j].scheme_name;
+								jsonOrder.orders[i].schemes[j].price = source[i].orderSchemes[j].scheme_price;
+								jsonOrder.orders[i].schemes[j].num = source[i].orderSchemes[j].purchase_num;
+								!source[i].orderSchemes[j].scheme.cover_t_img ? jsonOrder.orders[i].schemes[j].img_src = null : jsonOrder.orders[i].schemes[j].img_src = serverurl + "/smart_matching/uploads/imgs/" + source[i].orderSchemes[j].scheme.cover_t_img;
 							}
 						}
-						localStorage.order = JSON.stringify(order);
+						localStorage.order = JSON.stringify(jsonOrder);
 						allorder = new Vue({
 							el: '#allorder',
-							data: order
+							data: jsonOrder
 						});
 						obligations = new Vue({
 							el: '#obligations',
-							data: order
+							data: jsonOrder
 						});
 						distribution = new Vue({
 							el: '#distribution ',
-							data: order
+							data: jsonOrder
 						});
 						evaluate = new Vue({
 							el: '#evaluate',
-							data: order
+							data: jsonOrder
 						});
 						updatastate();
 						document.getElementsByClassName("mui-content")[0].style.display = "block";
@@ -296,35 +291,35 @@
 
 		function updatastate() {
 			var elem = document.getElementsByClassName("state");
-			for (var i = 0; i < elem.length; i++) {
+			for (let i = 0; i < elem.length; i++) {
 				switch (elem[i].innerHTML) {
 					case "1":
 						elem[i].innerHTML = "待确认";
-						var oDiv = document.createElement('div');
-						oDiv.innerHTML = '<div class="btn-area"><div class="cancel btn" onclick="cancelorder(this)">取消订单</div><div class="pay btn active" onclick="clicksub(this)">确认付款</div></div>';
-						elem[i].parentNode.parentNode.parentNode.appendChild(oDiv);
+						var objDiv = document.createElement('div');
+						objDiv.innerHTML = '<div class="btn-area"><div class="cancel btn" onclick="cancelorder(this)">取消订单</div><div class="pay btn active" onclick="clicksub(this)">确认付款</div></div>';
+						elem[i].parentNode.parentNode.parentNode.appendChild(objDiv);
 						break;
 					case "2":
 						elem[i].innerHTML = "待付款";
-						var oDiv = document.createElement('div');
-						oDiv.innerHTML = '<div class="btn-area"><div class="cancel btn" onclick="cancelorder(this)">取消订单</div><div class="pay btn active" onclick="clicksub(this)">确认付款</div></div>';
-						elem[i].parentNode.parentNode.parentNode.appendChild(oDiv);
+						var objDiv = document.createElement('div');
+						objDiv.innerHTML = '<div class="btn-area"><div class="cancel btn" onclick="cancelorder(this)">取消订单</div><div class="pay btn active" onclick="clicksub(this)">确认付款</div></div>';
+						elem[i].parentNode.parentNode.parentNode.appendChild(objDiv);
 						break;
 					case "3":
 						elem[i].innerHTML = "待配送";
-						var oDiv = document.createElement('div');
-						elem[i].parentNode.parentNode.parentNode.appendChild(oDiv);
+						var objDiv = document.createElement('div');
+						elem[i].parentNode.parentNode.parentNode.appendChild(objDiv);
 						break;
 					case "4":
 						elem[i].innerHTML = "待配送";
-						var oDiv = document.createElement('div');
-						elem[i].parentNode.parentNode.parentNode.appendChild(oDiv);
+						var objDiv = document.createElement('div');
+						elem[i].parentNode.parentNode.parentNode.appendChild(objDiv);
 						break;
 					case "5":
 						elem[i].innerHTML = "待评价";
-						var oDiv = document.createElement('div');
-						oDiv.innerHTML = '<div class="btn-area"><div class="pay btn active">评价</div></div>';
-						elem[i].parentNode.parentNode.parentNode.appendChild(oDiv);
+						var objDiv = document.createElement('div');
+						objDiv.innerHTML = '<div class="btn-area"><div class="pay btn active">评价</div></div>';
+						elem[i].parentNode.parentNode.parentNode.appendChild(objDiv);
 						break;
 				}
 			}

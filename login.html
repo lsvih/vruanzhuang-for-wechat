@@ -6,9 +6,6 @@
 		<meta name="viewport" content="initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
 		<meta name="format-detection" content="telephone=no">
 		<meta content="email=no" name="format-detection" />
-		<script type="text/javascript" src="js/app.js"></script>
-		<script type="text/javascript" src="js/global.js"></script>
-		<script type="text/javascript" src="js/mui.min.js"></script>
 		<link href="css/login.css" type="text/css" rel="stylesheet">
 		<link href="css/global.css" type="text/css" rel="stylesheet">
 		<link rel="stylesheet" href="css/app.css" />
@@ -41,7 +38,11 @@
 		</div>
 
 	</body>
+	<script src="js/app.js"></script>
+	<script src="js/global.js"></script>
+	<script src="js/mui.min.js"></script>
 	<script>
+		use strict;
 		stopload()
 		var lastpage;
 		var url = window.location.search;
@@ -50,14 +51,8 @@
 
 		function login() {
 			var reg = /^0?1[3|4|5|8][0-9]\d{8}$/;
-			//			username =  document.getElementById("username").value;
 			mobile = document.getElementById("phonenumber").value;
-			//			email =  document.getElementById("mailaccount").value;
 			password = document.getElementById("password").value;
-			//			if(!username){
-			//				mui.alert("请输入账号");
-			//				return false;
-			//			}
 			if (!reg.test(mobile)) {
 				alert("请输入正确的手机号码");
 				return false;
@@ -79,11 +74,11 @@
 					if (data.success == true) {
 						localStorage.userinfo = JSON.stringify(data.data);
 						localStorage.cart = '{"goods":[]}';
-						var alladdress = {
+						var jsonAddress = {
 							"selected": null,
 							"address": []
 						}
-						localStorage.alladdress = JSON.stringify(alladdress);
+						localStorage.alladdress = JSON.stringify(jsonAddress);
 						startload();
 						mui.ajax(apiurl + 'delivery-addresses?access-token=' + strAccessToken + '&and[user_id]=' + nUserId, {
 							data: {},
@@ -94,16 +89,25 @@
 								console.log(JSON.stringify(data))
 								if (data.success == true) {
 									for (i = 0; i < data.data.items.length; i++) {
-										var strItem = '{"person":"' + data.data.items[i].consignee + '","phonenum": "' + data.data.items[i].mobile + '","postcode": "' + data.data.items[i].postcode + '","province": "' + data.data.items[i].province + '","city": "' + data.data.items[i].city + '","county": "' + data.data.items[i].county + '","detailedaddress": "' + data.data.items[i].address + '","id": "' + data.data.items[i].id + '"}';
-										alladdress.address.push(JSON.parse(strItem));
+										var jsonItem = {
+											"person": data.data.items[i].consignee,
+											"phonenum": data.data.items[i].mobile,
+											"postcode": data.data.items[i].postcode,
+											"province": data.data.items[i].province,
+											"city": data.data.items[i].city,
+											"county": data.data.items[i].county,
+											"detailedaddress": data.data.items[i].address,
+											"id": data.data.items[i].id
+										};
+										jsonAddress.address.push(jsonItem);
 									}
 									for (i = 0; i < data.data.items.length; i++) {
 										if (data.data.items[i].is_default == 1) {
-											alladdress.selected = data.data.items[i].id;
+											jsonAddress.selected = data.data.items[i].id;
 											break;
 										}
 									}
-									localStorage.alladdress = JSON.stringify(alladdress);
+									localStorage.alladdress = JSON.stringify(jsonAddress);
 									window.location.href = unescape(lastpage);
 								} else {
 									alert("获取地址列表失败，请稍候再试");

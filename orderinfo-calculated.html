@@ -79,9 +79,8 @@
 	</body>
 	<script>
 		mui.init();
-		var goods = new Array;
-		var orderid = GetRequest()["orderid"];
-		mui.ajax(apiurl + 'orders/' + orderid + '?access-token=' + strAccessToken, {
+		var nOrderId = GetRequest()["orderid"];
+		mui.ajax(apiurl + 'orders/' + nOrderId + '?access-token=' + strAccessToken, {
 			dataType: 'json',
 			type: 'get',
 			timeout: 6000,
@@ -95,44 +94,25 @@
 				stopload();
 			}
 		});
-		thisorder = JSON.parse(localStorage.temporder);
-		console.log(localStorage.temporder)
-		thisorder.created_at = getDate(thisorder.created_at);
+		jsonThisOrder = JSON.parse(localStorage.temporder);
+		jsonThisOrder.created_at = getDate(jsonThisOrder.created_at);
 		startload();
 		Vue.filter('picurl', function(value, url, picsize) {
 			return serverurl + url + picsize + value;
 		});
-		mui.ajax(apiurl + 'order-products?access-token=' + strAccessToken + '&filter=order_id:' + orderid + '&expand=product', {
+		mui.ajax(apiurl + 'order-products?access-token=' + strAccessToken + '&filter=order_id:' + nOrderId + '&expand=product', {
 			dataType: 'json',
 			type: 'get',
 			timeout: 6000,
 			success: function(data) {
 				if (data.success == true) {
-					thisgoods = data.data;
-					localStorage.tempgoods = JSON.stringify(thisgoods); //为商品列表
-					console.log(JSON.stringify(thisgoods))
+					jsonThisGoods = data.data;
+					localStorage.tempgoods = JSON.stringify(jsonThisGoods); //list.html内容
 					var sgood = new Vue({
 						el: '#kgoods',
-						data: thisgoods
+						data: jsonThisGoods
 					});
-					tempcart = JSON.parse(localStorage.cart);
-					needtodelid = new Array;
-					for (i = 0; i < thisgoods.items.length; i++) {
-						newarr = thisgoods.items[i].product_id;
-						needtodelid.push(newarr);
-					}
-					delthis();
-
-					function delthis() {
-						for (j = 0; j < tempcart.goods.length; j++) {
-							if (!~(needtodelid.indexOf(tempcart.goods[j].id))) {
-								tempcart.goods.splice(j, 1)
-								delthis();
-								break;
-							}
-						}
-					}
-					localStorage.cart = JSON.stringify(tempcart);
+					delcart();
 					stopload();
 				} else {
 					mui.alert(data.message);
@@ -144,37 +124,18 @@
 				stopload();
 			}
 		});
-		mui.ajax(apiurl + 'order-schemes?access-token=' + strAccessToken + '&filter=order_id:' + orderid + '&expand=scheme', {
+		mui.ajax(apiurl + 'order-schemes?access-token=' + strAccessToken + '&filter=order_id:' + nOrderId + '&expand=scheme', {
 			data: {},
 			dataType: 'json',
 			type: 'get',
 			timeout: 6000,
 			success: function(data) {
 				if (data.success == true) {
-					console.log(JSON.stringify(data.data));
-					thisschemes = data.data;
 					var sgood = new Vue({
 						el: '#kschemes',
-						data: thisschemes
+						data: data.data
 					});
-					tempcart = JSON.parse(localStorage.cart);
-					needtodelid = new Array;
-					for (i = 0; i < thisgoods.items.length; i++) {
-						newarr = thisgoods.items[i].product_id;
-						needtodelid.push(newarr);
-					}
-					delthis();
-
-					function delthis() {
-						for (j = 0; j < tempcart.goods.length; j++) {
-							if (!~(needtodelid.indexOf(tempcart.goods[j].id))) {
-								tempcart.goods.splice(j, 1)
-								delthis();
-								break;
-							}
-						}
-					}
-					localStorage.cart = JSON.stringify(tempcart);
+					delcart();
 					stopload();
 				} else {
 					mui.alert(data.message);
@@ -189,49 +150,50 @@
 		jsonAddress = JSON.parse(localStorage.alladdress);
 		if (!(jsonAddress.address[0])) {
 			document.getElementById("showaddress").style.display = "none";
-			thisaddress = null;
+			jsonThisAddress = null;
 		} else {
 			document.getElementById("addaddress").style.display = "none";
 		} //确保地址有值
-		var addresssortid = GetRequest()["selectaddress"];
-		if (!addresssortid) { //没有选择地址则搜索默认地址
+		var nAddressSort = GetRequest()["selectaddress"];
+		if (!nAddressSort) { //没有选择地址则搜索默认地址
 			if (!jsonAddress.selected) {
-				thisaddress = jsonAddress.address[0] //没有默认则取第一个
+				jsonThisAddress = jsonAddress.address[0] //没有默认则取第一个
 			} else {
 				k = 0;
 				for (i = 0; i < jsonAddress.address.length; i++) {
 					if (jsonAddress.selected == jsonAddress.address[i].id) {
-						thisaddress = jsonAddress.address[i];
+						jsonThisAddress = jsonAddress.address[i];
 						k = 1;
 						break;
 					} //有默认地址则取默认地址
 				}
 				if (k = 0) {
-					thisaddress = jsonAddress.address[0] //未搜索到默认地址则取第一个地址
+					jsonThisAddress = jsonAddress.address[0] //未搜索到默认地址则取第一个地址
 				}
 			}
 		} else {
-			thisaddress = jsonAddress.address[addresssortid];
+			jsonThisAddress = jsonAddress.address[nAddressSort];
 		}
 		var saddress = new Vue({
 			el: '#address',
-			data: thisaddress
+			data: jsonThisAddress
 		});
 		var sorder = new Vue({
 			el: '#order',
-			data: thisorder
+			data: jsonThisOrder
 		});
 		updatesta();
+
 		function checkpay() {
-			if (!thisaddress) {
+			if (!jsonThisAddress) {
 				alert("请选择收货地址");
 				return false;
 			}
 			startload();
-			mui.ajax(apiurl + 'orders/' + thisorder.id + '?access-token=' + strAccessToken, {
+			mui.ajax(apiurl + 'orders/' + jsonThisOrder.id + '?access-token=' + strAccessToken, {
 				data: {
 					'status': '2',
-					'delivery_address_id': thisaddress.id
+					'delivery_address_id': jsonThisAddress.id
 				},
 				dataType: 'json',
 				type: 'put',
@@ -253,7 +215,7 @@
 					return false;
 				} else {
 					startload();
-					mui.ajax(apiurl + 'orders/' + thisorder.id + '?access-token=' + strAccessToken, {
+					mui.ajax(apiurl + 'orders/' + jsonThisOrder.id + '?access-token=' + strAccessToken, {
 						data: {},
 						dataType: 'json',
 						type: 'delete',
@@ -261,7 +223,10 @@
 						success: function(data) {
 							if (data.status == 204) {
 								alert("订单已删除！");
-								window.location.href = 'myorder.html';
+								mui.openWindow({
+									url: "myorder.html",
+									id: "myorder "
+								});
 							} else {
 								mui.alert("订单删除失败");
 								stopload();
@@ -275,18 +240,26 @@
 				}
 			})
 		}
-
+		function delcart(){
+			return false;
+		}
 		function updatesta() {
-			document.getElementById("thisallprice").innerHTML = thisorder.amount / 100;
-			document.getElementById("thisfr").innerHTML = thisorder.freight;
+			document.getElementById("thisallprice").innerHTML = jsonThisOrder.amount / 100;
+			document.getElementById("thisfr").innerHTML = jsonThisOrder.freight;
 		}
 
 		function list() {
-			window.location.href = "list.html?orderid=" + orderid;
+			mui.openWindow({
+				url: "list.html",
+				id: "list "
+			});
 		}
 
 		function selectaddress() {
-			window.location.href = 'select-address.html?orderid=' + orderid;
+			mui.openWindow({
+				url: "select-address.html?orderid=" + nOrderId,
+				id: "select-address "
+			});
 		}
 	</script>
 

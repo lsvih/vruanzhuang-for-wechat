@@ -8,13 +8,6 @@
 		<meta content="email=no" name="format-detection" />
 		<meta name="apple-mobile-web-app-capable" content="yes">
 		<meta name="apple-mobile-web-app-status-bar-style" content="black">
-		<script type="text/javascript" src="js/app.js"></script>
-		<script type="text/javascript" src="js/global.js"></script>
-		<script type="text/javascript" src="js/vue.js"></script>
-		<script type="text/javascript" src="js/mui.min.js"></script>
-		<script type="text/javascript" src="js/mui.zoom.js"></script>
-		<script type="text/javascript" src="js/mui.previewimage.normaltype.js"></script>
-
 		<link rel="stylesheet" href="css/mui.min.css" />
 		<link rel="stylesheet" href="css/app.css" />
 		<link rel="stylesheet" href="css/product.css" />
@@ -44,15 +37,15 @@
 				</div>
 				<div>
 					<div class="divtitle">方案设计图</div>
-					<div class="innerdiv"><img class="sjt" v-bind:src="space.design_t_img|picurl '/smart_matching/uploads/imgs/thumbs/' 's-'" data-preview-src="{{ space.design_t_img|picurl '/smart_matching/uploads/imgs/' '' }}" data-preview-group="1" /></div>
+					<div class="innerdiv"><img class="design" v-bind:src="space.design_t_img|picurl '/smart_matching/uploads/imgs/thumbs/' 's-'" data-preview-src="{{ space.design_t_img|picurl '/smart_matching/uploads/imgs/' '' }}" data-preview-group="1" /></div>
 				</div>
 				<div>
 					<div class="divtitle">平面图</div>
-					<div class="innerdiv"><img class="pmt" v-bind:src="space.planar_t_img|picurl '/smart_matching/uploads/imgs/thumbs/' 's-'" data-preview-src="{{ space.planar_t_img|picurl '/smart_matching/uploads/imgs/' '' }}" data-preview-group="1" /></div>
+					<div class="innerdiv"><img class="plan" v-bind:src="space.planar_t_img|picurl '/smart_matching/uploads/imgs/thumbs/' 's-'" data-preview-src="{{ space.planar_t_img|picurl '/smart_matching/uploads/imgs/' '' }}" data-preview-group="1" /></div>
 				</div>
 				<div class="divtitle">配饰清单</div>
 				<div class="goods" v-for="product in space.products">
-					<img class="productsimgs" data-id="{{ product.product_id }}" v-bind:src="product.cover_t_img |picurl '/smart_matching/uploads/imgs/thumbs/' 's-'">
+					<img class="productsimgs" data-id="{{ product.product_id }}" v-bind:src="product.cover_t_imgs|picurl '/smart_matching/uploads/imgs/thumbs/' 's-'">
 					<div class="productsids" style="display: none;">{{ product.product_id }}</div>
 					<p><span class="productsnames">{{ product.name }}</span> x <span class="productsnums">{{ product.product_num }}</span></p>
 					<p><span class="productsunitprice">{{ product.price/100 }}</span>元</p>
@@ -73,9 +66,13 @@
 		</div>
 
 	</body>
+	<script type="text/javascript" src="js/app.js"></script>
+	<script type="text/javascript" src="js/global.js"></script>
+	<script type="text/javascript" src="js/vue.js"></script>
+	<script type="text/javascript" src="js/mui.min.js"></script>
+	<script type="text/javascript" src="js/mui.zoom.js"></script>
+	<script type="text/javascript" src="js/mui.previewimage.normaltype.js"></script>
 	<script>
-		console.log(localStorage.previewcustom)
-		var previewcustom = JSON.parse(localStorage.previewcustom);
 		var topbarHeight = 39;
 		mui.ready(function() {
 			Vue.filter('picurl', function(value, url, picsize) {
@@ -83,7 +80,7 @@
 			})
 			new Vue({
 				el: '#简介',
-				data: previewcustom,
+				data: JSON.parse(localStorage.previewcustom),
 				compiled: function() {
 					stopload();
 				}
@@ -95,7 +92,7 @@
 			document.getElementById("allprice").innerHTML = 0;
 			var tempallnum = 0;
 			var tempallprice = 0;
-			for (i = 0; i < tempnum.length; i++) {
+			for (let i = 0; i < tempnum.length; i++) {
 				tempallnum += parseInt(tempnum[i].innerHTML);
 				tempallprice += parseInt(tempnum[i].innerHTML) * parseInt(tempprice[i].innerHTML);
 			}
@@ -108,24 +105,24 @@
 
 		function delnull() {
 			coverimg = document.getElementsByClassName("coverimg");
-			for (i = 0; i < coverimg.length; i++) {
+			for (let i = 0; i < coverimg.length; i++) {
 				if ((coverimg[i].src).slice(-4) == "null" || (coverimg[i].src).slice(-2) == "s-") {
-					todeldiv = coverimg[i].parentNode;
-					todeldiv.parentNode.removeChild(todeldiv);
+					objToDel = coverimg[i].parentNode;
+					objToDel.parentNode.removeChild(objToDel);
 				}
 			}
-			pmt = document.getElementsByClassName("pmt");
-			for (i = 0; i < pmt.length; i++) {
-				if ((pmt[i].src).slice(-4) == "null" || (pmt[i].src).slice(-2) == "s-") {
-					todeldiv = pmt[i].parentNode.parentNode;
-					todeldiv.parentNode.removeChild(todeldiv);
+			arrobjPlan = document.getElementsByClassName("plan");
+			for (let i = 0; i < arrobjPlan.length; i++) {
+				if ((arrobjPlan[i].src).slice(-4) == "null" || (arrobjPlan[i].src).slice(-2) == "s-") {
+					objToDel = arrobjPlan[i].parentNode.parentNode;
+					objToDel.parentNode.removeChild(objToDel);
 				}
 			}
-			sjt = document.getElementsByClassName("sjt");
-			for (i = 0; i < sjt.length; i++) {
-				if ((sjt[i].src).slice(-4) == "null" || (sjt[i].src).slice(-2) == "s-") {
-					todeldiv = sjt[i].parentNode.parentNode;
-					todeldiv.parentNode.removeChild(todeldiv);
+			arrobjDesign = document.getElementsByClassName("design");
+			for (let i = 0; i < arrobjDesign.length; i++) {
+				if ((arrobjDesign[i].src).slice(-4) == "null" || (arrobjDesign[i].src).slice(-2) == "s-") {
+					objToDel = arrobjDesign[i].parentNode.parentNode;
+					objToDel.parentNode.removeChild(objToDel);
 				}
 			}
 		}
@@ -135,11 +132,11 @@
 			goods = document.getElementsByClassName("goods");
 			nBodyWidth = document.body.clientWidth;
 			document.getElementsByClassName("mui-content")[0].style.width = nBodyWidth;
-			for (i = 0; i < cases.length; i++) {
+			for (let i = 0; i < cases.length; i++) {
 				cases[i].style.width = nBodyWidth + 'px';
 				cases[i].style.height = nBodyWidth * 0.56 + 'px';
 			}
-			for (i = 0; i < goods.length; i++) {
+			for (let i = 0; i < goods.length; i++) {
 				goods[i].style.width = nBodyWidth * 0.48 + 'px';
 				goods[i].style.height = nBodyWidth * 0.48 + 'px';
 				if (i % 2) {
@@ -180,18 +177,18 @@
 			el.style.display = 'none';
 			document.getElementById("cataloglist").style.left = '-150px';
 		}
-		var catalog = [];
+		const arrCatalog = [];
 
 		function makecatalog() {
 			spacenames = document.getElementsByClassName("divtitle spacename");
-			for (var i = 0; i < spacenames.length; i++) {
+			for (let i = 0; i < spacenames.length; i++) {
 				searchresult = searchKeyWordAndMakeCatalog(spacenames[i].innerHTML);
-				if (searchresult)(spacenames[i].innerHTML = searchresult, spacenames[i].id = searchresult, catalog.push(searchresult))
+				if (searchresult)(spacenames[i].innerHTML = searchresult, spacenames[i].id = searchresult, arrCatalog.push(searchresult))
 			}
 			new Vue({
 				el: '#catalogpot',
 				data: {
-					points: catalog
+					points: arrCatalog
 				},
 				compiled: function() {
 					document.styleSheets[0].insertRule('#cataloglist ul::before { bottom: ' + (document.getElementById("cataloglist").offsetHeight - 80 - 42 * catalog.length) + 'px;}', 0);
@@ -211,11 +208,11 @@
 				["女孩", "女孩房"]
 			];
 			var temparray = title.split('');
-			var words = [];
-			for (var k = 0; k < temparray.length - 1; k++) {
+			const words = [];
+			for (let k = 0; k < temparray.length - 1; k++) {
 				words.push(temparray[k] + temparray[k + 1])
 			}
-			for (var j = 0; j < keyword.length; j++) {
+			for (let j = 0; j < keyword.length; j++) {
 				if (~words.indexOf(keyword[j][0])) return keyword[j][1];
 			}
 			return false;

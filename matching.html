@@ -6,8 +6,6 @@
 		<meta name="viewport" content="initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
 		<meta name="format-detection" content="telephone=no">
 		<meta content="email=no" name="format-detection" />
-		<script type="text/javascript" src="js/global.js"></script>
-		<script type="text/javascript" src="js/mui.min.js"></script>
 		<link rel="stylesheet" href="css/mui.min.css" />
 		<link rel="stylesheet" href="css/app.css" />
 		<link rel="stylesheet" href="css/match.css" />
@@ -34,14 +32,18 @@
 	</style>
 
 	<body class="background-gray">
-		<canvas id=c></canvas>
+		<canvas id="c"></canvas>
 		<div class="note">正在根据您的情况与喜好进行智能搭配...</div>
 
 	</body>
+	<script src="js/global.js"></script>
+	<script src="js/mui.min.js"></script>
 	<script>
-	if(!localStorage.IC) location.href = "match.html"
-	
-	
+		use strict;
+		if (!localStorage.IC) mui.openWindow({
+			url: "match.html",
+			id: "match"
+		});
 		var w = c.width =
 			h = c.height = 200,
 			ctx = c.getContext('2d'),
@@ -57,16 +59,16 @@
 			colorPart = 360 / total,
 			radiantPart = Math.PI * 2 / total,
 			alphaValue = true;
-		for (var i = 0; i < total; ++i) {
+		for (let i = 0; i < total; ++i) {
 			var array = [];
 			particles.push(array);
 			colors.push(templateColor.replace('hue', colorPart * i));
 			radiants.push(radiantPart * i);
-			for (var j = 0; j < particlesParRow; ++j) {
+			for (let j = 0; j < particlesParRow; ++j) {
 				array.push(i * minValue);
 			}
 		}
-		for (var i = 0; i < updatesBeforeStart; ++i) update();
+		for (let i = 0; i < updatesBeforeStart; ++i) update();
 
 		function anim() {
 			window.requestAnimationFrame(anim);
@@ -78,9 +80,9 @@
 			ctx.translate(w / 2, h / 2);
 			ctx.rotate(.006);
 			ctx.translate(-w / 2, -h / 2);
-			for (var i = 0; i < total; ++i) {
+			for (let i = 0; i < total; ++i) {
 				ctx.fillStyle = colors[i];
-				for (var j = 0; j < particlesParRow; ++j) {
+				for (let j = 0; j < particlesParRow; ++j) {
 					var particle = particles[i][j];
 					particles[i][j] -= particle / 70;
 					ctx.beginPath();
@@ -97,8 +99,8 @@
 		anim();
 
 		function update() {
-			for (var i = 0; i < total; ++i) {
-				for (var j = 0; j < particlesParRow; ++j) {
+			for (let i = 0; i < total; ++i) {
+				for (let j = 0; j < particlesParRow; ++j) {
 					var particle = particles[i][j];
 					particles[i][j] -= particle / 70;
 					if (particles[i][j] <= minValue && Math.random() < .1) {
@@ -111,6 +113,7 @@
 			var timestamp = parseInt(new Date().getTime() / 1000);
 			IC_data();
 		});
+
 		function IC_data() {
 			data = localStorage.IC;
 			localStorage.removeItem("IC");
@@ -125,7 +128,10 @@
 					if (data.success == true) {
 						localStorage.schemes = JSON.stringify(data.data);
 						setTimeout(function() {
-							location.href = "index.html?IntelligentCollocation"
+							mui.openWindow({
+								url: "index.html?IntelligentCollocation",
+								id: "index"
+							});
 						}, 3000);
 					} else {
 						mui.alert("获取方案失败，请稍候再试");

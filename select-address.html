@@ -171,7 +171,7 @@
 							timeout: 6000,
 							success: function(data) {
 								if (data.success == true) {
-									mui.ajax(appurl + '/delivery-addresses/' + newdefault + '?access-token=' + strAccessToken, {
+									mui.ajax(apiurl + 'delivery-addresses/' + newdefault + '?access-token=' + strAccessToken, {
 										data: {
 											'is_default': 1
 										},

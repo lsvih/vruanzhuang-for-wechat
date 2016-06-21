@@ -8,12 +8,6 @@
 		<meta content="email=no" name="format-detection" />
 		<meta name="apple-mobile-web-app-capable" content="yes">
 		<meta name="apple-mobile-web-app-status-bar-style" content="black">
-		<script type="text/javascript" src="js/global.js"></script>
-		<script type="text/javascript" src="js/app.js"></script>
-		<script type="text/javascript" src="js/mui.min.js"></script>
-		<script type="text/javascript" src="js/vue.js"></script>
-		<script type="text/javascript" src="js/mui.zoom.js"></script>
-		<script type="text/javascript" src="js/mui.previewimage.normaltype.js"></script>
 		<link rel="stylesheet" href="css/mui.min.css" />
 		<link rel="stylesheet" href="css/app.css" />
 		<link rel="stylesheet" href="css/product.css" />
@@ -36,7 +30,7 @@
 				<div id="cover" class="innerdiv"><img src="images/default-1.png" v-bind:src="cover_t_img|picurl '/smart_matching/uploads/imgs/thumbs/' 's-'" data-preview-src="{{ cover_t_img|picurl '/smart_matching/uploads/imgs/' '' }}" data-preview-group="1" /></div>
 				<div class="title">[{{name}}]</div>
 				<div id="spaces" v-for="space in spaces">
-					<div class="spaceid">{{space.space_id}}</div>
+					<div class="spaceid">{{space.id}}</div>
 					<div class="spaceid">{{$index}}</div>
 					<div>
 						<div class="divtitle spacename">{{ space.name }}</div>
@@ -53,7 +47,7 @@
 					<div class="divtitle">配饰清单</div>
 					<div class="goods" v-for="product in space.products">
 						<div class="deleteproduct" data-id="{{$index}}"><img src="images/delete.png"></div>
-						<img class="productsimgs" data-id="{{ product.product_id }}" v-bind:src="product.cover_t_img |picurl '/smart_matching/uploads/imgs/thumbs/' 's-'">
+						<img class="productsimgs" data-id="{{ product.product_id }}" v-bind:src="product.cover_t_imgs |picurl '/smart_matching/uploads/imgs/thumbs/' 's-'">
 						<div class="productsids" style="display: none;">{{ product.product_id }}</div>
 						<p>
 							<span class="productsnames">{{ product.name }}</span>
@@ -64,7 +58,7 @@
 								<button class="mui-btn mui-btn-numbox-plus" type="button">+</button>
 							</div>
 						</p>
-						<p><span class="productsunitprice">{{ product.price/100 }}</span>元</p>
+						<p><span class="productsunitprice">{{ product.amount/100 }}</span>元</p>
 						<div class="line"></div>
 					</div>
 					<div class="addgoods add" data-id="{{$index}}"><span class=" mui-icon mui-icon-plus"></span></div>
@@ -77,7 +71,14 @@
 		</div>
 
 	</body>
+	<script src="js/global.js"></script>
+	<script src="js/app.js"></script>
+	<script src="js/mui.min.js"></script>
+	<script src="js/vue.js"></script>
+	<script src="js/mui.zoom.js"></script>
+	<script src="js/mui.previewimage.normaltype.js"></script>
 	<script>
+	use strict;
 		if (!localStorage.temp) mui.back();
 		var jsonCustomScheme = JSON.parse(localStorage.temp);
 		mui.ready(function() {
@@ -104,17 +105,17 @@
 		}
 
 		function contnum() {
-			var iID = setTimeout(function() {
+			setTimeout(function() {
 				var allnum = 0;
 				var allprice = 0;
-				for (var u = 0; u < jsonCustomScheme.spaces.length; u++) {
-					for (var v = 0; v < jsonCustomScheme.spaces[u].products.length; v++) {
+				for (let u = 0; u < jsonCustomScheme.spaces.length; u++) {
+					for (let v = 0; v < jsonCustomScheme.spaces[u].products.length; v++) {
 						allnum += parseInt(jsonCustomScheme.spaces[u].products[v].product_num);
 					}
 				}
-				for (var u = 0; u < jsonCustomScheme.spaces.length; u++) {
-					for (var v = 0; v < jsonCustomScheme.spaces[u].products.length; v++) {
-						allprice += parseInt(jsonCustomScheme.spaces[u].products[v].product_num) * parseInt(jsonCustomScheme.spaces[u].products[v].price);
+				for (let u = 0; u < jsonCustomScheme.spaces.length; u++) {
+					for (let v = 0; v < jsonCustomScheme.spaces[u].products.length; v++) {
+						allprice += parseInt(jsonCustomScheme.spaces[u].products[v].product_num) * parseInt(jsonCustomScheme.spaces[u].products[v].amount);
 					}
 				}
 				document.getElementById("allnum").innerHTML = allnum;
@@ -127,7 +128,7 @@
 			var btnArray = ['是', '否'];
 			mui.confirm('是否删除单品？', '微软装', btnArray, function(s) {
 				if (!s.index) {
-					jsonCustomScheme.amount -= parseInt(jsonCustomScheme.spaces[spacesort].products[productsortid].product_num * jsonCustomScheme.spaces[spacesort].products[productsortid].price)
+					jsonCustomScheme.amount -= parseInt(jsonCustomScheme.spaces[spacesort].products[productsortid].product_num * jsonCustomScheme.spaces[spacesort].products[productsortid].amount)
 					jsonCustomScheme.spaces[spacesort].products.splice(productsortid, 1)
 					contnum();
 					if (!jsonCustomScheme.spaces[spacesort].products.length) jsonCustomScheme.spaces.splice(spacesort, 1);
@@ -140,21 +141,21 @@
 
 		function delnull() {
 			arrobjCoverImg = document.getElementsByClassName("coverimg");
-			for (i = 0; i < arrobjCoverImg.length; i++) {
+			for (let i = 0; i < arrobjCoverImg.length; i++) {
 				if ((arrobjCoverImg[i].src).slice(-4) == "null" || (arrobjCoverImg[i].src).slice(-2) == "s-") {
 					objToDel = arrobjCoverImg[i].parentNode;
 					objToDel.parentNode.removeChild(objToDel);
 				}
 			}
 			arrobjPlan = document.getElementsByClassName("plan");
-			for (i = 0; i < arrobjPlan.length; i++) {
+			for (let i = 0; i < arrobjPlan.length; i++) {
 				if ((arrobjPlan[i].src).slice(-4) == "null" || (arrobjPlan[i].src).slice(-2) == "s-") {
 					objToDel = arrobjPlan[i].parentNode.parentNode;
 					objToDel.parentNode.removeChild(objToDel);
 				}
 			}
 			arrobjDesign = document.getElementsByClassName("design");
-			for (i = 0; i < arrobjDesign.length; i++) {
+			for (let i = 0; i < arrobjDesign.length; i++) {
 				if ((arrobjDesign[i].src).slice(-4) == "null" || (arrobjDesign[i].src).slice(-2) == "s-") {
 					objToDel = arrobjDesign[i].parentNode.parentNode;
 					objToDel.parentNode.removeChild(objToDel);
@@ -167,11 +168,11 @@
 			arrobjGoods = document.getElementsByClassName("goods");
 			nBodyWidth = document.body.clientWidth;
 			document.getElementsByClassName("mui-content")[0].style.width = nBodyWidth;
-			for (i = 0; i < arrobjCases.length; i++) {
+			for (let i = 0; i < arrobjCases.length; i++) {
 				arrobjCases[i].style.width = nBodyWidth + 'px';
 				arrobjCases[i].style.height = nBodyWidth * 0.56 + 'px';
 			}
-			for (i = 0; i < arrobjGoods.length; i++) {
+			for (let i = 0; i < arrobjGoods.length; i++) {
 				arrobjGoods[i].style.width = nBodyWidth * 0.48 + 'px';
 				arrobjGoods[i].style.height = nBodyWidth * 0.48 + 'px';
 				arrobjGoods[i].getElementsByClassName("productsimgs")[0].style.height = nBodyWidth * 0.27 + 'px';
@@ -179,12 +180,12 @@
 					arrobjGoods[i].style.marginLeft = nBodyWidth * 0.02 + 'px';
 				}
 			}
-			addgoods = document.getElementsByClassName("addgoods")
-			for (i = 0; i < addgoods.length; i++) {
-				addgoods[i].style.width = nBodyWidth * 0.48 + 'px';
-				addgoods[i].style.height = nBodyWidth * 0.48 + 'px';
-				addgoods[i].firstChild.style.fontSize = nBodyWidth * 0.32 + 'px';
-				addgoods[i].firstChild.style.lineHeight = nBodyWidth * 0.48 + 'px';
+			arrobjAddGoods = document.getElementsByClassName("addgoods")
+			for (let i = 0; i < arrobjAddGoods.length; i++) {
+				arrobjAddGoods[i].style.width = nBodyWidth * 0.48 + 'px';
+				arrobjAddGoods[i].style.height = nBodyWidth * 0.48 + 'px';
+				arrobjAddGoods[i].firstChild.style.fontSize = nBodyWidth * 0.32 + 'px';
+				arrobjAddGoods[i].firstChild.style.lineHeight = nBodyWidth * 0.48 + 'px';
 			}
 		}
 		mui('body').on('tap', '.addgoods', function() {
@@ -192,11 +193,7 @@
 			localStorage.temp = JSON.stringify(jsonCustomScheme);
 			mui.openWindow({
 				url: "add-product.html?spacesortid=" + nSpaceSortId,
-				id: "add-product",
-				show: {
-					aniShow: 'zoom-fade-out',
-					duration: 300
-				}
+				id: "add-product"
 			});
 			return;
 		});
@@ -205,19 +202,15 @@
 			localStorage.temp = JSON.stringify(jsonCustomScheme);
 			mui.openWindow({
 				url: "product.html?id=" + nProductId,
-				id: "product",
-				show: {
-					aniShow: 'zoom-fade-out',
-					duration: 300
-				}
+				id: "product"
 			});
 			return;
 		});
-		var catalogarray = [];
+		const catalogarray = [];
 
 		function makecatalog() {
 			spacenames = document.getElementsByClassName("divtitle spacename");
-			for (var i = 0; i < spacenames.length; i++) {
+			for (let i = 0; i < spacenames.length; i++) {
 				searchresult = searchKeyWordAndMakeCatalog(spacenames[i].innerHTML);
 				if (searchresult)(spacenames[i].innerHTML = searchresult, spacenames[i].id = searchresult, catalogarray.push(searchresult))
 			}
@@ -234,12 +227,12 @@
 				["男孩", "男孩房"],
 				["女孩", "女孩房"]
 			];
-			var temparray = title.split('');
-			var words = [];
-			for (var k = 0; k < temparray.length - 1; k++) {
-				words.push(temparray[k] + temparray[k + 1])
+			var arrSearch = title.split('');
+			const words = [];
+			for (let k = 0; k < arrSearch.length - 1; k++) {
+				words.push(arrSearch[k] + arrSearch[k + 1])
 			}
-			for (var j = 0; j < keyword.length; j++) {
+			for (let j = 0; j < keyword.length; j++) {
 				if (~words.indexOf(keyword[j][0])) return keyword[j][1];
 			}
 			return false;
@@ -251,7 +244,10 @@
 			pic = document.getElementById("cover").getElementsByTagName("img")[0].src;
 			cart(3, jsonCustomScheme.scheme_id, name, 1, price, pic, JSON.stringify(jsonCustomScheme));
 			localStorage.removeItem("temp");
-			window.location.href = "cart.html";
+			mui.openWindow({
+				url: "cart.html",
+				id: "cart"
+			});
 		}
 	</script>
 

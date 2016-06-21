@@ -44,11 +44,11 @@
 				</div>
 				<div>
 					<div class="divtitle">方案设计图</div>
-					<div class="innerdiv"><img class="sjt" v-bind:src="spaces.space.design_t_img|picurl '/smart_matching/uploads/imgs/thumbs/' 's-'" data-preview-src="{{ spaces.space.design_t_img|picurl '/smart_matching/uploads/imgs/' '' }}" data-preview-group="1" /></div>
+					<div class="innerdiv"><img class="design" v-bind:src="spaces.space.design_t_img|picurl '/smart_matching/uploads/imgs/thumbs/' 's-'" data-preview-src="{{ spaces.space.design_t_img|picurl '/smart_matching/uploads/imgs/' '' }}" data-preview-group="1" /></div>
 				</div>
 				<div>
 					<div class="divtitle">平面图</div>
-					<div class="innerdiv"><img class="pmt" v-bind:src="spaces.space.planar_t_img|picurl '/smart_matching/uploads/imgs/thumbs/' 's-'" data-preview-src="{{ spaces.space.planar_t_img|picurl '/smart_matching/uploads/imgs/' '' }}" data-preview-group="1" /></div>
+					<div class="innerdiv"><img class="plan" v-bind:src="spaces.space.planar_t_img|picurl '/smart_matching/uploads/imgs/thumbs/' 's-'" data-preview-src="{{ spaces.space.planar_t_img|picurl '/smart_matching/uploads/imgs/' '' }}" data-preview-group="1" /></div>
 				</div>
 				<div class="divtitle">配饰清单</div>
 				<div class="goods" v-for="products in spaces.space.spaceProducts">
@@ -76,37 +76,15 @@
 	<script>
 		var url = window.location.search;
 		var schemeid = url.substring(url.lastIndexOf('=') + 1, url.length);
-		var jsonschemes;
-		var spacedata;
 		var topbarHeight = 39;
 		mui.ready(function() {
 			Vue.filter('picurl', function(value, url, picsize) {
 				return serverurl + url + picsize + value
 			})
-			getschemes();
+			getspacedata();
 			adaptive();
 			mui.previewImage();
 		})
-
-		function getschemes() {
-			mui.ajax(apiurl + 'schemes/' + schemeid, {
-				data: {},
-				dataType: 'json',
-				type: 'get',
-				timeout: 6000,
-				success: function(data) {
-					if (data.success == true) {
-						jsonschemes = data.data;
-						getspacedata();
-						adaptive();
-					} else {
-						mui.alert(data.message);
-						stopload();
-					}
-				}
-			});
-		}
-
 		function getspacedata() {
 			mui.ajax(apiurl + 'schemes/' + schemeid + '?expand=schemeSpaces.space.spaceProducts.product', {
 				data: {},
@@ -115,11 +93,9 @@
 				timeout: 6000,
 				success: function(data) {
 					if (data.success == true) {
-						spacedata = data.data;
-						console.log(JSON.stringify(spacedata))
 						new Vue({
 							el: '#简介',
-							data: spacedata,
+							data: data.data,
 							compiled: function() {
 								tempnum = document.getElementsByClassName("productsnums");
 								tempprice = document.getElementsByClassName("productsunitprice");
@@ -147,55 +123,51 @@
 		}
 
 		function delnull() {
-			coverimg = document.getElementsByClassName("coverimg");
-			for (i = 0; i < coverimg.length; i++) {
-				if ((coverimg[i].src).slice(-4) == "null" || (coverimg[i].src).slice(-2) == "s-") {
-					todeldiv = coverimg[i].parentNode;
-					todeldiv.parentNode.removeChild(todeldiv);
+			arrobjCoverImg = document.getElementsByClassName("coverimg");
+			for (i = 0; i < arrobjCoverImg.length; i++) {
+				if ((arrobjCoverImg[i].src).slice(-4) == "null" || (arrobjCoverImg[i].src).slice(-2) == "s-") {
+					objToDel = arrobjCoverImg[i].parentNode;
+					objToDel.parentNode.removeChild(objToDel);
 				}
 			}
-			pmt = document.getElementsByClassName("pmt");
-			for (i = 0; i < pmt.length; i++) {
-				if ((pmt[i].src).slice(-4) == "null" || (pmt[i].src).slice(-2) == "s-") {
-					todeldiv = pmt[i].parentNode.parentNode;
-					todeldiv.parentNode.removeChild(todeldiv);
+			arrobjPlan = document.getElementsByClassName("plan");
+			for (i = 0; i < arrobjPlan.length; i++) {
+				if ((arrobjPlan[i].src).slice(-4) == "null" || (arrobjPlan[i].src).slice(-2) == "s-") {
+					objToDel = arrobjPlan[i].parentNode.parentNode;
+					objToDel.parentNode.removeChild(objToDel);
 				}
 			}
-			sjt = document.getElementsByClassName("sjt");
-			for (i = 0; i < sjt.length; i++) {
-				if ((sjt[i].src).slice(-4) == "null" || (sjt[i].src).slice(-2) == "s-") {
-					todeldiv = sjt[i].parentNode.parentNode;
-					todeldiv.parentNode.removeChild(todeldiv);
+			arrobjDesign = document.getElementsByClassName("design");
+			for (i = 0; i < arrobjDesign.length; i++) {
+				if ((arrobjDesign[i].src).slice(-4) == "null" || (arrobjDesign[i].src).slice(-2) == "s-") {
+					objToDel = arrobjDesign[i].parentNode.parentNode;
+					objToDel.parentNode.removeChild(objToDel);
 				}
 			}
 		}
 
 		function adaptive() {
-			cases = document.getElementsByClassName("innerdiv");
-			goods = document.getElementsByClassName("goods");
+			arrobjCases = document.getElementsByClassName("innerdiv");
+			arrobjGoods = document.getElementsByClassName("goods");
 			nBodyWidth = document.body.clientWidth;
 			document.getElementsByClassName("mui-content")[0].style.width = nBodyWidth;
-			for (i = 0; i < cases.length; i++) {
-				cases[i].style.width = nBodyWidth + 'px';
-				cases[i].style.height = nBodyWidth * 0.56 + 'px';
+			for (i = 0; i < arrobjCases.length; i++) {
+				arrobjCases[i].style.width = nBodyWidth + 'px';
+				arrobjCases[i].style.height = nBodyWidth * 0.56 + 'px';
 			}
-			for (i = 0; i < goods.length; i++) {
-				goods[i].style.width = nBodyWidth * 0.48 + 'px';
-				goods[i].style.height = nBodyWidth * 0.48 + 'px';
+			for (i = 0; i < arrobjGoods.length; i++) {
+				arrobjGoods[i].style.width = nBodyWidth * 0.48 + 'px';
+				arrobjGoods[i].style.height = nBodyWidth * 0.48 + 'px';
 				if (i % 2) {
-					goods[i].style.marginLeft = nBodyWidth * 0.02 + 'px';
+					arrobjGoods[i].style.marginLeft = nBodyWidth * 0.02 + 'px';
 				}
 			}
 		}
 		mui('body').on('tap', '.productsimgs', function() {
-			productid = this.getAttribute('data-id');
+			nProductId = this.getAttribute('data-id');
 			mui.openWindow({
-				url: "product.html?preview&id=" + productid,
-				id: "product",
-				show: {
-					aniShow: 'zoom-fade-out',
-					duration: 300
-				}
+				url: "product.html?preview&id=" + nProductId,
+				id: "product"
 			});
 			return;
 		});
@@ -220,21 +192,21 @@
 			el.style.display = 'none';
 			document.getElementById("cataloglist").style.left = '-150px';
 		}
-		var catalog = [];
+		const arrCatalog = [];
 
 		function makecatalog() {
-			spacenames = document.getElementsByClassName("divtitle spacename");
-			for (var i = 0; i < spacenames.length; i++) {
-				searchresult = searchKeyWordAndMakeCatalog(spacenames[i].innerHTML);
-				if (searchresult)(spacenames[i].innerHTML = searchresult, spacenames[i].id = searchresult, catalog.push(searchresult));
+			arrobjSpaceNames = document.getElementsByClassName("divtitle spacename");
+			for (let i = 0; i < arrobjSpaceNames.length; i++) {
+				searchresult = searchKeyWordAndMakeCatalog(arrobjSpaceNames[i].innerHTML);
+				if (searchresult)(arrobjSpaceNames[i].innerHTML = searchresult, arrobjSpaceNames[i].id = searchresult, arrCatalog.push(searchresult));
 			}
 			new Vue({
 				el: '#catalogpot',
 				data: {
-					points: catalog
+					points: arrCatalog
 				},
 				compiled: function() {
-					document.styleSheets[0].insertRule('#cataloglist ul::before { bottom: ' + (document.getElementById("cataloglist").offsetHeight - 80 - 42 * catalog.length) + 'px;}', 0);
+					document.styleSheets[0].insertRule('#cataloglist ul::before { bottom: ' + (document.getElementById("cataloglist").offsetHeight - 80 - 42 * arrCatalog.length) + 'px;}', 0);
 				}
 			})
 		}
@@ -251,11 +223,11 @@
 				["女孩", "女孩房"]
 			];
 			var temparray = title.split('');
-			var words = [];
-			for (var k = 0; k < temparray.length - 1; k++) {
+			const words = [];
+			for (let k = 0; k < temparray.length - 1; k++) {
 				words.push(temparray[k] + temparray[k + 1])
 			}
-			for (var j = 0; j < keyword.length; j++) {
+			for (let j = 0; j < keyword.length; j++) {
 				if (~words.indexOf(keyword[j][0])) return keyword[j][1];
 			}
 			return false;

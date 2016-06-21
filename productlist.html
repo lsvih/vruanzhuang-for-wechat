@@ -6,10 +6,6 @@
 		<meta name="viewport" content="initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
 		<meta name="format-detection" content="telephone=no">
 		<meta content="email=no" name="format-detection" />
-		<script type="text/javascript" src="js/vue.js"></script>
-		<script type="text/javascript" src="js/app.js"></script>
-		<script type="text/javascript" src="js/global.js"></script>
-		<script type="text/javascript" src="js/mui.min.js"></script>
 		<link rel="stylesheet" href="css/mui.min.css" />
 		<link rel="stylesheet" href="css/app.css" />
 		<title>微软装</title>
@@ -83,6 +79,10 @@
 
 		</div>
 	</body>
+	<script type="text/javascript" src="js/vue.js"></script>
+	<script type="text/javascript" src="js/app.js"></script>
+	<script type="text/javascript" src="js/global.js"></script>
+	<script type="text/javascript" src="js/mui.min.js"></script>
 	<script>
 		mui.init({
 			pullRefresh: {
@@ -110,13 +110,12 @@
 				data: jsonSearchProductList
 			})
 			mui('#product2').on('tap', 'li', function() {
+				nSortId = this.getAttribute('id');
 				if (this.getAttribute('check-state') == 0) {
-					nSortId = this.getAttribute('id');
 					document.getElementById(nSortId).getElementsByClassName("checkit")[0].style.display = "block";
 					this.setAttribute('check-state', 1)
 					arrnProductSortId.push(nSortId);
 				} else {
-					nSortId = this.getAttribute('id');
 					document.getElementById(nSortId).getElementsByClassName("checkit")[0].style.display = "none";
 					this.setAttribute('check-state', 0);
 					arrnProductSortId.remove(nSortId);
@@ -129,13 +128,12 @@
 				data: jsonSearchProductList
 			})
 			mui('#product1').on('tap', 'li', function() {
+				nSortId = this.getAttribute('id');
 				if (this.getAttribute('check-state') == 0) {
-					nSortId = this.getAttribute('id');
 					document.getElementById(nSortId).getElementsByClassName("checkit")[0].style.display = "block";
 					this.setAttribute('check-state', 1)
 					arrnProductSortId.push(nSortId);
 				} else {
-					nSortId = this.getAttribute('id');
 					document.getElementById(nSortId).getElementsByClassName("checkit")[0].style.display = "none";
 					this.setAttribute('check-state', 0);
 					arrnProductSortId.remove(nSortId);
@@ -145,24 +143,24 @@
 		document.getElementById("submit").addEventListener("tap", function() {
 			jsonProductList = JSON.parse(localStorage.temp);
 			if (!lfilter) {
-				for (var j = 0; j < arrnProductSortId.length; j++) {
+				for (let j = 0; j < arrnProductSortId.length; j++) {
 					jsonItem = {
 						"product_id": jsonSearchProductList.items[arrnProductSortId[j]].product.id,
 						"name": jsonSearchProductList.items[arrnProductSortId[j]].product.name,
 						"product_num": "1",
-						"price": jsonSearchProductList.items[arrnProductSortId[j]].product.amount,
-						"cover_t_img": jsonSearchProductList.items[arrnProductSortId[j]].product.cover_t_imgs
+						"amount": jsonSearchProductList.items[arrnProductSortId[j]].product.amount,
+						"cover_t_imgs": jsonSearchProductList.items[arrnProductSortId[j]].product.cover_t_imgs
 					}
 					jsonProductList.spaces[nSpaceSortId].products.push(jsonItem);
 				}
 			} else {
-				for (var j = 0; j < arrnProductSortId.length; j++) {
+				for (let j = 0; j < arrnProductSortId.length; j++) {
 					jsonItem = {
 						"product_id": jsonSearchProductList.items[arrnProductSortId[j]].id,
 						"name": jsonSearchProductList.items[arrnProductSortId[j]].name,
 						"product_num": "1",
-						"price": jsonSearchProductList.items[arrnProductSortId[j]].amount,
-						"cover_t_img": jsonSearchProductList.items[arrnProductSortId[j]].cover_t_imgs
+						"amount": jsonSearchProductList.items[arrnProductSortId[j]].amount,
+						"cover_t_imgs": jsonSearchProductList.items[arrnProductSortId[j]].cover_t_imgs
 					}
 					jsonProductList.spaces[nSpaceSortId].products.push(jsonItem);
 				}
@@ -170,7 +168,7 @@
 			localStorage.temp = JSON.stringify(jsonProductList);
 			history.go(-2);
 		});
-		var maxcount;
+		var nMaxCount;
 		function pullupRefresh() {
 			setTimeout(function() {
 				nCount++;
@@ -182,7 +180,7 @@
 						success: function(data) {
 							if (data.success == true) {
 								jsonSearchProductList.items = jsonSearchProductList.items.concat(data.data.items);
-								maxcount = jsonSearchProductList._meta.pageCount;
+								nMaxCount = jsonSearchProductList._meta.pageCount;
 							} else {
 								mui.alert("获取方案失败，请稍候再试");
 							}
@@ -199,7 +197,7 @@
 						success: function(data) {
 							if (data.success == true) {
 								jsonSearchProductList.items = jsonSearchProductList.items.concat(data.data.items);
-								maxcount = jsonSearchProductList._meta.pageCount;
+								nMaxCount = jsonSearchProductList._meta.pageCount;
 							} else {
 								mui.alert("获取方案失败，请稍候再试");
 							}
@@ -209,7 +207,7 @@
 						}
 					});
 				}
-				mui('#pullrefresh').pullRefresh().endPullupToRefresh((nCount >= maxcount)); //true=没有更多数据
+				mui('#pullrefresh').pullRefresh().endPullupToRefresh((nCount >= nMaxCount)); //true=没有更多数据
 			}, 1500);
 		}
 		if (mui.os.plus) {

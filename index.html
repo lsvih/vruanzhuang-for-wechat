@@ -6,11 +6,6 @@
 		<meta name="viewport" content="initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
 		<meta name="format-detection" content="telephone=no">
 		<meta content="email=no" name="format-detection" />
-		<script type="text/javascript" src="js/app.js"></script>
-		<script type="text/javascript" src="js/global.js"></script>
-		<script type="text/javascript" src="js/mui.min.js"></script>
-		<script type="text/javascript" src="js/mui.lazyload.js"></script>
-		<script type="text/javascript" src="js/mui.lazyload.img.js"></script>
 		<link rel="stylesheet" href="css/mui.min.css" />
 		<link rel="stylesheet" href="css/app.css" />
 		<link rel="stylesheet" href="css/index.css" />
@@ -34,14 +29,20 @@
 		</div>
 
 	</body>
+	<script src="js/app.js"></script>
+	<script src="js/global.js"></script>
+	<script src="js/mui.min.js"></script>
+	<script src="js/mui.lazyload.js"></script>
+	<script src="js/mui.lazyload.img.js"></script>
 	<script>
+	use strict;
 		mui.ready(function() {
 			startload();
 			("IntelligentCollocation" in GetRequest()) ? ((JSON.parse(localStorage.schemes).length) ? (lazyload(), adaptive(), stopload(), addtapevent()) : (lazyload(), stopload())) : getschemes();
 		});
 
 		function getschemes() {
-			mui.ajax(apiurl + 'schemes?fields=id,name,amount,cover_t_img-url&filter=custom_edited:0', {
+			mui.ajax(apiurl + 'schemes?fields=id,name,amount,cover_t_img-url&filter=custom_edited:0&per-page=100&max-page-size=100', {
 				data: {},
 				dataType: 'json',
 				type: 'get',
@@ -60,42 +61,43 @@
 
 		function addtapevent() {
 			mui('#list').on('tap', '.indexpic img', function() {
-				id = this.getAttribute('data-id');
+				nId = this.getAttribute('data-id');
 				mui.openWindow({
-					url: "schemes.html?id=" + id,
-					id: "schemes",
-					show: {
-						aniShow: 'zoom-fade-out',
-						duration: 300
-					}
+					url: "schemes.html?id=" + nId,
+					id: "schemes"
 				});
 				return;
 			});
 		}
 
 		function lazyload() {
-			jsonItem = JSON.parse(localStorage.schemes);
+			arrjsonItem = JSON.parse(localStorage.schemes);
 			arrjsonScheme = new Array;
-			for (i = 0; i < jsonItem.length; i++) {
-				strItem = '{"title":"' + jsonItem[i].name + '","price":' + jsonItem[i]['amount'] / 100 + ',"preview":"' + jsonItem[i]['cover_t_img-url'] + '","id":"' + jsonItem[i].id + '"}'
-				arrjsonScheme[i] = JSON.parse(strItem);
+			for (let i = 0; i < arrjsonItem.length; i++) {
+				jsonItem = {
+					"title": arrjsonItem[i].name,
+					"price": arrjsonItem[i]['amount'] / 100,
+					"preview": arrjsonItem[i]['cover_t_img-url'],
+					"id": arrjsonItem[i].id
+				};
+				arrjsonScheme[i] = jsonItem;
 			}
 			document.getElementById("nodata").style.display = "none";
-			if (arrjsonScheme.length == 0) {
+			if (!arrjsonScheme.length) {
 				document.getElementById("nodata").style.display = "block";
 				return false;
 			}
 			var createFragment = function(count) {
 				var fragment = document.createDocumentFragment();
-				div = document.createElement('div');
-				div.className = "indexpic";
-				div.innerHTML = '<img data-lazyload="' + serverurl + arrjsonScheme[0].preview + '" data-id="'+arrjsonScheme[0].id+'"><p class="title">' + arrjsonScheme[0].title + '<span class="scpr"><i class="hr">/</i>￥' + arrjsonScheme[0].price + '</span></p>';
-				fragment.appendChild(div);
+				objFirstDiv = document.createElement('div');
+				objFirstDiv.className = "indexpic";
+				objFirstDiv.innerHTML = '<img data-lazyload="' + serverurl + arrjsonScheme[0].preview + '" data-id="' + arrjsonScheme[0].id + '"><p class="title">' + arrjsonScheme[0].title + '<span class="scpr"><i class="hr">/</i>￥' + arrjsonScheme[0].price + '</span></p>';
+				fragment.appendChild(objFirstDiv);
 				for (var i = 1; i < count; i++) {
-					div = document.createElement('div');
-					div.className = "indexpic margin180";
-					div.innerHTML = '<img data-lazyload="' + serverurl + arrjsonScheme[i].preview + '" data-id="' + arrjsonScheme[i].id + '"><p class="title">' + arrjsonScheme[i].title + '<span class="scpr"><i class="hr">/</i>￥' + arrjsonScheme[i].price + '</span></p>';
-					fragment.appendChild(div);
+					objDiv = document.createElement('div');
+					objDiv.className = "indexpic margin180";
+					objDiv.innerHTML = '<img data-lazyload="' + serverurl + arrjsonScheme[i].preview + '" data-id="' + arrjsonScheme[i].id + '"><p class="title">' + arrjsonScheme[i].title + '<span class="scpr"><i class="hr">/</i>￥' + arrjsonScheme[i].price + '</span></p>';
+					fragment.appendChild(objDiv);
 				}
 				return fragment;
 			};
@@ -110,35 +112,30 @@
 		}
 
 		function adaptive() {
-			cases = document.getElementsByClassName("indexpic");
-			title = document.getElementsByClassName("title");
-			casesHeight = 0.611 * cases[0].scrollWidth;
-			for (i = 0; i < cases.length; i++) {
-				cases[i].style.height = casesHeight + 'px';
+			arrobjCases = document.getElementsByClassName("indexpic");
+			fCasesHeight = 0.611 * arrobjCases[0].scrollWidth;
+			for (i = 0; i < arrobjCases.length; i++) {
+				arrobjCases[i].style.height = fCasesHeight + 'px';
 			}
 		}
 		document.getElementById('cart').addEventListener('tap', function() {
 			mui.openWindow({
 				url: "cart.html",
-				id: "cart",
-				show: {
-					aniShow: 'zoom-fade-out',
-					duration: 300
-				}
+				id: "cart"
 			});
 			return;
 		});
 		document.getElementById('intelligent').addEventListener('tap', function() {
 			mui.openWindow({
 				url: "match.html?layer",
-				id: "match",
-				show: {
-					aniShow: 'zoom-fade-out',
-					duration: 300
-				}
+				id: "match"
 			});
 			return;
 		});
+		
+		
+		
+		
 	</script>
 
 </html>

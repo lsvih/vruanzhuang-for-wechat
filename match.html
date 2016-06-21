@@ -6,12 +6,6 @@
 		<meta name="viewport" content="initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
 		<meta name="format-detection" content="telephone=no">
 		<meta content="email=no" name="format-detection" />
-		<script type="text/javascript" src="js/global.js"></script>
-		<script type="text/javascript" src="js/mui.min.js"></script>
-		<script src="js/mui.picker.js"></script>
-		<script src="js/mui.poppicker.js"></script>
-		<script src="js/city.data.js" type="text/javascript" charset="utf-8"></script>
-		<script type="text/javascript" src="js/vue.js"></script>
 		<link rel="stylesheet" href="css/mui.min.css" />
 		<link rel="stylesheet" href="css/app.css" />
 		<link rel="stylesheet" href="css/match.css" />
@@ -32,7 +26,6 @@
 				<button id='pickcity' class="mui-btn mui-btn-block" type='button'><span id="province"></span><span id="city">所在城市</span><span id="county"></span></button>
 			</div>
 
-
 			<div id="spacetype">
 				<div class="tagtype" v-for="tagtype in items">
 					<div class="tag-name">{{tagtype.name}}</div>
@@ -44,16 +37,22 @@
 			<div id="next-step">选好了，下一步></div>
 		</div>
 	</body>
+	<script src="js/global.js"></script>
+	<script src="js/mui.min.js"></script>
+	<script src="js/mui.picker.js"></script>
+	<script src="js/mui.poppicker.js"></script>
+	<script src="js/vue.js"></script>
+	<script src="js/city.data.js"></script>
 	<script>
-		var taglist;
-		var spacelist;
-		var spaceselectid = [];
+		use strict;
+		var jsonSpaceList;
+		const arrSpaceSelectId = [];
 		var spaceselect = [];
 		var selectobj = [];
 		var selectobjid = [];
 		var selected = 0;
 		var cityid;
-		var colorset = [];
+		const arrColorSet = [];
 
 		function GetRequest() {
 			var url = location.search;
@@ -61,7 +60,7 @@
 			if (url.indexOf("?") != -1) {
 				var str = url.substr(1);
 				strs = str.split("&");
-				for (var i = 0; i < strs.length; i++) {
+				for (let i = 0; i < strs.length; i++) {
 					theRequest[strs[i].split("=")[0]] = unescape(strs[i].split("=")[1]);
 				}
 			}
@@ -75,32 +74,29 @@
 				array.splice(index, 1);
 			}
 		};
-		
-					mui.ajax(apiurl + 'tags/multi-children?name=空间类型', {
-						dataType: 'json',
-						type: 'get',
-						timeout: 6000,
-						success: function(data) {
-							if (data.success == true) {
-								spacelist = data.data;
-								list = new Vue({
-									el: '#spacetype',
-									data: spacelist
-								});
-								adaptive();
-								changecolor();
-								stopload();
-							} else {
-								mui.alert("获取标签失败，请稍候再试");
-								stopload();
-							}
-						},
-						error: function(xhr, textStatus, errorThrown) {
-							mui.alert("网络连接失败，请稍候再试");
-							stopload();
-						}
+		mui.ajax(apiurl + 'tags/multi-children?name=空间类型', {
+			dataType: 'json',
+			type: 'get',
+			timeout: 6000,
+			success: function(data) {
+				if (data.success == true) {
+					list = new Vue({
+						el: '#spacetype',
+						data: jsonSpaceList = data.data
 					});
-				
+					adaptive();
+					changecolor();
+					stopload();
+				} else {
+					mui.alert("获取标签失败，请稍候再试");
+					stopload();
+				}
+			},
+			error: function(xhr, textStatus, errorThrown) {
+				mui.alert("网络连接失败，请稍候再试");
+				stopload();
+			}
+		});
 		(function($, doc) {
 			mui.init();
 			$.ready(function() {
@@ -130,7 +126,7 @@
 			});
 		})(mui, document);
 		document.getElementById('close').addEventListener('tap', function() {
-			window.history.back()
+			mui.back();
 		});
 		document.getElementById('next-step').addEventListener('tap', function() {
 			document.getElementById("city").innerHTML == "所在城市" ? mui.alert('请选择您的地址', '微软装') : !spaceselect.length ? mui.alert('请至少选择一种空间类型', '微软装') : next();
@@ -143,7 +139,7 @@
 			tagtype = document.getElementsByClassName("tagtype");
 			tags = document.getElementsByClassName("tags");
 			tagname = document.getElementsByClassName("tag-name");
-			for (var i = 0; i < tagtype.length; i++) {
+			for (let i = 0; i < tagtype.length; i++) {
 				tagname[i].style.top = tags[i].offsetHeight / 2 - 15 + 'px';
 				tagtype[i].style.height = tags[i].offsetHeight + 'px';
 			}
@@ -151,19 +147,19 @@
 
 		function changecolor() {
 			tagtype = document.getElementsByClassName("tagtype");
-			for (var i = 0; i < (spacelist.items.length); i++) {
-				colorset.push(colorpallte[Math.floor(Math.random() * colorpallte.length)]);
-				tagtype[i].style.color = colorset[i]
+			for (let i = 0; i < (jsonSpaceList.items.length); i++) {
+				arrColorSet.push(colorpallte[Math.floor(Math.random() * colorpallte.length)]);
+				tagtype[i].style.color = arrColorSet[i]
 				tag = tagtype[i].getElementsByClassName("tag");
-				for (var j = 0; j < tag.length; j++) {
-					tag[j].style.border = '1px solid' + colorset[i];
+				for (let j = 0; j < tag.length; j++) {
+					tag[j].style.border = '1px solid' + arrColorSet[i];
 				}
 			}
 		}
 		mui('body').on('tap', '.tag', function() {
 			type = this.getAttribute('data-type');
 			id = this.getAttribute('data-id');
-			type == 'tag'?selectatag(id,this):selectspace(id,this)
+			type == 'tag' ? selectatag(id, this) : selectspace(id, this)
 			return;
 		});
 
@@ -173,22 +169,21 @@
 			if (!selectobj[sortid]) selected++;
 			selectobj[sortid] = f.innerHTML;
 			selectobjid[sortid] = e;
-			for (var i = 0; i < thistagtype.getElementsByClassName("tag").length; i++) {
+			for (let i = 0; i < thistagtype.getElementsByClassName("tag").length; i++) {
 				thistagtype.getElementsByClassName("tag")[i].style.backgroundColor = "#fff";
-				thistagtype.getElementsByClassName("tag")[i].style.color = colorset[sortid];
+				thistagtype.getElementsByClassName("tag")[i].style.color = arrColorSet[sortid];
 			}
 			f.style.color = '#fff';
-			f.style.backgroundColor = colorset[sortid];
+			f.style.backgroundColor = arrColorSet[sortid];
 		}
 
 		function selectspace(e, f) {
-			(f.style.backgroundColor == 'rgb(255, 255, 255)' || !f.style.backgroundColor) ? (f.style.color = '#fff', f.style.backgroundColor = f.style.borderColor, spaceselect.push(f.innerHTML), spaceselectid.push(e)) : (f.style.color = f.style.backgroundColor, f.style.backgroundColor = 'rgb(255, 255, 255)', removeitem(spaceselect, f.innerHTML), removeitem(spaceselectid, e))
+			(f.style.backgroundColor == 'rgb(255, 255, 255)' || !f.style.backgroundColor) ? (f.style.color = '#fff', f.style.backgroundColor = f.style.borderColor, spaceselect.push(f.innerHTML), arrSpaceSelectId.push(e)) : (f.style.color = f.style.backgroundColor, f.style.backgroundColor = 'rgb(255, 255, 255)', removeitem(spaceselect, f.innerHTML), removeitem(arrSpaceSelectId, e))
 		}
 
 		function next() {
 			var spacechildren = [];
 			var step1_info = [];
-			
 			step1_info.push()
 			step1_info.push({
 				"id": 1,
@@ -198,9 +193,9 @@
 					"name": document.getElementById("city").innerHTML
 				}
 			});
-			for (var i = 0; i < spaceselect.length; i++) {
+			for (let i = 0; i < spaceselect.length; i++) {
 				spacechildren.push({
-					"id": spaceselectid[i],
+					"id": arrSpaceSelectId[i],
 					"name": spaceselect[i]
 				});
 			}

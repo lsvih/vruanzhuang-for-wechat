@@ -68,7 +68,7 @@
 			tagtype = document.getElementsByClassName("tagtype");
 			tags = document.getElementsByClassName("tags");
 			tagname = document.getElementsByClassName("tag-name");
-			for (var i = 0; i < tagtype.length; i++) {
+			for (let i = 0; i < tagtype.length; i++) {
 				tagname[i].style.top = tags[i].offsetHeight / 2 - 15 + 'px';
 				tagtype[i].style.height = tags[i].offsetHeight + 'px';
 			}
@@ -76,11 +76,11 @@
 
 		function changecolor() {
 			tagtype = document.getElementsByClassName("tagtype");
-			for (var i = 0; i < taglist.Total; i++) {
+			for (let i = 0; i < taglist.Total; i++) {
 				colorset.push(colorpallte[Math.floor(Math.random() * colorpallte.length)]);
 				tagtype[i].style.color = colorset[i]
 				tag = tagtype[i].getElementsByClassName("tag");
-				for (var j = 0; j < tag.length; j++) {
+				for (let j = 0; j < tag.length; j++) {
 					tag[j].style.border = '1px solid' + colorset[i];
 				}
 			}
@@ -90,12 +90,6 @@
 			thistagtype = f.parentNode;
 			sortid = thistagtype.getElementsByClassName("sortid")[0].innerHTML;
 			!(f.style.color == 'rgb(255, 255, 255)') ? (f.style.color = '#fff', f.style.backgroundColor = colorset[sortid]) : (f.style.color = colorset[sortid], f.style.backgroundColor = '#fff')
-			//			if (!selectobj[sortid]) selected++;
-			//			selectobj[sortid] = e;
-			//			for (var i = 0; i < thistagtype.getElementsByClassName("tag").length; i++) {
-			//				thistagtype.getElementsByClassName("tag")[i].style.backgroundColor = "#fff";
-			//				thistagtype.getElementsByClassName("tag")[i].style.color = colorset[sortid];
-			//			}
 		}
 	</script>
 
