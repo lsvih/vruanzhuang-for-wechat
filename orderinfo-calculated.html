@@ -79,8 +79,8 @@
 		"use strict";
 		mui.init();
 		var nOrderId = GetRequest()["orderid"];
-		if(GetRequest()["cartsort"]){
-			delcart(GetRequest()["cartsort"]);
+		if(localStorage.cartsort){
+			delcart(localStorage.cartsort);
 		}
 		mui.ajax(apiurl + 'orders/' + nOrderId + '?access-token=' + strAccessToken, {
 			dataType: 'json',
@@ -247,6 +247,7 @@
 			for(let i = 0;i<e.length;i++){
 				jsonCart.goods.remove(e[i])
 			}
+			localStorage.removeItem("cartsort");
 			localStorage.cart=JSON.stringify(jsonCart)
 		}
 

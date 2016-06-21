@@ -128,10 +128,17 @@
 			var btnArray = ['是', '否'];
 			mui.confirm('是否删除单品？', '微软装', btnArray, function(s) {
 				if (!s.index) {
-					jsonCustomScheme.amount -= parseInt(jsonCustomScheme.spaces[nSpaceSortId].products[nProductSortId].product_num * jsonCustomScheme.spaces[nSpaceSortId].products[nProductSortId].amount)
-					jsonCustomScheme.spaces[nSpaceSortId].products.splice(nProductSortId, 1)
+					jsonCustomScheme.amount -= parseInt(jsonCustomScheme.spaces[nSpaceSortId].products[nProductSortId].product_num * jsonCustomScheme.spaces[nSpaceSortId].products[nProductSortId].amount);
+					jsonCustomScheme.spaces[nSpaceSortId].products.splice(nProductSortId, 1);
 					contnum();
 					if (!jsonCustomScheme.spaces[nSpaceSortId].products.length) jsonCustomScheme.spaces.splice(nSpaceSortId, 1);
+					if (!jsonCustomScheme.spaces.length) {
+						alert("方案单品已删除完，请重新选择单品");
+						mui.openWindow({
+							url: "index.html",
+							id: "index"
+						});
+					}
 				} else {
 					return;
 				}

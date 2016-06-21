@@ -61,7 +61,7 @@
 									<span class="product" name="{{item.name}}">
 							<img v-bind:src="item.cover_t_imgs|picurl '/smart_matching/uploads/imgs/thumbs/' 's-'"  width="100%" height="100%">
 							<div class="mui-media-body" class="name">{{item.name}}</div>
-							<div class="mui-media-body" class="name">{{item.amount/100|currency '￥'}}元</div>
+							<div class="mui-media-body" class="name">￥{{ Math.round(item.amount/100)}}元</div>
 						</span>
 								</li>
 							</ul>
@@ -72,7 +72,7 @@
 									<span class="product" name="{{item.product.name}}">
 							<img v-bind:src="item.product.cover_t_imgs|picurl '/smart_matching/uploads/imgs/thumbs/' 's-'"  width="100%" height="100%">
 							<div class="mui-media-body" class="name">{{item.product.name}}</div>
-							<div class="mui-media-body" class="name">{{item.product.amount/100|currency '￥'}}元</div>
+							<div class="mui-media-body" class="name">￥{{ Math.round(item.product.amount/100)}}元 </div>
 						</span>
 								</li>
 							</ul>

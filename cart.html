@@ -47,7 +47,7 @@
 						<div class="cart-img" onclick="previewthis(this)"><img v-bind:src="goods.img_src"></div>
 						<div class="cart-name">{{ goods.name }}</div>
 						<div class="cart-price">￥<span class="price">{{ goods.price }}</span></div>
-						<div class="mui-numbox" data-numbox-min='1'>
+						<div class="mui-numbox" data-numbox-min='1' data-numbox-max='9'>
 							<button class="mui-btn mui-btn-numbox-minus" type="button" onclick="valueChange(this)">-</button>
 							<input class="mui-input-numbox" type="number" v-bind:value="goods.num" onchange="valueChange(this)" />
 							<button class="mui-btn mui-btn-numbox-plus" type="button" onclick="valueChange(this)">+</button>
@@ -270,7 +270,8 @@
 										success: function(data) {
 											if (data.success == true) {
 												localStorage.temporder = JSON.stringify(data.data);
-												window.location.href = 'orderinfo-calculated.html?orderid=' + data.data.id + '&cartsort=' + todel;
+												localStorage.cartsort = todel;
+												window.location.href = 'orderinfo-calculated.html?orderid=' + data.data.id;
 											}
 										},
 										error: function(xhr, type, errorThrown, message) {
