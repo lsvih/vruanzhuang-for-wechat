@@ -13,6 +13,13 @@
 		<link href="css/mui.poppicker.css" rel="stylesheet" />
 		<title>微软装</title>
 	</head>
+	<style>
+		.mui-badge {
+			background-color: inherit;
+			color: #fff;
+			padding: 0;
+		}
+	</style>
 
 	<body onresize="javascript:adaptive();">
 		<div id="load">
@@ -30,7 +37,7 @@
 				<div class="tagtype" v-for="tagtype in items">
 					<div class="tag-name">{{tagtype.name}}</div>
 					<div class="tags"><span class="sortid">{{$index}}</span>
-						<span class="tag" v-for="tag in tagtype.children" data-type="space" data-id="{{tag.id}}">{{tag.name}}</span>
+						<span class="tag" v-for="tag in tagtype.children" data-type="space" data-id="{{tag.id}}">{{tag.name}}<span class="mui-badge">x0</span></span>
 					</div>
 				</div>
 			</div>
@@ -46,8 +53,7 @@
 	<script>
 		"use strict";
 		var jsonSpaceList;
-		const arrSpaceSelectId = [];
-		var spaceselect = [];
+		const arrSpaceSelect = [];
 		var selectobj = [];
 		var selectobjid = [];
 		var selected = 0;
@@ -74,6 +80,18 @@
 				array.splice(index, 1);
 			}
 		};
+
+		function removeitembysortid(array, dx) {
+			if (isNaN(dx) || dx > array.length) {
+				return false;
+			}
+			for (var i = 0, n = 0; i < array.length; i++) {
+				if (array[i] != array[dx]) {
+					array[n++] = array[i]
+				}
+			}
+			array.length -= 1
+		};
 		mui.ajax(apiurl + 'tags/multi-children?name=空间类型', {
 			dataType: 'json',
 			type: 'get',
@@ -84,7 +102,7 @@
 						el: '#spacetype',
 						data: jsonSpaceList = data.data
 					});
-					(adaptive(),changecolor(),stopload());
+					(adaptive(), changecolor(), stopload());
 				} else {
 					mui.alert("获取标签失败，请稍候再试");
 					stopload();
@@ -127,7 +145,7 @@
 			mui.back();
 		});
 		document.getElementById('next-step').addEventListener('tap', function() {
-			document.getElementById("city").innerHTML == "所在城市" ? mui.alert('请选择您的地址', '微软装') : !spaceselect.length ? mui.alert('请至少选择一种空间类型', '微软装') : next();
+			document.getElementById("city").innerHTML == "所在城市" ? mui.alert('请选择您的地址', '微软装') : !arrSpaceSelect.length ? mui.alert('请至少选择一种空间类型', '微软装') : next();
 		});
 		mui.ready(function() {
 			localStorage.removeItem('IC');
@@ -156,7 +174,7 @@
 		}
 		mui('body').on('tap', '.tag', function() {
 			let nId = this.getAttribute('data-id');
-			this.getAttribute('data-type') == 'tag' ? selectatag(nId, this) : selectspace(nId, this)
+			this.getAttribute('data-type') == 'tag' ? selectatag(nId, this) : (this.innerText.split("x")[0] == "卧室"?selectspace(nId, this, "x4"):selectspace(nId, this, "x1"));
 			return;
 		});
 
@@ -174,10 +192,23 @@
 			f.style.backgroundColor = arrColorSet[nSortId];
 		}
 
-		function selectspace(e, f) {
-			(f.style.backgroundColor == 'rgb(255, 255, 255)' || !f.style.backgroundColor) ? (f.style.color = '#fff', f.style.backgroundColor = f.style.borderColor, spaceselect.push(f.innerHTML), arrSpaceSelectId.push(e)) : (f.style.color = f.style.backgroundColor, f.style.backgroundColor = 'rgb(255, 255, 255)', removeitem(spaceselect, f.innerHTML), removeitem(arrSpaceSelectId, e))
+		function selectspace(e, f, g) {
+			switch (f.getElementsByClassName("mui-badge")[0].innerHTML) {
+				case "x0":
+					(f.style.color = '#fff', f.style.backgroundColor = f.style.borderColor,f.getElementsByClassName("mui-badge")[0].innerHTML = "x1", f.getElementsByClassName("mui-badge")[0].style.color = 'red',  arrSpaceSelect.push({"id":e,"name":f.innerText.split("x")[0],"num":1}));
+					break;
+				case g:
+					(f.style.color = f.style.backgroundColor, f.style.backgroundColor = 'rgb(255, 255, 255)', f.getElementsByClassName("mui-badge")[0].style.color = '#fff', f.getElementsByClassName("mui-badge")[0].innerHTML = "x0",removeitembysortid(arrSpaceSelect,findsortidinarr(e)));
+					break;
+				default:
+					f.getElementsByClassName("mui-badge")[0].innerHTML = "x" +(++arrSpaceSelect[findsortidinarr(e)].num);
 		}
-
+		}
+		function findsortidinarr(e){
+			for(let j=0;j<arrSpaceSelect.length;j++){
+				if(arrSpaceSelect[j].id == e) return j;
+			}
+		}
 		function next() {
 			const spacechildren = [];
 			const step1_info = [];
@@ -189,16 +220,10 @@
 					"name": document.getElementById("city").innerHTML
 				}
 			});
-			for (let i = 0; i < spaceselect.length; i++) {
-				spacechildren.push({
-					"id": arrSpaceSelectId[i],
-					"name": spaceselect[i]
-				});
-			}
 			step1_info.push({
 				"id": 48,
 				"name": "空间类型",
-				"children": spacechildren
+				"children": arrSpaceSelect
 			});
 			localStorage.IC = JSON.stringify(step1_info);
 			mui.openWindow({

@@ -42,8 +42,6 @@ body {
 	font-size: 12px;
 }
 
-
-
 .line {
 	height: 1px;
 	width: 100%;
@@ -409,7 +407,7 @@ p img {
 }
 
 .deleteproduct {
-	position: absolute;
+	position: absolute!important;
 	top: 0;
 	right: 0;
 }
@@ -422,13 +420,30 @@ p img {
 .spaceid {
 	display: none;
 }
-.productsimgs{
+
+.productsimgs {
 	width: 100%;
 }
-.addgoods{
+
+.addgoods {
 	display: inline-block;
 }
-.addgoods span{
+
+.addgoods span {
 	position: absolute;
-	color:#e3e3e3;
+	color: #e3e3e3;
+}
+
+#spaces div {
+	position: relative;
+}
+.deletespace{
+	position: absolute!important;
+    top: 40px!important;
+    right: 10px!important;	
+    z-index: 9;
+}
+.deletespace img {
+	width: 40px;
+	height: 40px;
 }

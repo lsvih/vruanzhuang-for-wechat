@@ -52,22 +52,22 @@
 				<div class="dv_prdouctDetail">
 					<div class="header">商品详情:</div>
 					<p>
-						<span id="SmainMaterial">主材质：<span id="mainMaterial"></span><br></span>
-						<span id="SviceMaterial">副材质：<span id="viceMaterial"></span><br></span>
+						<span id="Smain_material">主材质：<span id="main_material"></span><br></span>
+						<span id="Svice_material">副材质：<span id="vice_material"></span><br></span>
 						<span id="Sfabric">面料：<span id="fabric"></span><br></span>
 						<span id="Spaint">油漆：<span id="paint"></span><br></span>
 						<span id="Sshape">形状：<span id="shape"></span><br></span>
 						<span id="Sinstallation">安装方式：<span id="installation"></span><br></span>
 						<span id="Scolor">颜色：<span id="color"></span><br></span>
 						<span id="Ssize">尺寸：<span id="size"></span><br></span>
-						<span id="SspecialArts">特殊工艺：<span id="specialArts"></span><br></span>
-						<span id="SisHaveLight">是否含灯源：<span id="isHaveLight"></span><br></span>
-						<span id="SlightSourceType">光源类型：<span id="lightSourceType"></span><br></span>
+						<span id="Sspecial_arts">特殊工艺：<span id="special_arts"></span><br></span>
+						<span id="Shave_light">是否含灯源：<span id="have_light"></span><br></span>
+						<span id="Slight_source_type">光源类型：<span id="light_source_type"></span><br></span>
 						<span id="Svoltage">电压：<span id="voltage"></span><br></span>
 						<span id="Sparts">配件：<span id="parts"></span><br></span>
-						<span id="SisHaveBedSide">是否包含床头柜：<span id="isHaveBedSide"></span><br></span>
-						<span id="SisHaveBedding">是否包含床品：<span id="isHaveBedding"></span><br></span>
-						<span id="Sdescription">简介： <span id="description"></span><br></span>
+						<span id="Shave_bedside">是否包含床头柜：<span id="have_bedside"></span><br></span>
+						<span id="Shave_bedding">是否包含床品：<span id="have_bedding"></span><br></span>
+						<span id="Sintro">简介： <span id="intro"></span><br></span>
 
 					</p>
 				</div>
@@ -212,22 +212,10 @@
 						document.getElementById("addcrat").disabled = "";
 						document.getElementById("name").innerHTML = data.data.name;
 						document.getElementById("pri").innerHTML = data.data.amount / 100;
-						!data.data.size ? document.getElementById("Ssize").style.display = "none" : document.getElementById("size").innerHTML = data.data.size;
-						!data.data.main_material ? document.getElementById("SmainMaterial").style.display = "none" : document.getElementById("mainMaterial").innerHTML = data.data.main_material;
-						!data.data.vice_material ? document.getElementById("SviceMaterial").style.display = "none" : document.getElementById("viceMaterial").innerHTML = data.data.vice_material;
-						!data.data.fabric ? document.getElementById("Sfabric").style.display = "none" : document.getElementById("fabric").innerHTML = data.data.fabric;
-						!data.data.paint ? document.getElementById("Spaint").style.display = "none" : document.getElementById("paint").innerHTML = data.data.paint;
-						!data.data.shape ? document.getElementById("Sshape").style.display = "none" : document.getElementById("shape").innerHTML = data.data.shape;
-						!data.data.installation ? document.getElementById("Sinstallation").style.display = "none" : document.getElementById("installation").innerHTML = data.data.installation;
-						!data.data.color ? document.getElementById("Scolor").style.display = "none" : document.getElementById("color").innerHTML = data.data.color;
-						!data.data.special_arts ? document.getElementById("SspecialArts").style.display = "none" : document.getElementById("specialArts").innerHTML = data.data.special_arts;
-						!data.data.light_source_type ? document.getElementById("SlightSourceType").style.display = "none" : document.getElementById("lightSourceType").innerHTML = data.data.light_source_type;
-						!data.data.voltage ? document.getElementById("Svoltage").style.display = "none" : document.getElementById("voltage").innerHTML = data.data.voltage;
-						!data.data.parts ? document.getElementById("Sparts").style.display = "none" : document.getElementById("parts").innerHTML = data.data.parts;
-						!data.data.have_light ? document.getElementById("SisHaveLight").style.display = "none" : document.getElementById("SisHaveLight").innerHTML = data.data.have_light;
-						!data.data.have_bedside ? document.getElementById("SisHaveBedSide").style.display = "none" : document.getElementById("isHaveBedSide").innerHTML = data.data.have_bedside;
-						!data.data.have_bedding ? document.getElementById("SisHaveBedding").style.display = "none" : document.getElementById("isHaveBedding").innerHTML = data.data.have_bedding;
-						!data.data.intro ? document.getElementById("Sdescription").style.display = "none" : document.getElementById("description").innerHTML = data.data.intro;
+						let arrstrProductAttrbute = ["size", "main_material", "vice_material", "fabric", "paint", "shape", "installation", "color", "special_arts", "light_source_type", "voltage", "parts", "have_light", "have_bedside", "have_bedding", "intro"];
+						for(let i=0;i<arrstrProductAttrbute.length;i++){
+							!data.data[arrstrProductAttrbute[i]] ? document.getElementById("S"+arrstrProductAttrbute[i]).style.display = "none" : document.getElementById(arrstrProductAttrbute[i]).innerHTML = data.data[arrstrProductAttrbute[i]];
+						}
 						stopload();
 					} else {
 						mui.alert(data.message);

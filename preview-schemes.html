@@ -31,22 +31,21 @@
 			<div class="title">[<span id="title">{{name}}</span>]</div>
 
 			<div id="spaces" v-for="spaces in schemeSpaces">
-				<div>
+				<div v-if="spaces.space.cover_t_img">
 					<div class="divtitle spacename">{{ spaces.space.name }}</div>
 					<div class="innerdiv"><img class="coverimg" v-bind:src="spaces.space.cover_t_img|picurl '/smart_matching/uploads/imgs/thumbs/' 's-'" data-preview-src="{{spaces.space.cover_t_img|picurl '/smart_matching/uploads/imgs/' '' }}" data-preview-group="1" /></div>
 				</div>
-				<div>
+				<div v-if="spaces.space.design_t_img">
 					<div class="divtitle">方案设计图</div>
 					<div class="innerdiv"><img class="design" v-bind:src="spaces.space.design_t_img|picurl '/smart_matching/uploads/imgs/thumbs/' 's-'" data-preview-src="{{ spaces.space.design_t_img|picurl '/smart_matching/uploads/imgs/' '' }}" data-preview-group="1" /></div>
 				</div>
-				<div>
+				<div v-if="spaces.space.planar_t_img">
 					<div class="divtitle">平面图</div>
 					<div class="innerdiv"><img class="plan" v-bind:src="spaces.space.planar_t_img|picurl '/smart_matching/uploads/imgs/thumbs/' 's-'" data-preview-src="{{ spaces.space.planar_t_img|picurl '/smart_matching/uploads/imgs/' '' }}" data-preview-group="1" /></div>
 				</div>
 				<div class="divtitle">配饰清单</div>
 				<div class="goods" v-for="products in spaces.space.spaceProducts">
 					<img class="productsimgs" data-id="{{ products.product.id }}" v-bind:src="products.product.cover_t_imgs |picurl '/smart_matching/uploads/imgs/thumbs/' 's-'">
-					<div class="productsids" style="display: none;">{{ products.product.id }}</div>
 					<p><span class="productsnames">{{ products.product.name }}</span> x <span class="productsnums">{{ products.product_num }}</span></p>
 					<p><span class="productsunitprice">{{ products.product.amount/100 }}</span>元</p>
 					<div class="line"></div>
@@ -108,7 +107,6 @@
 								document.getElementById("allnum").innerHTML = tempallnum;
 								document.getElementById("allprice").innerHTML = tempallprice;
 								stopload()
-								delnull();
 								makecatalog();
 							}
 						})
@@ -119,31 +117,6 @@
 				}
 			});
 		}
-
-		function delnull() {
-			let arrobjCoverImg = document.getElementsByClassName("coverimg");
-			for (let i = 0; i < arrobjCoverImg.length; i++) {
-				if ((arrobjCoverImg[i].src).slice(-4) == "null" || (arrobjCoverImg[i].src).slice(-2) == "s-") {
-					let objToDel = arrobjCoverImg[i].parentNode;
-					objToDel.parentNode.removeChild(objToDel);
-				}
-			}
-			let arrobjPlan = document.getElementsByClassName("plan");
-			for (let i = 0; i < arrobjPlan.length; i++) {
-				if ((arrobjPlan[i].src).slice(-4) == "null" || (arrobjPlan[i].src).slice(-2) == "s-") {
-					let objToDel = arrobjPlan[i].parentNode.parentNode;
-					objToDel.parentNode.removeChild(objToDel);
-				}
-			}
-			let arrobjDesign = document.getElementsByClassName("design");
-			for (let i = 0; i < arrobjDesign.length; i++) {
-				if ((arrobjDesign[i].src).slice(-4) == "null" || (arrobjDesign[i].src).slice(-2) == "s-") {
-					let objToDel = arrobjDesign[i].parentNode.parentNode;
-					objToDel.parentNode.removeChild(objToDel);
-				}
-			}
-		}
-
 		function adaptive() {
 			let arrobjCases = document.getElementsByClassName("innerdiv");
 			let arrobjGoods = document.getElementsByClassName("goods");

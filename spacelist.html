@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+		<meta name="format-detection" content="telephone=no">
+		<meta content="email=no" name="format-detection" />
+		<link rel="stylesheet" href="css/mui.min.css" />
+		<link rel="stylesheet" href="css/app.css" />
+		<link rel="stylesheet" href="css/index.css" />
+		<title>微软装</title>
+	</head>
+	<style>
+		.checkit {
+			position: absolute;
+			top: 10px;
+			right: 10px;
+			height: auto;
+			width: 20%;
+			display: none;
+		}
+		
+		.checkit img {
+			width: 100%;
+			height: 100%;
+		}
+	</style>
+
+	<body onresize="javascript:adaptive();">
+		<div id="load">
+			<div class="loading"></div>
+			<div class="loading-text" style="text-align: center;">加载中，请稍候...</div>
+		</div>
+		<header class="mui-bar mui-bar-nav">
+			<h1 class="mui-title">添加空间</h1>
+			<a class="mui-icon mui-icon-checkmarkempty mui-pull-right" id="submit"></a>
+		</header>
+		<div class="mui-content">
+			<div id="nodata"><span>暂无数据</span></div>
+			<div id="list" class="pictures">
+			</div>
+		</div>
+
+	</body>
+	<script src="js/app.js"></script>
+	<script src="js/global.js"></script>
+	<script src="js/mui.min.js"></script>
+	<script src="js/mui.lazyload.js"></script>
+	<script src="js/mui.lazyload.img.js"></script>
+	<script>
+		"use strict";
+		mui.ready(function() {
+			startload();
+			((JSON.parse(localStorage.tempspaces).length) ? (setTimeout(lazyload(), adaptive(), 300), stopload(), addtapevent()) : (setTimeout(lazyload(), 300), adaptive(), stopload()))
+		});
+		const arrnSpaceSortIdList = [];
+
+		function addtapevent() {
+			mui('#list').on('tap', '.indexpic img', function() {
+				let nSpaceId = this.getAttribute('data-id');
+				let nSortId = this.getAttribute('sort-id');
+				if (this.getAttribute('check-state') == 0) {
+					document.getElementsByClassName("checkit")[nSortId].style.display = "block";
+					this.setAttribute('check-state', 1)
+					arrnSpaceSortIdList.push(nSortId);
+				} else {
+					document.getElementsByClassName("checkit")[nSortId].style.display = "none";
+					this.setAttribute('check-state', 0);
+					arrnSpaceSortIdList.removetheitem(nSortId);
+				}
+			});
+		}
+
+		function lazyload() {
+			const arrjsonItem = JSON.parse(localStorage.tempspaces);
+			const arrjsonSpace = [];
+			for (let i = 0; i < arrjsonItem.length; i++) {
+				let jsonItem = {
+					"title": arrjsonItem[i].name,
+					"price": arrjsonItem[i]['amount'] / 100,
+					"preview": arrjsonItem[i]['cover_t_img'],
+					"id": arrjsonItem[i].id
+				};
+				arrjsonSpace.push(jsonItem);
+			}
+			document.getElementById("nodata").style.display = "none";
+			if (!arrjsonSpace.length) {
+				document.getElementById("nodata").style.display = "block";
+				return false;
+			}
+			var createFragment = function(count) {
+				var fragment = document.createDocumentFragment();
+				let objFirstDiv = document.createElement('div');
+				objFirstDiv.className = "indexpic";
+				objFirstDiv.innerHTML = '<div class="checkit"><img src="images/check.png"></div><img data-lazyload="' + serverurl + '/smart_matching/uploads/imgs/thumbs/m-' + arrjsonSpace[0].preview + '"check-state="0" sort-id="0" data-id="' + arrjsonSpace[0].id + '"><p class="title">' + arrjsonSpace[0].title + '<span class="scpr"><i class="hr">/</i>￥' + arrjsonSpace[0].price + '</span></p>';
+				fragment.appendChild(objFirstDiv);
+				for (let i = 1; i < count; i++) {
+					let objDiv = document.createElement('div');
+					objDiv.className = "indexpic margin180";
+					objDiv.innerHTML = '<div class="checkit"><img src="images/check.png"></div><img data-lazyload="' + serverurl + '/smart_matching/uploads/imgs/thumbs/m-' + arrjsonSpace[i].preview + '"check-state="0" sort-id="' + i + '" data-id="' + arrjsonSpace[i].id + '"><p class="title">' + arrjsonSpace[i].title + '<span class="scpr"><i class="hr">/</i>￥' + arrjsonSpace[i].price + '</span></p>';
+					fragment.appendChild(objDiv);
+				}
+				return fragment;
+			};
+			(function($) {
+				var list = document.getElementById("list");
+				list.appendChild(createFragment(arrjsonSpace.length));
+				$(document).imageLazyload({
+					placeholder: 'images/default-1.png'
+				});
+				adaptive();
+			})(mui);
+		}
+
+		function adaptive() {
+			if (document.getElementsByClassName("indexpic").length) {
+				let arrobjCases = document.getElementsByClassName("indexpic");
+				let fCasesHeight = 0.611 * arrobjCases[0].scrollWidth;
+				for (let i = 0; i < arrobjCases.length; i++) {
+					arrobjCases[i].style.height = fCasesHeight + 'px';
+				}
+			} else {
+				return false;
+			}
+		}
+		var spaceamount = 0;
+		document.getElementById("submit").addEventListener("tap", function() {
+			let arrnSpaceIdList = [];
+			for (let j = 0; j < arrnSpaceSortIdList.length; j++) {
+				arrnSpaceIdList.push(JSON.parse(localStorage.tempspaces)[arrnSpaceSortIdList[j]].id)
+			}
+			startload();
+			mui.ajax(apiurl + 'spaces?filter=id:[' + arrnSpaceIdList + ']&expand=spaceProducts.product', {
+				data: {},
+				dataType: 'json',
+				type: 'get',
+				timeout: 6000,
+				success: function(data) {
+					spaceamount = 0;
+					if (data.success == true) {
+						let tempspaces = data.data.items
+						let arrjsonSelectSpaces = [];
+						let jsonSpaceItem = {
+							"space_id": null,
+							"name": null,
+							"space_num": 1,
+							"cover_t_img": null,
+							"design_t_img": null,
+							"planar_t_img": null,
+							"products": []
+						};
+						for (let i = 0; i < tempspaces.length; i++) {
+							spaceamount += tempspaces[i].amount;
+							jsonSpaceItem.space_id = tempspaces[i].id;
+							jsonSpaceItem.name = tempspaces[i].name;
+							jsonSpaceItem.cover_t_img = tempspaces[i].cover_t_img;
+							jsonSpaceItem.design_t_img = tempspaces[i].design_t_img;
+							jsonSpaceItem.planar_t_img = tempspaces[i].planar_t_img;
+							let arrThisProducts = tempspaces[i].spaceProducts;
+							let products = [];
+							let jsonItem = {
+								"product_id": null,
+								"name": null,
+								"product_num": null,
+								"amount": null,
+								"cover_t_imgs": null
+							}
+							for (let j = 0; j < arrThisProducts.length; j++) {
+								jsonItem.product_id = arrThisProducts[j].product.id;
+								jsonItem.name = arrThisProducts[j].product.name;
+								jsonItem.product_num = arrThisProducts[j].product_num;
+								jsonItem.amount = arrThisProducts[j].product.amount;
+								jsonItem.cover_t_imgs = arrThisProducts[j].product.cover_t_imgs;
+								products.push(jsonItem);
+								jsonItem = {
+									"product_id": null,
+									"name": null,
+									"product_num": null,
+									"amount": null,
+									"cover_t_imgs": null
+								}
+							}
+							jsonSpaceItem.products = products;
+							arrjsonSelectSpaces.push(jsonSpaceItem);
+							jsonSpaceItem = {
+								"space_id": null,
+								"name": null,
+								"space_num": 1,
+								"cover_t_img": null,
+								"design_t_img": null,
+								"planar_t_img": null,
+								"products": []
+							};
+						}
+						let jsonTemp = JSON.parse(localStorage.temp);
+						jsonTemp.amount -= spaceamount;
+						jsonTemp.spaces = jsonTemp.spaces.concat(arrjsonSelectSpaces);
+						localStorage.temp = JSON.stringify(jsonTemp);
+						localStorage.removeItem("tempspaces")
+						history.go(-2);
+						stopload();
+					} else {
+						mui.alert(data.message);
+						stopload();
+					}
+				}
+			});
+
+		});
+	</script>
+
+</html>

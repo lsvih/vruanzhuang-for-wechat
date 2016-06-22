@@ -38,9 +38,11 @@
 		"use strict";
 		mui.ready(function() {
 			startload();
-			if("IntelligentCollocation" in GetRequest()){
+			if ("IntelligentCollocation" in GetRequest()) {
 				document.getElementById("home").style.color = "#000";
-				document.getElementById("home").onclick = function(){window.location.href = 'index.html' };
+				document.getElementById("home").onclick = function() {
+					window.location.href = 'index.html'
+				};
 			}
 			("IntelligentCollocation" in GetRequest()) ? ((JSON.parse(localStorage.schemes).length) ? (setTimeout(lazyload(), adaptive(), 300), stopload(), addtapevent()) : (setTimeout(lazyload(), 300), adaptive(), stopload())) : getschemes();
 		});
@@ -115,10 +117,14 @@
 		}
 
 		function adaptive() {
-			let arrobjCases = document.getElementsByClassName("indexpic");
-			let fCasesHeight = 0.611 * arrobjCases[0].scrollWidth;
-			for (let i = 0; i < arrobjCases.length; i++) {
-				arrobjCases[i].style.height = fCasesHeight + 'px';
+			if (document.getElementsByClassName("indexpic").length) {
+				let arrobjCases = document.getElementsByClassName("indexpic");
+				let fCasesHeight = 0.611 * arrobjCases[0].scrollWidth;
+				for (let i = 0; i < arrobjCases.length; i++) {
+					arrobjCases[i].style.height = fCasesHeight + 'px';
+				}
+			} else {
+				return false;
 			}
 		}
 		document.getElementById('cart').addEventListener('tap', function() {

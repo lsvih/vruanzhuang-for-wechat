@@ -159,25 +159,20 @@
 		});
 		var jsonAddress = JSON.parse(localStorage.alladdress);
 		var jsonThisAddress;
-		var addresssortid = GetRequest()["selectaddress"];
-		if (!addresssortid) { //没有选择地址则搜索默认地址
-			if (!jsonAddress.selected) {
-				jsonThisAddress = jsonAddress.address[0] //没有默认则取第一个
-			} else {
-				k = 0;
-				for (let i = 0; i < jsonAddress.address.length; i++) {
-					if (jsonAddress.selected == jsonAddress.address[i].id) {
-						jsonThisAddress = jsonAddress.address[i];
-						k = 1;
-						break;
-					} //有默认地址则取默认地址
-				}
-				if (k = 0) {
-					jsonThisAddress = jsonAddress.address[0] //未搜索到默认地址则取第一个地址
-				}
-			}
+		if (!jsonAddress.selected) {
+			jsonThisAddress = jsonAddress.address[0] //没有默认则取第一个
 		} else {
-			jsonThisAddress = jsonAddress.address[addresssortid];
+			k = 0;
+			for (let i = 0; i < jsonAddress.address.length; i++) {
+				if (jsonAddress.selected == jsonAddress.address[i].id) {
+					jsonThisAddress = jsonAddress.address[i];
+					k = 1;
+					break;
+				} //有默认地址则取默认地址
+			}
+			if (k = 0) {
+				jsonThisAddress = jsonAddress.address[0] //未搜索到默认地址则取第一个地址
+			}
 		}
 		new Vue({
 			el: '#address',

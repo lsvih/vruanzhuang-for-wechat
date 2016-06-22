@@ -23,7 +23,7 @@
 		</header>
 		<div class="mui-content">
 			<div class="title2">
-				<p>请选择几个你喜欢的</p>装修风格</div>
+				<p>请选择添加的空间的</p>装修风格</div>
 			<div class="style-list">
 				<div class="circle grid-1"><span>现代</span></div>
 				<div class="circle grid-2"><span>地中海</span></div>
@@ -32,6 +32,11 @@
 				<div class="circle grid-5"><span>田园</span></div>
 				<div class="circle grid-6"><span>美式</span></div>
 				<div class="circle grid-7"><span>新古典</span></div>
+			</div>
+			<div class="title2">
+				空间类型</div>
+			<div class="tagselect colorselect" id="tag-list">
+				<span class="tag" v-for="tag in tags" id="{{tag.id}}">{{tag.name}}</span>
 			</div>
 
 			<div class="title2">
@@ -75,10 +80,33 @@
 		var colorselect = [];
 		var colorselectid = [];
 		var stylename;
-		var stylename;
 		var styleid;
-		var styleid;
+		var spacetypeid;
+		var spacetypename;
 		mui.ready(function() {
+			mui.ajax(apiurl + 'tags/multi-children?name=空间类型', {
+				dataType: 'json',
+				type: 'get',
+				timeout: 6000,
+				success: function(data) {
+					if (data.success == true) {
+						new Vue({
+							el: '#tag-list',
+							data: {
+								"tags": data.data.items[0].children
+							}
+						});
+						stopload();
+					} else {
+						mui.alert("获取标签失败，请稍候再试");
+						stopload();
+					}
+				},
+				error: function(xhr, textStatus, errorThrown) {
+					mui.alert("网络连接失败，请稍候再试");
+					stopload();
+				}
+			});
 			mui.ajax(apiurl + 'tags/multi-children?name=装修色彩', {
 				dataType: 'json',
 				type: 'get',
@@ -115,8 +143,24 @@
 			return;
 		});
 		document.getElementById('next-step').addEventListener('tap', function() {
-			!stylename ? mui.alert('请选择风格', '微软装') : !colorselect.length ? mui.alert('请选择颜色', '微软装') : next();
+			!stylename ? mui.alert('请选择风格', '微软装') : !spacetypeid ? mui.alert('请选择空间类型', '微软装') :!colorselect.length?mui.alert('请选择颜色', '微软装'): next();
 		});
+		mui('body').on('tap', '.tag', function() {
+			selectatag(this.getAttribute('id'), this);
+			return;
+		});
+
+		function selectatag(e, f) {
+			let thistagtype = f.parentNode;
+			spacetypeid = e;
+			spacetypename = f.innerHTML;
+			for (var i = 0; i < thistagtype.getElementsByClassName("tag").length; i++) {
+				thistagtype.getElementsByClassName("tag")[i].style.backgroundColor = "#fff";
+				thistagtype.getElementsByClassName("tag")[i].style.color = '#000';
+			}
+			f.style.color = '#fff';
+			f.style.backgroundColor = "red";
+		}
 
 		function selectstyle(e) {
 			let arrobjBorthers = e.parentNode.getElementsByClassName("circle");
@@ -142,13 +186,21 @@
 
 		function next() {
 			const colorchildren = [];
-			const IC = JSON.parse(localStorage.IC);
-			IC.push({
+			const filter = [];
+			filter.push({
 				"id": 10,
 				"name": "装修风格",
 				"children": {
 					"id": styleid,
 					"name": stylename
+				}
+			});
+			filter.push({
+				"id": 48,
+				"name": "空间类型",
+				"children": {
+					"id": spacetypeid,
+					"name": spacetypename
 				}
 			});
 			for (let i = 0; i < colorselect.length; i++) {
@@ -157,15 +209,31 @@
 					"name": colorselect[i]
 				});
 			}
-			IC.push({
+			filter.push({
 				"id": 11,
 				"name": "装修色彩",
 				"children": colorchildren
 			});
-			localStorage.IC = JSON.stringify(IC);
-			mui.openWindow({
-				url: "match-step3.html",
-				id: "match-step3"
+			mui.ajax(apiurl + 'spaces/space-list?tags=' + JSON.stringify(filter), {
+				dataType: 'json',
+				type: 'get',
+				timeout: 6000,
+				success: function(data) {
+					if (data.success == true) {
+						localStorage.tempspaces = JSON.stringify(data.data);
+						mui.openWindow({
+							url: "spacelist.html",
+							id: "spacelist"
+						});
+					} else {
+						mui.alert("获取标签失败，请稍候再试");
+						stopload();
+					}
+				},
+				error: function(xhr, textStatus, errorThrown) {
+					mui.alert("网络连接失败，请稍候再试");
+					stopload();
+				}
 			});
 		}
 	</script>

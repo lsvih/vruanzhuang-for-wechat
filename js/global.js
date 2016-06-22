@@ -15,4 +15,4 @@ var apiurl = "http://vruanzhuang.cn/smart_matching/api/web/"
 var appurl = serverurl + "/vrz/api/web";
 var frontend = serverurl + "/web/project/vrz"
 
-var colorpallte = ['#339999', '#cc99cc', '#ff9900', '#ccccff', '#ff0033', '#0099cc', '#99cc33'];
+var colorpallte = ['#339999', '#cc99cc', '#ff9900', '#ccccff', '#0099cc', '#99cc33'];
