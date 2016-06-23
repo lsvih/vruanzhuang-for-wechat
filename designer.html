@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+		<meta name="format-detection" content="telephone=no">
+		<meta content="email=no" name="format-detection" />
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<link rel="stylesheet" href="css/mui.min.css" />
+		<link rel="stylesheet" href="css/app.css" />
+		<link rel="stylesheet" href="css/product.css" />
+		<link rel="stylesheet" href="css/order.css" />
+
+		<title>微软装</title>
+	</head>
+
+	<body>
+		<div id="load">
+			<div class="loading"></div>
+			<div class="loading-text"><img src="images/load.gif" width="25px">加载中，请稍候...</div>
+		</div>
+		<header class="mui-bar mui-bar-nav">
+			<h1 class="mui-title">设计师简介</h1>
+		</header>
+		<div class="mui-content">
+			<div class="innerdiv"><img id="cover" src="images/default-1.png">
+			</div>
+			<h3><div id="name" class="name">...</div></h3><br />
+			<div class="name"><span id="address">...</span></div><hr /><br />	
+			<div class="name">个人简介:<br /><span id="intro">...</span></div>
+		</div>
+
+	</body>
+	<script src="js/app.js"></script>
+	<script src="js/global.js"></script>
+	<script src="js/mui.min.js"></script>
+	<script>
+		"use strict";
+		var id = GetRequest()["id"];
+		mui.ready(function() {
+			startload();
+			mui.ajax(apiurl + 'designers/' + id, {
+				dataType: 'json',
+				type: 'get',
+				timeout: 6000,
+				success: function(data) {
+					if (data.success == true) {
+						console.log(JSON.stringify(data.data))
+						document.getElementById("cover").src = serverurl + '/smart_matching/uploads/imgs/' + data.data.head_t_img;
+						document.getElementById("name").innerHTML = data.data.fullname;
+						document.getElementById("intro").innerHTML = data.data.intro;
+						document.getElementById("address").innerHTML = data.data.nation + "-" + data.data.city;
+						stopload();
+					} else {
+						mui.alert(data.message);
+						stopload();
+					}
+				},
+				error: function(xhr, type, errorThrown, message) {
+					mui.alert("网络连接失败，请稍候再试");
+					stopload();
+				}
+			});
+		})
+	</script>
+
+</html>

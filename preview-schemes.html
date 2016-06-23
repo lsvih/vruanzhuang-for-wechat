@@ -35,6 +35,9 @@
 					<div class="divtitle spacename">{{ spaces.space.name }}</div>
 					<div class="innerdiv"><img class="coverimg" v-bind:src="spaces.space.cover_t_img|picurl '/smart_matching/uploads/imgs/thumbs/' 's-'" data-preview-src="{{spaces.space.cover_t_img|picurl '/smart_matching/uploads/imgs/' '' }}" data-preview-group="1" /></div>
 				</div>
+				<div v-if="spaces.space.designer.fullname">
+					<div class="designer" data-id="{{ spaces.space.designer.id }}"><div class="designer-img"><img class="coverimg" v-bind:src="spaces.space.designer.head_t_img|picurl '/smart_matching/uploads/imgs/' 's-'"></div><div class="designer-info"><div class="designer-content">设计师</div><div class="designer-name">{{spaces.space.designer.fullname}}</div></div>	
+				</div>
 				<div v-if="spaces.space.design_t_img">
 					<div class="divtitle">方案设计图</div>
 					<div class="innerdiv"><img class="design" v-bind:src="spaces.space.design_t_img|picurl '/smart_matching/uploads/imgs/thumbs/' 's-'" data-preview-src="{{ spaces.space.design_t_img|picurl '/smart_matching/uploads/imgs/' '' }}" data-preview-group="1" /></div>
@@ -83,7 +86,7 @@
 		})
 
 		function getspacedata() {
-			mui.ajax(apiurl + 'schemes/' + schemeid + '?expand=schemeSpaces.space.spaceProducts.product&sort=sort_num', {
+			mui.ajax(apiurl + 'schemes/' + schemeid + '?expand=schemeSpaces.space.spaceProducts.product,schemeSpaces.space.designer&sort=sort_num', {
 				dataType: 'json',
 				type: 'get',
 				timeout: 6000,
@@ -139,6 +142,13 @@
 			mui.openWindow({
 				url: "product.html?preview&id=" + nProductId,
 				id: "product"
+			});
+			return;
+		});
+		mui('body').on('tap', '.designer', function() {
+			mui.openWindow({
+				url: "designer.html?id=" + this.getAttribute('data-id'),
+				id: "designer"
 			});
 			return;
 		});

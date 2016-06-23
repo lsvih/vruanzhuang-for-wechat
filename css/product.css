@@ -437,13 +437,47 @@ p img {
 .r {
 	position: relative;
 }
-.deletespace{
+
+.deletespace {
 	position: absolute!important;
-    top: -6px!important;
-    right: 0px!important;	
-    z-index: 9;
+	top: -6px!important;
+	right: 0px!important;
+	z-index: 9;
 }
+
 .deletespace img {
 	width: 40px;
 	height: 40px;
+}
+
+.designer-img {
+	height: 60px;
+	width: 60px;
+	border-radius: 30px;
+}
+
+.designer-img img {
+	width: auto;
+	height: 100%;
+}
+
+.designer {
+	position: relative;
+	height: 60px;
+	margin: 10px 20px;
+}
+
+.designer-info {
+	position: absolute;
+	left: 80px;
+	top: 10px;
+	width: 100px;
+}
+
+.designer-content {
+	font-size: 12px;
+}
+
+.designer-name {
+	font-weight: bold;
 }
