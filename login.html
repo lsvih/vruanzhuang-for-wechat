@@ -74,7 +74,7 @@
 							"address": []
 						}
 						localStorage.alladdress = JSON.stringify(jsonAddress);
-						mui.ajax(apiurl + 'delivery-addresses?access-token=' + strAccessToken + '&and[user_id]=' + nUserId, {
+						mui.ajax(apiurl + 'delivery-addresses?access-token=' + JSON.parse(localStorage.userinfo).access_token + '&and[user_id]=' + JSON.parse(localStorage.userinfo).id, {
 							data: {},
 							dataType: 'json',
 							type: 'get',

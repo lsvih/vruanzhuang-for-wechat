@@ -32,7 +32,6 @@
 			<div class="title">[<span id="title">...</span>]</div>
 			<div class="space-elems">
 				<div class="space-elems-inner">
-
 					<div class="space-elem" id="bedroom"><i class="iconfont icon-chuang"></i>
 						<p><span>1</span>卧室</p>
 					</div>
@@ -63,56 +62,59 @@
 					</div>
 				</div>
 			</div>
-			<div>
-				<div class="divtitle">灵感来源</div>
-				<div id="inspiration" class="innerdiv">
-					<img src="images/default-1.png" data-preview-src="" data-preview-group="1" /></div>
-			</div>
-			<div>
-				<div class="divtitle">空间亮点</div>
-				<div id="bright_spot" class="innerdiv">
-					<img src="images/default-1.png" data-preview-src="" data-preview-group="1" /></div>
-			</div>
-			<div>
-				<div class="divtitle">色彩分析</div>
-				<div id="color_analysis" class="innerdiv">
-					<img src="images/default-1.png" data-preview-src="" data-preview-group="1" /></div>
-			</div>
+			<div id="spaces">
+				<div v-if="inspiration_t_img">
+					<div class="divtitle">灵感来源</div>
+					<div id="inspiration" class="innerdiv">
+						<img src="images/default-1.png" data-preview-src="" data-preview-group="1" /></div>
+				</div>
+				<div v-if="bright_spot_t_img">
+					<div class="divtitle">空间亮点</div>
+					<div id="bright_spot" class="innerdiv">
+						<img src="images/default-1.png" data-preview-src="" data-preview-group="1" /></div>
+				</div>
+				<div v-if="color_analysis_t_img">
+					<div class="divtitle">色彩分析</div>
+					<div id="color_analysis" class="innerdiv">
+						<img src="images/default-1.png" data-preview-src="" data-preview-group="1" /></div>
+				</div>
 
-			<div id="spaces" v-for="spaces in schemeSpaces">
-				<div v-if="spaces.space.cover_t_img">
-					<div class="divtitle spacename">{{ spaces.space.name }}</div>
-					<div class="innerdiv"><img class="coverimg" v-bind:src="spaces.space.cover_t_img|picurl '/smart_matching/uploads/imgs/thumbs/' 's-'" data-preview-src="{{ spaces.space.cover_t_img|picurl '/smart_matching/uploads/imgs/' '' }}" data-preview-group="1" /></div>
-				</div>
-				<div v-if="spaces.space.design_t_img">
-					<div class="divtitle">方案设计图</div>
-					<div class="innerdiv"><img class="design" v-bind:src="spaces.space.design_t_img|picurl '/smart_matching/uploads/imgs/thumbs/' 's-'" data-preview-src="{{ spaces.space.design_t_img|picurl '/smart_matching/uploads/imgs/' '' }}" data-preview-group="1" /></div>
-				</div>
-				<div v-if="spaces.space.planar_t_img">
-					<div class="divtitle">平面图</div>
-					<div class="innerdiv"><img class="plan" v-bind:src="spaces.space.planar_t_img|picurl '/smart_matching/uploads/imgs/thumbs/' 's-'" data-preview-src="{{ spaces.space.planar_t_img|picurl '/smart_matching/uploads/imgs/' '' }}" data-preview-group="1" /></div>
-				</div>
-				<div class="divtitle">配饰清单</div>
-				<div class="goods" v-for="products in spaces.space.spaceProducts">
-					<img class="productsimgs" data-id="{{ products.product.id }}" v-bind:src="products.product.cover_t_imgs |picurl '/smart_matching/uploads/imgs/thumbs/' 's-'">
-					<p><span class="productsnames">{{ products.product.name }}</span> x <span class="productsnums">{{ products.product_num }}</span></p>
-					<p><span class="productsunitprice">{{ products.product.amount/100 }}</span>元</p>
+				<div v-for="spaces in schemeSpaces">
+					<div v-if="spaces.space.cover_t_img">
+						<div class="divtitle spacename">{{ spaces.space.name }}</div>
+						<div class="innerdiv"><img class="coverimg" v-bind:src="spaces.space.cover_t_img|picurl '/smart_matching/uploads/imgs/thumbs/' 's-'" data-preview-src="{{ spaces.space.cover_t_img|picurl '/smart_matching/uploads/imgs/' '' }}" data-preview-group="1" /></div>
+					</div>
+					<div v-if="spaces.space.design_t_img">
+						<div class="divtitle">方案设计图</div>
+						<div class="innerdiv"><img class="design" v-bind:src="spaces.space.design_t_img|picurl '/smart_matching/uploads/imgs/thumbs/' 's-'" data-preview-src="{{ spaces.space.design_t_img|picurl '/smart_matching/uploads/imgs/' '' }}" data-preview-group="1" /></div>
+					</div>
+					<div v-if="spaces.space.planar_t_img">
+						<div class="divtitle">平面图</div>
+						<div class="innerdiv"><img class="plan" v-bind:src="spaces.space.planar_t_img|picurl '/smart_matching/uploads/imgs/thumbs/' 's-'" data-preview-src="{{ spaces.space.planar_t_img|picurl '/smart_matching/uploads/imgs/' '' }}" data-preview-group="1" /></div>
+					</div>
+					<div class="divtitle">配饰清单</div>
+					<div class="goods" v-for="products in spaces.space.spaceProducts">
+						<img class="productsimgs" data-id="{{ products.product.id }}" v-bind:src="products.product.cover_t_imgs |picurl '/smart_matching/uploads/imgs/thumbs/' 's-'">
+						<p><span class="productsnames">{{ products.product.name }}</span> x <span class="productsnums">{{ products.product_num }}</span></p>
+						<p><span class="productsunitprice">{{ products.product.amount/100 }}</span>元</p>
+						<div class="line"></div>
+					</div>
 					<div class="line"></div>
-				</div>
-				<div class="line"></div>
 
-			</div>
-			<div class="cont">方案产品总数:<span id="allnum">0</span>&nbsp;方案总金额:<span id="allprice">0</span>元</div>
-			<div class="footer edit" onclick="edit()"><i class="iconfont icon-buy"></i>编辑</div>
-			<div class="footer addcart" onclick="addalltocart()"><i class="iconfont icon-buy"></i>加入购物车</div>
-			<div id="cataloglist">
-				<div>索引</div>
-				<ul id="potlist">
-					<li>简介</li>
-					<span id="catalogpot"><li v-for="point in points">{{point}}</li></span>
-				</ul>
+				</div>
+				<div class="cont">方案产品总数:<span id="allnum">0</span>&nbsp;方案总金额:<span id="allprice">0</span>元</div>
+				<div class="footer edit" onclick="edit()"><i class="iconfont icon-buy"></i>编辑</div>
+				<div class="footer addcart" onclick="addalltocart()"><i class="iconfont icon-buy"></i>加入购物车</div>
+				
 			</div>
 		</div>
+		<div id="cataloglist">
+					<div>索引</div>
+					<ul id="potlist">
+						<li>简介</li>
+						<span id="catalogpot"><li v-for="point in points">{{point}}</li></span>
+					</ul>
+				</div>
 
 	</body>
 	<script src="js/app.js"></script>
@@ -127,7 +129,7 @@
 		var jsonschemes;
 		var spacedata;
 		var topbarHeight = 39;
-		var arrImageList = ["cover","inspiration", "bright_spot", "color_analysis"];
+		var arrImageList = ["cover", "inspiration", "bright_spot", "color_analysis"];
 		mui.ready(function() {
 			Vue.filter('picurl', function(value, url, picsize) {
 				return serverurl + url + picsize + value
@@ -159,7 +161,7 @@
 
 		function setschemes() {
 			!jsonschemes.community ? document.getElementById("title").innerHTML = jsonschemes.name + "方案" : document.getElementById("title").innerHTML = jsonschemes.community;
-			let arrSpaceList = ["bedroom","livingroom","studyroom","diningroom","kitchen","bathroom","balcony","tearoom","lounge"];
+			let arrSpaceList = ["bedroom", "livingroom", "studyroom", "diningroom", "kitchen", "bathroom", "balcony", "tearoom", "lounge"];
 			for (let i = 0; i < arrSpaceList.length; i++) {
 				!jsonschemes[arrSpaceList[i]] ? document.getElementById(arrSpaceList[i]).style.display = "none" : document.getElementById(arrSpaceList[i]).getElementsByTagName("span")[0].innerHTML = jsonschemes[arrSpaceList[i]];
 			}
@@ -202,7 +204,6 @@
 				}
 			});
 		}
-
 
 		function adaptive() {
 			let arrobjCases = document.getElementsByClassName("innerdiv");

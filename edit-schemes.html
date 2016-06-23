@@ -33,7 +33,7 @@
 				<div id="spaces" v-for="space in spaces">
 					<div class="spaceid">{{space.id}}</div>
 					<div class="spaceid">{{$index}}</div>
-					<div v-if="space.cover_t_img">
+					<div v-if="space.cover_t_img" class="r">
 						<div class="deletespace" data-id="{{$index}}"><img src="images/delete.png"></div>
 						<div class="divtitle spacename">{{ space.name }}</div>
 						<div class="innerdiv"><img class="coverimg" v-bind:src="space.cover_t_img|picurl '/smart_matching/uploads/imgs/thumbs/' 's-'" data-preview-src="{{ space.cover_t_img|picurl '/smart_matching/uploads/imgs/' '' }}" data-preview-group="1" /></div>
@@ -47,7 +47,7 @@
 						<div class="innerdiv"><img class="plan" v-bind:src="space.planar_t_img|picurl '/smart_matching/uploads/imgs/thumbs/' 's-'" data-preview-src="{{ space.planar_t_img|picurl '/smart_matching/uploads/imgs/' '' }}" data-preview-group="1" /></div>
 					</div>
 					<div class="divtitle">配饰清单</div>
-					<div class="goods" v-for="product in space.products">
+					<div class="goods r" v-for="product in space.products">
 						<div class="deleteproduct" data-id="{{$index}}"><img src="images/delete.png"></div>
 						<img class="productsimgs" data-id="{{ product.product_id }}" v-bind:src="product.cover_t_imgs |picurl '/smart_matching/uploads/imgs/thumbs/' 's-'">
 						<p>

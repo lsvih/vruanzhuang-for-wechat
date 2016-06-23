@@ -55,15 +55,14 @@
 			</div>
 			<div class="cont" style="bottom: 0;">方案产品总数:<span id="allnum">0</span>&nbsp;方案总金额:<span id="allprice">0</span>元</div>
 
-			<div id="cataloglist">
-				<div>索引</div>
-				<ul id="potlist">
-					<li>简介</li>
-					<span id="catalogpot"><li v-for="point in points">{{ point }}</li></span>
-				</ul>
-			</div>
 		</div>
-
+		<div id="cataloglist">
+			<div>索引</div>
+			<ul id="potlist">
+				<li>简介</li>
+				<span id="catalogpot"><li v-for="point in points">{{ point }}</li></span>
+			</ul>
+		</div>
 	</body>
 	<script src="js/global.js"></script>
 	<script src="js/vue.js"></script>
@@ -117,6 +116,7 @@
 				}
 			});
 		}
+
 		function adaptive() {
 			let arrobjCases = document.getElementsByClassName("innerdiv");
 			let arrobjGoods = document.getElementsByClassName("goods");
