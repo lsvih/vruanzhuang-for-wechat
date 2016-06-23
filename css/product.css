@@ -439,8 +439,8 @@ p img {
 }
 .deletespace{
 	position: absolute!important;
-    top: 40px!important;
-    right: 10px!important;	
+    top: -6px!important;
+    right: 0px!important;	
     z-index: 9;
 }
 .deletespace img {

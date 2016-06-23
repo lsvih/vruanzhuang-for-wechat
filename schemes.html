@@ -171,7 +171,7 @@
 		}
 
 		function getspacedata() {
-			mui.ajax(apiurl + 'schemes/' + schemeid + '?expand=schemeSpaces.space.spaceProducts.product', {
+			mui.ajax(apiurl + 'schemes/' + schemeid + '?expand=schemeSpaces.space.spaceProducts.product&sort=sort_num', {
 				data: {},
 				dataType: 'json',
 				type: 'get',

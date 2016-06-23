@@ -17,13 +17,29 @@
 			top: 10px;
 			right: 10px;
 			height: auto;
-			width: 20%;
+			width: 10%;
 			display: none;
 		}
 		
 		.checkit img {
 			width: 100%;
 			height: 100%;
+		}
+		.tocheckit {
+			position: absolute;
+			top: 10px;
+			right: 10px;
+			height: auto;
+			width: 10%;
+		}
+		
+		.tocheckit img {
+			width: 100%;
+			height: 100%;
+		}
+		.mui-bar .mui-icon{
+			padding: 0 0 10px 10px!important;
+			font-size: 40px!important;
 		}
 	</style>
 
@@ -57,7 +73,7 @@
 		const arrnSpaceSortIdList = [];
 
 		function addtapevent() {
-			mui('#list').on('tap', '.indexpic img', function() {
+			mui('#list').on('tap', '.clickevent', function() {
 				let nSpaceId = this.getAttribute('data-id');
 				let nSortId = this.getAttribute('sort-id');
 				if (this.getAttribute('check-state') == 0) {
@@ -93,12 +109,12 @@
 				var fragment = document.createDocumentFragment();
 				let objFirstDiv = document.createElement('div');
 				objFirstDiv.className = "indexpic";
-				objFirstDiv.innerHTML = '<div class="checkit"><img src="images/check.png"></div><img data-lazyload="' + serverurl + '/smart_matching/uploads/imgs/thumbs/m-' + arrjsonSpace[0].preview + '"check-state="0" sort-id="0" data-id="' + arrjsonSpace[0].id + '"><p class="title">' + arrjsonSpace[0].title + '<span class="scpr"><i class="hr">/</i>￥' + arrjsonSpace[0].price + '</span></p>';
+				objFirstDiv.innerHTML = '<div class="clickevent"  check-state="0" sort-id="0" data-id="' + arrjsonSpace[0].id + '"><div class="tocheckit"><img src="images/tochecked.png"></div><div class="checkit"><img src="images/check.png"></div><img data-lazyload="' + serverurl + '/smart_matching/uploads/imgs/thumbs/m-' + arrjsonSpace[0].preview + '"><p class="title">' + arrjsonSpace[0].title + '<span class="scpr"><i class="hr">/</i>￥' + arrjsonSpace[0].price + '</span></p></div>';
 				fragment.appendChild(objFirstDiv);
 				for (let i = 1; i < count; i++) {
 					let objDiv = document.createElement('div');
 					objDiv.className = "indexpic margin180";
-					objDiv.innerHTML = '<div class="checkit"><img src="images/check.png"></div><img data-lazyload="' + serverurl + '/smart_matching/uploads/imgs/thumbs/m-' + arrjsonSpace[i].preview + '"check-state="0" sort-id="' + i + '" data-id="' + arrjsonSpace[i].id + '"><p class="title">' + arrjsonSpace[i].title + '<span class="scpr"><i class="hr">/</i>￥' + arrjsonSpace[i].price + '</span></p>';
+					objDiv.innerHTML = '<div class="clickevent" check-state="0" sort-id="' + i + '" data-id="' + arrjsonSpace[i].id + '"><div class="tocheckit"><img src="images/tochecked.png"></div><div class="checkit"><img src="images/check.png"></div><img data-lazyload="' + serverurl + '/smart_matching/uploads/imgs/thumbs/m-' + arrjsonSpace[i].preview + '"><p class="title">' + arrjsonSpace[i].title + '<span class="scpr"><i class="hr">/</i>￥' + arrjsonSpace[i].price + '</span></p></div>';
 					fragment.appendChild(objDiv);
 				}
 				return fragment;
@@ -131,7 +147,7 @@
 				arrnSpaceIdList.push(JSON.parse(localStorage.tempspaces)[arrnSpaceSortIdList[j]].id)
 			}
 			startload();
-			mui.ajax(apiurl + 'spaces?filter=id:[' + arrnSpaceIdList + ']&expand=spaceProducts.product', {
+			mui.ajax(apiurl + 'spaces?filter=id:[' + arrnSpaceIdList + ']&expand=spaceProducts.product&sort=sort_num', {
 				data: {},
 				dataType: 'json',
 				type: 'get',
