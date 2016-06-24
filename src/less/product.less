@@ -38,13 +38,12 @@ body {
 }
 
 .mui-btn-block {
-	font-size: 12px;
 	display: block;
 	width: 90%;
-	padding: 0;
 	height: 35px;
-	line-height: 35px;
+	padding: 0;
 	margin: 10px auto;
+	font: 12px/35px "微软雅黑";
 }
 
 .goods {
@@ -53,10 +52,9 @@ body {
 	.center;
 	line-height: 15px;
 	margin-top: 20px;
-}
-
-.goods p {
-	font-size: 12px;
+	p {
+		font-size: 12px;
+	}
 }
 
 .line {
@@ -101,31 +99,28 @@ body {
 	bottom: 40px;
 	height: 30px;
 	width: 100%;
-	font-size: 12px;
-	line-height: 30px;
+	font: 12px/30px "微软雅黑";
 	.center;
 	background-color: rgba(255, 255, 255, 0.8);
 }
 
 .space-elems {
 	width: 100%;
+	i {
+		line-height: 40px;
+		font-size: 30px;
+	}
+	p {
+		font-size: 12px;
+		.center;
+		line-height: 0;
+	}
 }
 
 .space-elem {
 	width: 50px;
 	.center;
 	display: inline-block;
-}
-
-.space-elems i {
-	line-height: 40px;
-	font-size: 30px;
-}
-
-.space-elems p {
-	font-size: 12px;
-	.center;
-	line-height: 0;
 }
 
 .space-elems-inner {
@@ -170,14 +165,13 @@ body {
 
 .mui-preview-header .mui-preview-indicator {
 	display: block;
-	line-height: 25px;
-	color: #fff;
 	.center;
 	margin: 15px auto 4;
 	width: 70px;
 	background-color: rgba(0, 0, 0, 0.4);
 	border-radius: 12px;
-	font-size: 16px;
+	font: 16px/25px "";
+	color: #fff;
 }
 
 .mui-preview-image {
@@ -249,23 +243,22 @@ body {
 
 .mui-preview-loading {
 	.a;
-	.square(100%);
 	top: 0;
 	left: 0;
+	.square(100%);
 	.spaceid;
+	.mui-spinner-white {
+		.a;
+		top: 50%;
+		left: 50%;
+		margin-left: -25px;
+		margin-top: -25px;
+		.square(50px);
+	}
 }
 
 .mui-preview-loading.mui-active {
 	display: block;
-}
-
-.mui-preview-loading .mui-spinner-white {
-	.a;
-	top: 50%;
-	left: 50%;
-	margin-left: -25px;
-	margin-top: -25px;
-	.square(50px);
 }
 
 .mui-preview-image img.mui-transitioning {
@@ -353,11 +346,11 @@ p img {
 	li:before {
 		content: "";
 		.a;
+		left: -20px;
+		top: 5px;
 		.square(10px);
 		border-radius: 99em;
 		border: 1px solid #949494;
-		left: -20px;
-		top: 5px;
 		background-color: #eeeae7;
 	}
 	ul:before {
@@ -383,31 +376,31 @@ p img {
 }
 
 .addcart {
-	color: #fff;
 	right: 0;
+	color: #fff;
 	background-color: #c51919;
 }
 
 .edit {
 	left: 0;
-	background-color: #eee;
 	color: #000;
+	background-color: #eee;
 }
 
 .footer {
 	position: fixed;
-	.center;
 	bottom: 0;
 	width: 50%;
 	height: 40px;
 	line-height: 40px;
+	.center;
 }
 
 .save {
-	color: #fff;
 	right: 0;
-	background-color: #c51919;
 	width: 100%;
+	background-color: #c51919;
+	color: #fff;
 }
 
 .deleteproduct {

@@ -1,0 +1,176 @@
+@yahei: "Microsoft YaHei";
+body,
+div,
+h1,
+h2,
+h3,
+h4,
+p,
+ol,
+ul,
+li {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	text-shadow: 0 0 0 #fff;
+	-webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+}
+
+@-webkit-viewport {
+	width: device-width;
+}
+
+@-moz-viewport {
+	width: device-width;
+}
+
+@-ms-viewport {
+	width: device-width;
+}
+
+@-o-viewport {
+	width: device-width;
+}
+
+@viewport {
+	width: device-width;
+}
+
+html,
+body {
+	height: 100%;
+	font-size: 0.9em;
+}
+
+body {
+	min-width: 320px;
+	max-width: 768px;
+	-webkit-font-smoothing: antialiased;
+	-webkit-text-size-adjust: 100%;
+	-ms-text-size-adjust: 100%;
+	text-size-adjust: 100%;
+	color: #666;
+	font-family: arial;
+	margin: 0 auto;
+}
+
+ul {
+	list-style-type: none;
+}
+
+a:link,
+a:visited,
+a:hover,
+a:active {
+	text-decoration: none;
+}
+
+#layout {
+	max-width: 768px;
+	min-width: 320px;
+	padding-top: 0px;
+	margin: 0 auto;
+	background: url(../images/login_bg.jpg) no-repeat;
+	filter: "progid:DXImageTransform.Microsoft.AlphaImageLoader(sizingMethod='scale')";
+	-moz-background-size: 100% 100%;
+	background-size: 100% 100%;
+	height: 100%;
+	span {
+		position: relative;
+		display: block;
+		height: 80px;
+		font: 1.5em/80px @yahei;
+		text-align: center;
+		color: #fff;
+	}
+	ul li {
+		position: relative;
+		list-style: none;
+		margin-left: 11%;
+	}
+}
+
+#err_msg {
+	height: 15px;
+	text-align: center;
+	color: red;
+}
+
+.username,
+.yzm,
+.pwd,
+.pwd2 {
+	width: 70%;
+	height: 30px;
+	margin: 5px 0;
+	padding-left: 50px;
+	border-radius: 4px;
+	background: #fff;
+	opacity: 0.7;
+	list-style: none;
+	border: 1px solid #ccc;
+}
+
+.un,
+.yz,
+.pw,
+.pw2 {
+	position: absolute;
+	margin-top: 7px;
+}
+
+.queren {
+	position: relative;
+	list-style: none;
+	width: 25%;
+	height: 20px;
+	margin: 5px 0 5px 10%;
+}
+
+.fx {
+	float: left;
+	width: 13px;
+	height: 13px;
+	border: 1px solid #4f7b9c;
+}
+
+.reg-btn {
+	width: 100%;
+	height: 30%;
+	margin-top: 80px;
+}
+
+.submit {
+	width: 70%;
+	height: 35px;
+	border: 1px solid #f34541;
+	border-radius: 3px;
+	text-align: center;
+	margin: 30px 0 0 11%;
+	color: #fff;
+	font: 14px/35px @yahei;
+	background: #f34541;
+	cursor: pointer;
+}
+
+.reg-login p {
+	.submit;
+	display: block;
+	border: 1px solid #989898;
+	margin: 15px 0 0 11%;
+	color: #fff;
+	border-radius: 3px;
+	background: #989898;
+}
+
+#send {
+	position: absolute;
+	margin: 5px 0 0 -87px;
+	width: 87px;
+	height: 34px;
+	border-radius: 3px;
+	border: 1px solid #79b235;
+	font: 12px @yahei;
+	background: #79b235;
+	cursor: pointer;
+}

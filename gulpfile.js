@@ -52,6 +52,7 @@ gulp.task('html', function() {
     };
     gulp.src('./src/*.html')
     .pipe(replace('let ', 'var '))//微信不支持let用法因此换成var
+    .pipe(replace('"use strict";', ''))//微信不支持严格模式
     .pipe(replace('.css', '.min.css'))//将html引用的资源从css与js变成min.css与min.js
     .pipe(replace('.js', '.min.js'))
     .pipe(htmlmin(options))
@@ -76,6 +77,7 @@ gulp.task('clean', function() {
 
 gulp.task('default', function(){
     gulp.run('less','css','javascripts','html','images','fonts');
+    console.log('Done!')
     gulp.watch(['./src/less/*.less','./src/js/*.js','./src/css/*.css','./src/*.html','./src/images/*.*','./src/images/*/*.*'], function(){
         gulp.run('less','css','javascripts','html','images');
     });
