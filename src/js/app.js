@@ -1,35 +1,3 @@
-function copyjson(json) {
-	if (typeof json == 'number' || typeof json == 'string' || typeof json == 'boolean') {
-		return json;
-	} else if (typeof json == 'object') {
-		if (json instanceof Array) {
-			var newArr = [],
-				i, len = json.length;
-			for (i = 0; i < len; i++) {
-				newArr[i] = arguments.callee(json[i]);
-			}
-			return newArr;
-		} else {
-			var newObj = {};
-			for (var name in json) {
-				newObj[name] = arguments.callee(json[name]);
-			}
-			return newObj;
-		}
-	}
-}
-
-function fetchArray(e) {
-	if (localStorage.getItem(e)) {
-		return JSON.parse(localStorage.getItem(e));
-	}
-	return [];
-}
-
-function saveArray(e, f) {
-	localStorage.setItem(e, JSON.stringify(value));
-}
-
 Array.prototype.removetheitem = function(val) {
 	var index = this.indexOf(val);
 	if (index > -1) {
@@ -86,8 +54,4 @@ function cart(type, id, name, num, price, img, content) {
 function getDate(tm) {
 	var tt = new Date(parseInt(tm) * 1000).toLocaleString().replace(/年|月/g, "-").replace(/日/g, " ")
 	return tt;
-}
-
-function sleep(d) {
-	for (var t = Date.now(); Date.now() - t <= d;);
 }

@@ -6,7 +6,7 @@
 		<meta name="viewport" content="initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
 		<meta name="format-detection" content="telephone=no">
 		<meta content="email=no" name="format-detection" />
-		<link rel="stylesheet" href="css/mui.min.css" />
+		<link rel="stylesheet" href="css/mui.css" />
 		<link rel="stylesheet" href="css/app.css" />
 		<link rel="stylesheet" href="css/index.css" />
 		<title>微软装</title>
@@ -61,7 +61,7 @@
 	</body>
 	<script src="js/app.js"></script>
 	<script src="js/global.js"></script>
-	<script src="js/mui.min.js"></script>
+	<script src="js/mui.js"></script>
 	<script src="js/mui.lazyload.js"></script>
 	<script src="js/mui.lazyload.img.js"></script>
 	<script>
@@ -142,13 +142,12 @@
 		}
 		var spaceamount = 0;
 		document.getElementById("submit").addEventListener("tap", function() {
-			let arrnSpaceIdList = [];
+			const arrnSpaceIdList = [];
 			for (let j = 0; j < arrnSpaceSortIdList.length; j++) {
 				arrnSpaceIdList.push(JSON.parse(localStorage.tempspaces)[arrnSpaceSortIdList[j]].id)
 			}
 			startload();
 			mui.ajax(apiurl + 'spaces?filter=id:[' + arrnSpaceIdList + ']&expand=spaceProducts.product&sort=sort_num', {
-				data: {},
 				dataType: 'json',
 				type: 'get',
 				timeout: 6000,
@@ -156,7 +155,7 @@
 					spaceamount = 0;
 					if (data.success == true) {
 						let tempspaces = data.data.items
-						let arrjsonSelectSpaces = [];
+						const arrjsonSelectSpaces = [];
 						let jsonSpaceItem = {
 							"space_id": null,
 							"name": null,

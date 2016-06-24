@@ -9,7 +9,7 @@
 		<meta http-equiv="pragma" content="no-cache">
 		<meta http-equiv="Cache-Control" content="no-cache, must-revalidate">
 		<meta http-equiv="expires" content="Wed, 26 Feb 1997 08:21:57 GMT">
-		<link rel="stylesheet" href="css/mui.min.css" />
+		<link rel="stylesheet" href="css/mui.css" />
 		<link rel="stylesheet" href="css/app.css" />
 		<link rel="stylesheet" href="css/order.css" />
 		<link rel="stylesheet" href="css/address.css" />
@@ -101,7 +101,7 @@
 	<script src="js/global.js"></script>
 	<script src="js/pingpp.js"></script>
 	<script src="js/ap.js"></script>
-	<script src="js/mui.min.js"></script>
+	<script src="js/mui.js"></script>
 	<script src="js/iflogin.js?lastpage=myorder.html"></script>
 	<script>
 		"use strict";
@@ -259,7 +259,6 @@
 				} else {
 					startload()
 					mui.ajax(apiurl + 'orders/' + jsonThisOrder.id + '?access-token=' + strAccessToken, {
-						data: {},
 						dataType: 'json',
 						type: 'delete',
 						timeout: 6000,

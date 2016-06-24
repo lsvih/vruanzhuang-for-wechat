@@ -36,7 +36,7 @@
 	</body>
 	<script src="js/app.js"></script>
 	<script src="js/global.js"></script>
-	<script src="js/mui.min.js"></script>
+	<script src="js/mui.js"></script>
 	<script>
 		stopload();
 		var lastpage;
@@ -75,7 +75,6 @@
 						}
 						localStorage.alladdress = JSON.stringify(jsonAddress);
 						mui.ajax(apiurl + 'delivery-addresses?access-token=' + JSON.parse(localStorage.userinfo).access_token + '&and[user_id]=' + JSON.parse(localStorage.userinfo).id, {
-							data: {},
 							dataType: 'json',
 							type: 'get',
 							timeout: 6000,

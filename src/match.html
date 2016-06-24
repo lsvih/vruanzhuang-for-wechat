@@ -6,7 +6,7 @@
 		<meta name="viewport" content="initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
 		<meta name="format-detection" content="telephone=no">
 		<meta content="email=no" name="format-detection" />
-		<link rel="stylesheet" href="css/mui.min.css" />
+		<link rel="stylesheet" href="css/mui.css" />
 		<link rel="stylesheet" href="css/app.css" />
 		<link rel="stylesheet" href="css/match.css" />
 		<link href="css/mui.picker.css" rel="stylesheet" />
@@ -45,7 +45,7 @@
 		</div>
 	</body>
 	<script src="js/global.js"></script>
-	<script src="js/mui.min.js"></script>
+	<script src="js/mui.js"></script>
 	<script src="js/mui.picker.js"></script>
 	<script src="js/mui.poppicker.js"></script>
 	<script src="js/vue.js"></script>
@@ -85,7 +85,7 @@
 			if (isNaN(dx) || dx > array.length) {
 				return false;
 			}
-			for (var i = 0, n = 0; i < array.length; i++) {
+			for (let i = 0, n = 0; i < array.length; i++) {
 				if (array[i] != array[dx]) {
 					array[n++] = array[i]
 				}

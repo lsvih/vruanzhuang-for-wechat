@@ -147,7 +147,7 @@
 			</div>
 		</div>
 		<div class="J-weixin-tip-img weixin-tip-img"></div>
-		<script type="text/javascript" src="js/mui.min.js"></script>
+		<script type="text/javascript" src="js/mui.js"></script>
 		<script type="text/javascript" src="js/global.js"></script>
 		<script type="text/javascript">
 			(function() {
@@ -266,7 +266,6 @@
 
 			function getorderstatus() {
 				mui.ajax(apiurl + 'orders/' + localStorage.temppayorderid + '?access-token=' + strAccessToken, {
-					data: {},
 					dataType: 'json',
 					type: 'get',
 					timeout: 6000,

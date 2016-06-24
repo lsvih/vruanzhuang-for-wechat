@@ -8,7 +8,7 @@
 		<meta content="email=no" name="format-detection" />
 		<meta name="apple-mobile-web-app-capable" content="yes">
 		<meta name="apple-mobile-web-app-status-bar-style" content="black">
-		<link rel="stylesheet" href="css/mui.min.css" />
+		<link rel="stylesheet" href="css/mui.css" />
 		<link rel="stylesheet" href="css/app.css" />
 		<link rel="stylesheet" href="css/product.css" />
 
@@ -85,7 +85,13 @@
 						<div class="innerdiv"><img class="coverimg" v-bind:src="spaces.space.cover_t_img|picurl '/smart_matching/uploads/imgs/thumbs/' 's-'" data-preview-src="{{ spaces.space.cover_t_img|picurl '/smart_matching/uploads/imgs/' '' }}" data-preview-group="1" /></div>
 					</div>
 					<div v-if="spaces.space.designer.fullname">
-						<div class="designer" data-id="{{ spaces.space.designer.id }}"><div class="designer-img"><img class="coverimg" v-bind:src="spaces.space.designer.head_t_img|picurl '/smart_matching/uploads/imgs/' 's-'"></div><div class="designer-info"><div class="designer-content">设计师</div><div class="designer-name">{{spaces.space.designer.fullname}}</div></div>	
+						<div class="designer" data-id="{{ spaces.space.designer.id }}">
+							<div class="designer-img"><img class="coverimg" v-bind:src="spaces.space.designer.head_t_img|picurl '/smart_matching/uploads/imgs/thumbs/' 's-'"></div>
+							<div class="designer-info">
+								<div class="designer-content">设计师</div>
+								<div class="designer-name">{{spaces.space.designer.fullname}}</div>
+							</div>
+						</div>
 					</div>
 					<div v-if="spaces.space.design_t_img">
 						<div class="divtitle">方案设计图</div>
@@ -108,22 +114,22 @@
 				<div class="cont">方案产品总数:<span id="allnum">0</span>&nbsp;方案总金额:<span id="allprice">0</span>元</div>
 				<div class="footer edit" onclick="edit()"><i class="iconfont icon-buy"></i>编辑</div>
 				<div class="footer addcart" onclick="addalltocart()"><i class="iconfont icon-buy"></i>加入购物车</div>
-				
+
 			</div>
 		</div>
 		<div id="cataloglist">
-					<div>索引</div>
-					<ul id="potlist">
-						<li>简介</li>
-						<span id="catalogpot"><li v-for="point in points">{{point}}</li></span>
-					</ul>
-				</div>
+			<div>索引</div>
+			<ul id="potlist">
+				<li>简介</li>
+				<span id="catalogpot"><li v-for="point in points">{{point}}</li></span>
+			</ul>
+		</div>
 
 	</body>
 	<script src="js/app.js"></script>
 	<script src="js/global.js"></script>
 	<script src="js/vue.js"></script>
-	<script src="js/mui.min.js"></script>
+	<script src="js/mui.js"></script>
 	<script src="js/mui.zoom.js"></script>
 	<script src="js/mui.previewimage.normaltype.js"></script>
 	<script>
@@ -144,7 +150,6 @@
 
 		function getschemes() {
 			mui.ajax(apiurl + 'schemes/' + schemeid, {
-				data: {},
 				dataType: 'json',
 				type: 'get',
 				timeout: 6000,
@@ -174,8 +179,7 @@
 		}
 
 		function getspacedata() {
-			mui.ajax(apiurl + 'schemes/' + schemeid + '?expand=schemeSpaces.space.spaceProducts.product,schemeSpaces.space.designer&sort=sort_num', {
-				data: {},
+			mui.ajax(apiurl + 'schemes/' + schemeid + '?expand=schemeSpaces.space.spaceProducts.product,schemeSpaces.space.designer&sort=schemeSpaces.sort_num,schemeSpaces.space.spaceProducts.sort_num', {
 				dataType: 'json',
 				type: 'get',
 				timeout: 6000,

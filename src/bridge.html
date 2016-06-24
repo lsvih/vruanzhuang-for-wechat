@@ -8,9 +8,9 @@
 		<meta content="email=no" name="format-detection" />
 		<script type="text/javascript" src="js/app.js"></script>
 		<script type="text/javascript" src="js/global.js"></script>
-		<script type="text/javascript" src="js/mui.min.js"></script>
+		<script type="text/javascript" src="js/mui.js"></script>
 		<script type="text/javascript" src="js/pingpp.js"></script>
-		<link rel="stylesheet" href="css/mui.min.css" />
+		<link rel="stylesheet" href="css/mui.css" />
 		<link rel="stylesheet" href="css/app.css" />
 		<title>微软装</title>
 	</head>
@@ -33,7 +33,6 @@
 			type: 'get',
 			timeout: 6000,
 			success: function(data) {
-				openid = data;
 				mui.ajax(apiurl + 'payments?access-token=' + strAccessToken, {
 					data: {
 						order_id: localStorage.temppayorderid,
@@ -44,7 +43,7 @@
 					timeout: 6000,
 					success: function(data) {
 						if (data.status == 201) {
-							mui.ajax(apiurl + 'payments/pay?id=' + data.data.id + '&open_id=' + openid + '&access-token=' + strAccessToken, {
+							mui.ajax(apiurl + 'payments/pay?id=' + data.data.id + '&open_id=' + data + '&access-token=' + strAccessToken, {
 								dataType: 'json',
 								type: 'get',
 								timeout: 6000,

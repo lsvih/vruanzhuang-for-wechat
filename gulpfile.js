@@ -1,35 +1,82 @@
-// 引入 gulp
-var gulp = require('gulp'); 
-
-// 引入组件
-var jshint = require('gulp-jshint');
-var concat = require('gulp-concat');
-var uglify = require('gulp-uglify');
+var gulp =require("gulp");//创建 gulp模块
+var uglify=require("gulp-uglify");//创建js混淆压缩 模块
+var minify_css =require("gulp-minify-css");　//创建 css混淆压缩模块
+var less = require('gulp-less');
+var gulp_concat = require('gulp-concat');  //创建 文件合并模块
+var del = require('del');
 var rename = require('gulp-rename');
+var imagemin = require('gulp-imagemin');//压缩图片
+var replace = require('gulp-replace');
+var htmlmin = require('gulp-htmlmin');
+var sourcemaps = require('gulp-sourcemaps');
 
-// 检查脚本
-gulp.task('lint', function() {
-    gulp.src('./js/*.js')
-        .pipe(jshint())
-        .pipe(jshint.reporter('default'));
+function clean(path) {
+    console.log('Clean: ' + path)
+    del(path);
+}
+
+gulp.task('less', function() {
+    gulp.src('./src/less/*.less')
+        .pipe(sourcemaps.init())
+        .pipe(less())
+        .pipe(sourcemaps.write())
+        .pipe(rename({ suffix: '.min' }))
+        .pipe(minify_css())
+        .pipe(gulp.dest('./dist/css'));
+});
+
+gulp.task('css', function() {
+    gulp.src('./src/css/*.css')
+   		.pipe(rename({ suffix: '.min' }))
+        .pipe(minify_css())
+        .pipe(gulp.dest('./dist/css'));
+});
+
+gulp.task('javascripts', function() {
+  gulp.src('./src/js/*.js')
+    .pipe(rename({ suffix: '.min' }))
+    .pipe(uglify())
+    .pipe(gulp.dest('./dist/js'));
+});
+
+gulp.task('html', function() {
+	var options = {
+        removeComments: true,//清除HTML注释
+        collapseWhitespace: true,//压缩HTML
+        collapseBooleanAttributes: true,//省略布尔属性的值 <input checked="true"/> ==> <input />
+        removeEmptyAttributes: true,//删除所有空格作属性值 <input id="" /> ==> <input />
+        removeScriptTypeAttributes: true,//删除<script>的type="text/javascript"
+        removeStyleLinkTypeAttributes: true,//删除<style>和<link>的type="text/css"
+        minifyJS: true,//压缩页面JS
+        minifyCSS: true//压缩页面CSS
+    };
+    gulp.src('./src/*.html')
+    .pipe(replace('let ', 'var '))//微信不支持let用法因此换成var
+    .pipe(replace('.css', '.min.css'))//将html引用的资源从css与js变成min.css与min.js
+    .pipe(replace('.js', '.min.js'))
+    .pipe(htmlmin(options))
+    .pipe(gulp.dest('./dist/'));
+});
+
+gulp.task('images', function() {
+    gulp.src(['./src/images/*.*','./src/images/**/*.*'])
+    .pipe(imagemin())
+    .pipe(gulp.dest('./dist/images/'));
+});
+
+gulp.task('fonts',function(){
+	gulp.src('./src/fonts/*.*')
+	.pipe(gulp.dest('./dist/fonts/'));
+});
+
+gulp.task('clean', function() {
+    clean('./dist/*');
 });
 
 
-
-// 合并，压缩文件
-gulp.task('scripts', function() {
-    gulp.src('./src/js/*.js')
-        .pipe(concat('all.js'))
-        .pipe(gulp.dest('./dist'))
-        .pipe(rename('all.min.js'))
-        .pipe(uglify())
-        .pipe(gulp.dest('./dist'));
-});
-
-// 默认任务
 gulp.task('default', function(){
-    gulp.run('lint', 'scripts');
-    gulp.watch('./src/js/*.js', function(){
-        gulp.run('lint', 'scripts');
+    gulp.run('less','css','javascripts','html','images','fonts');
+    gulp.watch(['./src/less/*.less','./src/js/*.js','./src/css/*.css','./src/*.html','./src/images/*.*','./src/images/*/*.*'], function(){
+        gulp.run('less','css','javascripts','html','images');
     });
 });
