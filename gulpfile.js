@@ -34,6 +34,8 @@ gulp.task('css', function() {
 
 gulp.task('javascripts', function() {
   gulp.src('./src/js/*.js')
+    .pipe(replace('let ', 'var '))//微信不支持let用法因此换成var
+    .pipe(replace('"use strict";', ''))//微信不支持严格模式
     .pipe(rename({ suffix: '.min' }))
     .pipe(uglify())
     .pipe(gulp.dest('./dist/js'));

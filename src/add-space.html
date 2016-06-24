@@ -164,13 +164,13 @@
 				arrobjBorthers[i].getElementsByTagName("span")[0].style.backgroundColor = 'rgba(255,255,255,0.6)'
 			}
 			e.getElementsByTagName("span")[0].style.backgroundColor = 'rgba(255,255,255,0)'
-			let nSortId = e.className.split("grid-")[1] - 1;
+			let nSortId = --e.className.split("grid-")[1];
 			stylename = stylelist[nSortId].name;
 			styleid = stylelist[nSortId].id;
 		}
 
 		function selectcolor(e) {
-			!e.style.border ? (e.style.border = '2px solid#0000EE', colorselect.push(e.innerHTML), colorselectid.push(e.id)) : (e.style.border = '', colorselect.removetheitem(e.innerHTML), colorselectid.removetheitem(e.id))
+			!e.style.border ? (e.style.border = '2px solid #0000EE', colorselect.push(e.innerHTML), colorselectid.push(e.id)) : (e.style.border = '', colorselect.removetheitem(e.innerHTML), colorselectid.removetheitem(e.id))
 		}
 
 		function changecolor() {

@@ -6,11 +6,10 @@
 	var div = document.createElement('div');
 	var imgId = 0;
 	var PreviewImage = function(options) {
-		
 		this.options = $.extend(true, {
 			id: '__MUI_PREVIEWIMAGE',
 			zoom: true,
-			header: '<div class="share"><span class="mui-preview-indicator"></span><span onclick="iLike();" name="like" class="love mui-pull-right iconfont icon-wdsc"></span></div>',
+			header: '<span class="mui-preview-indicator"></span>',
 			footer: ''
 		}, options || {});
 		this.init();
@@ -38,12 +37,10 @@
 	proto.initEvent = function() {
 		var self = this;
 		$(document.body).on('tap', 'img[data-preview-src]', function() {
-			
 			if (self.isAnimationing()) {
 				return false;
 			}
 			self.open(this);
-			ifLike();
 			return false;
 		});
 		var laterClose = null;
@@ -83,7 +80,7 @@
 			self.lastIndex = slideNumber;
 			self.indicator && (self.indicator.innerText = (slideNumber + 1) + '/' + self.currentGroup.length);
 			self._loadItem(slideNumber);
-			ifLike();
+
 		});
 	};
 	proto.isAnimationing = function() {
@@ -250,7 +247,6 @@
 	proto.loadImage = function(imgEl, callback) {
 		var onReady = function() {
 			callback && callback.call(this);
-			ifLike();
 		};
 		var img = new Image();
 		img.onload = onReady;
