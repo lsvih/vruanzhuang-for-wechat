@@ -77,10 +77,15 @@ gulp.task('clean', function() {
 });
 
 
-gulp.task('default', function(){
+gulp.task('build', function(){
     gulp.run('less','css','javascripts','html','images','fonts');
     console.log('Done!')
+});
+
+gulp.task('default', function(){
+    gulp.run('build');
+    console.log('Done!')
     gulp.watch(['./src/less/*.less','./src/js/*.js','./src/css/*.css','./src/*.html','./src/images/*.*','./src/images/*/*.*'], function(){
-        gulp.run('less','css','javascripts','html','images');
+        gulp.run('build');
     });
 });
