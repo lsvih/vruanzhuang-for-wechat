@@ -115,7 +115,7 @@ ZoomPic.prototype =
 				this.css(this.aSort[i], "width", 0);
 				this.css(this.aSort[i], "height", 0);
 				this.css(this.aSort[i], "top", 37);
-				this.css(this.aSort[i], "left", this.oUl.offsetWidth / 2)
+				this.css(this.aSort[i], "left", parseInt(this.oUl.offsetWidth / 2))
 			}
 			if (i < this.iCenter || i > this.iCenter)
 			{
@@ -158,7 +158,7 @@ ZoomPic.prototype =
 				case "top":
 				case "left":
 				case "bottom":
-					oElement.style[attr] = value + "px";
+					oElement.style[attr] = parseInt(value) + "px";
 					break;
 				case "opacity" :
 					oElement.style.filter = "alpha(opacity=" + value + ")";

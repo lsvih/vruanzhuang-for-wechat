@@ -8,31 +8,17 @@
 		<meta content="email=no" name="format-detection" />
 		<link rel="stylesheet" href="css/mui.css" />
 		<link rel="stylesheet" href="css/app.css" />
+		<link rel="stylesheet" href="css/match.css">
 		<title>微软装</title>
 	</head>
 	<style>
-		.mui-input-row.mui-search .mui-icon-clear {
-			top: 10px!important;
+		.mui-active {
+			color: #6ecce8!important;
 		}
 		
-		.mui-search:before {
-			top: 10px;
-		}
-		
-		.mui-search {
-			color: #000!important;
-		}
-		
-		.mui-search .mui-placeholder {
-			line-height: 39px;
-		}
-		
-		body {
-			background-color: #bbb;
-		}
-		
-		.mui-grid-view.mui-grid-9 {
-			background-color: #bbb;
+		input[type=search] {
+			border: 1px solid #6ecce8!important;
+			background-color: #fff!important;
 		}
 	</style>
 
@@ -41,36 +27,73 @@
 			<div class="loading"></div>
 			<div class="loading-text"><img src="images/load.gif" width="25px">加载中，请稍候...</div>
 		</div>
-		<header class="mui-bar mui-bar-nav">
-			<h1 class="mui-title"><div class="mui-input-row mui-search">
-					<input type="search" class="mui-input-clear" placeholder="搜索" onkeypress="Search()">
-				</div></h1>
-		</header>
 
 		<div class="mui-content">
-			<div class="mui-slider-item">
-				<ul class="mui-table-view mui-grid-view mui-grid-9" id="class">
-					<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3" v-for="item in items[0].children">
-						<span class="class" data-id="{{item.id}}" root-id="{{item.root}}" name="{{item.name}}">
-							<img v-bind:src="item.name|iconurl 'images/icon/' 'png'" width="100%" height="100%">
-							<div class="mui-media-body" class="name">{{item.name}}</div>
-						</span>
+			<div class="address-select">
+				<div class="address-icon"><img src="images/search.png"></div>
+				<div class="address-title">请输入您要搜索的单品</div>
+				<div class="choose-address">
+					<div class="mui-input-row mui-search">
+						<input type="search" class="mui-input-clear" placeholder="" onkeypress="Search()">
+					</div>
+				</div>
+			</div>
+
+			<div class="focus_Box" id="types">
+				<span class="prev">&nbsp;</span>
+				<span class="next">&nbsp;</span>
+				<ul>
+					<li v-for="type in children" data-id="{{$index}}">
+						<a href="#"><img width="340" height="400" v-bind:src="type.img" /></a>
 					</li>
 				</ul>
 			</div>
+			<div class="style-indicator" id="indicator">
+				<i id="indicator-{{$index}}" v-for="indicator in children">{{indicator.name}}</i>
+			</div>
+			<div id="next-step">选择此类单品</div>
 		</div>
+
 	</body>
 	<script src="js/global.js"></script>
 	<script src="js/mui.js"></script>
 	<script src="js/vue.js"></script>
+	<script src="js/ZoomPic.js"></script>
 	<script>
 		"use strict";
 		mui.init();
 		var url = window.location.search;
 		var nSpaceSortId = url.substring(url.lastIndexOf('=') + 1, url.length);
-		Vue.filter('iconurl', function(value, url, format) {
-			return url + value + "." + format;
-		})
+		var nClassId;
+
+		var JSONtest = {
+			"children": [{
+				"name": "布艺",
+				"id": 56,
+				"img": "images/addproduct/布艺.png"
+			}, {
+				"name": "家具",
+				"id": 54,
+				"img": "images/addproduct/家具.png"
+			}, {
+				"name": "灯具",
+				"id": 57,
+				"img": "images/addproduct/灯具.png"
+			}, {
+				"name": "地毯",
+				"id": 58,
+				"img": "images/addproduct/地毯.png"
+			}, {
+				"name": "装饰画",
+				"id": 59,
+				"img": "images/addproduct/装饰画.png"
+			}, {
+				"name": "饰品",
+				"id": 60,
+				"img": "images/addproduct/饰品.png"
+			}]
+		};
+
 		mui.ajax(apiurl + 'tags/multi-children?name=产品分类', {
 			dataType: 'json',
 			type: 'get',
@@ -78,36 +101,129 @@
 			success: function(data) {
 				if (data.success == true) {
 					new Vue({
-						el: '#class',
-						data: data.data,
+						el: '#types',
+						data: JSONtest,
 						compiled: function() {
-							stopload();
-							mui('#class').on('tap', '.class', function() {
-								let nClassId = this.getAttribute('data-id');
-								mui.ajax(apiurl + 'product-tags?filter=tag_id:' + nClassId + '&expand=product&per-page=30', {
-									dataType: 'json',
-									type: 'get',
-									timeout: 6000,
-									success: function(data) {
-										data.success == true ? (!data.data.items.length ? mui.alert("本类暂无单品", "微软装") : (localStorage.tempproduct = JSON.stringify(data.data), location.href = "productlist.html?spacesortid=" + nSpaceSortId + "&classid=" + nClassId)) : mui.alert("获取方案失败，请稍候再试");
-									},
-									error: function(xhr, textStatus, errorThrown) {
-										mui.alert("网络连接失败，请稍候再试", "微软装");
+							let h_w = 1.179;
+							let zoom_k = 0.9;
+							let items_w = document.body.offsetWidth - 48;
+							let item_w = items_w * 0.49;
+							let item_h = item_w * h_w;
+							document.getElementById("types").style.width = items_w + "px";
+							document.getElementById("types").style.height = item_h + "px";
+							let option = [{
+								width: parseInt(item_w * Math.pow(zoom_k, 2)),
+								height: parseInt(item_h * Math.pow(zoom_k, 2)),
+								top: 20,
+								left: 0,
+								zIndex: 1
+							}, {
+								width: parseInt(item_w * zoom_k),
+								height: parseInt(item_h * zoom_k),
+								top: 10,
+								left: parseInt(0.127 * items_w),
+								zIndex: 2
+							}, {
+								width: parseInt(item_w),
+								height: parseInt(item_h),
+								top: 0,
+								left: parseInt(0.127 * items_w * 2),
+								zIndex: 3
+							}, {
+								width: parseInt(item_w * zoom_k),
+								height: parseInt(item_h * zoom_k),
+								top: 10,
+								left: parseInt(items_w - item_w * zoom_k - 0.127 * items_w),
+								zIndex: 2
+							}, {
+								width: parseInt(item_w * zoom_k * zoom_k),
+								height: parseInt(item_h * Math.pow(zoom_k, 2)),
+								top: 20,
+								left: parseInt(items_w - item_w * Math.pow(zoom_k, 2)),
+								zIndex: 1
+							}]
+							new Vue({
+								el: '#indicator',
+								data: JSONtest,
+								compiled: function() {
+									new ZoomPic("types", option);
+									let items_w = document.body.offsetWidth - 30;
+									document.getElementById("indicator").style.width = items_w;
+									let item = document.getElementsByTagName("i");
+									for (let i = 0; i < item.length; i++) {
+										item[i].style.width = Math.floor(items_w / item.length) + "px";
 									}
-								});
-								return;
+									stopload();
+								}
 							});
+
 						}
-					})
+					});
+
 				} else {
-					mui.alert("获取标签失败，请稍候再试", "微软装");
+					mui.alert("获取标签失败，请稍候再试");
 					stopload();
 				}
 			},
 			error: function(xhr, textStatus, errorThrown) {
-				mui.alert("网络连接失败，请稍候再试", "微软装");
+				mui.alert("网络连接失败，请稍候再试");
 				stopload();
 			}
+		});
+
+		var next = document.getElementsByClassName("next")[0];
+		var prev = document.getElementsByClassName("prev")[0];
+		/**
+		 * 
+		 * 禁止微信原生上下滚动
+		 */
+		var overscroll = function(el) {
+			el.addEventListener('touchstart', function() {
+				var top = el.scrollTop,
+					totalScroll = el.scrollHeight,
+					currentScroll = top + el.offsetHeight;
+				if (top === 0) {
+					el.scrollTop = 1;
+				} else if (currentScroll === totalScroll) {
+					el.scrollTop = top - 1;
+				}
+			});
+			el.addEventListener('touchmove', function(evt) {
+				if (el.offsetHeight < el.scrollHeight)
+					evt._isScroller = true;
+			});
+		}
+		overscroll(document.querySelector('#types'));
+		document.body.addEventListener('touchmove', function(evt) {
+			if (!evt._isScroller) {
+				evt.preventDefault();
+			}
+		});
+
+		document.getElementById("types").addEventListener("swipeleft", function() {
+			mui.trigger(next, 'click');
+		});
+		document.getElementById("types").addEventListener("swiperight", function() {
+			mui.trigger(prev, 'click');
+		});
+
+		function nextstep() {
+			mui.ajax(apiurl + 'product-tags?filter=tag_id:' + nClassId + '&expand=product&per-page=30', {
+				dataType: 'json',
+				type: 'get',
+				timeout: 6000,
+				success: function(data) {
+					data.success == true ? (!data.data.items.length ? mui.alert("本类暂无单品", "微软装") : (localStorage.tempproduct = JSON.stringify(data.data), location.href = "productlist.html?spacesortid=" + nSpaceSortId + "&classid=" + nClassId)) : mui.alert("获取方案失败，请稍候再试");
+				},
+				error: function(xhr, textStatus, errorThrown) {
+					mui.alert("网络连接失败，请稍候再试", "微软装");
+				}
+			});
+			return;
+		}
+
+		document.getElementById('next-step').addEventListener('tap', function() {
+			nextstep();
 		});
 
 		function Search() {
@@ -124,6 +240,15 @@
 					}
 				});
 			}
+		}
+
+		function SingleSelection() {
+			let nSelectedSortId = document.getElementById("types").getElementsByTagName("li")[2].getAttribute('data-id');
+			for (let j = 0; j < JSONtest.children.length; j++) {
+				document.getElementById("indicator-" + j).style.backgroundColor = "#fff";
+			}
+			document.getElementById("indicator-" + nSelectedSortId).style.backgroundColor = "#6ecce8";
+			nClassId = JSONtest.children[nSelectedSortId].id;
 		}
 	</script>
 
