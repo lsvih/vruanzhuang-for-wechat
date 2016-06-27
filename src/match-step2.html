@@ -17,30 +17,28 @@
 			<div class="loading"></div>
 			<div class="loading-text"><img src="images/load.gif" width="25px">加载中，请稍候...</div>
 		</div>
-		<header class="mui-bar mui-bar-nav">
-			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
-			<!--<a class="icon-left-nav mui-icon mui-pull-right skip" href="match-step3.html">跳过></a>-->
-		</header>
-		<div class="mui-content">
-			<div class="title2">
-				<p>请选择几个你喜欢的</p>装修风格</div>
-			<div class="style-list">
-				<div class="circle grid-1"><span>现代</span></div>
-				<div class="circle grid-2"><span>地中海</span></div>
-				<div class="circle grid-3"><span>欧式</span></div>
-				<div class="circle grid-4"><span>中式</span></div>
-				<div class="circle grid-5"><span>田园</span></div>
-				<div class="circle grid-6"><span>美式</span></div>
-				<div class="circle grid-7"><span>新古典</span></div>
-			</div>
+		<div class="mui-content" style="padding-top: 0!important">
+			<div class="title2">装修风格</div>
 
+			<div class="focus_Box" id="styles">
+				<span class="prev">&nbsp;</span>
+				<span class="next">&nbsp;</span>
+				<ul>
+					<li v-for="style in children" data-id="{{$index}}">
+						<a href="#"><img width="340" height="400" v-bind:src="style.img" /></a>
+					</li>
+				</ul>
+			</div>
+			<div class="style-indicator" id="indicator">
+				<i id="indicator-{{$index}}" v-for="indicator in children">{{indicator.name}}</i>
+			</div>
 			<div class="title2">
 				装修颜色</div>
 			<div class="colorselect" id="colorlist">
 				<span class="color" v-for="color in colors" id="{{color.id}}" data="{{color.color_value}}">{{color.name}}</span>
 			</div>
 
-			<div id="next-step">选好了，下一步></div>
+			<div id="next-step">选好了，下一步</div>
 		</div>
 
 	</body>
@@ -48,30 +46,40 @@
 	<script src="js/global.js"></script>
 	<script src="js/mui.js"></script>
 	<script src="js/vue.js"></script>
+	<script src="js/ZoomPic.js"></script>
 	<script>
 		"use strict";
-		var stylelist = [{
-			"name": "现代",
-			"id": 17
-		}, {
-			"name": "地中海",
-			"id": 23
-		}, {
-			"name": "欧式",
-			"id": 18
-		}, {
-			"name": "中式",
-			"id": 19
-		}, {
-			"name": "田园",
-			"id": 20
-		}, {
-			"name": "美式",
-			"id": 22
-		}, {
-			"name": "新古典",
-			"id": 23
-		}];
+		var JSONtest = {
+			"children": [{
+				"name": "现代",
+				"id": 17,
+				"img": "images/selectimg/现代.png"
+			}, {
+				"name": "地中海",
+				"id": 23,
+				"img": "images/selectimg/地中海.png"
+			}, {
+				"name": "欧式",
+				"id": 18,
+				"img": "images/selectimg/欧式.png"
+			}, {
+				"name": "中式",
+				"id": 19,
+				"img": "images/selectimg/中式.png"
+			}, {
+				"name": "田园",
+				"id": 20,
+				"img": "images/selectimg/田园.png"
+			}, {
+				"name": "美式",
+				"id": 22,
+				"img": "images/selectimg/美式.png"
+			}, {
+				"name": "新古典",
+				"id": 23,
+				"img": "images/selectimg/新古典.png"
+			}]
+		};
 		var colorselect = [];
 		var colorselectid = [];
 		var stylename;
@@ -91,6 +99,12 @@
 								'colors': data.data.items[0].children
 							},
 							compiled: function() {
+								let items_w = document.body.offsetWidth - 8;
+								let item = document.getElementsByClassName("color");
+								for (let i = 0; i < item.length; i++) {
+									item[i].style.width = (items_w - (item.length + 2) * 6) / item.length + "px";
+									item[i].style.height = (items_w - (item.length + 2) * 6) / item.length + "px";
+								}
 								stopload();
 							}
 						});
@@ -105,42 +119,140 @@
 					stopload();
 				}
 			});
+			mui.ajax(apiurl + 'tags/multi-children?name=装修风格', {
+				dataType: 'json',
+				type: 'get',
+				timeout: 6000,
+				success: function(data) {
+					if (data.success == true) {
+						new Vue({
+							el: '#styles',
+							data: JSONtest,
+							compiled: function() {
+								let h_w = 1.179;
+								let zoom_k = 0.9;
+								let items_w = document.body.offsetWidth - 48;
+								let item_w = items_w * 0.49;
+								let item_h = item_w * h_w;
+								document.getElementById("styles").style.width = items_w + "px";
+								document.getElementById("styles").style.height = item_h + "px";
+								let option = [{
+									width: parseInt(item_w * Math.pow(zoom_k, 2)),
+									height: parseInt(item_h * Math.pow(zoom_k, 2)),
+									top: 20,
+									left: 0,
+									zIndex: 1
+								}, {
+									width: parseInt(item_w * zoom_k),
+									height: parseInt(item_h * zoom_k),
+									top: 10,
+									left: parseInt(0.127 * items_w),
+									zIndex: 2
+								}, {
+									width: parseInt(item_w),
+									height: parseInt(item_h),
+									top: 0,
+									left: parseInt(0.127 * items_w * 2),
+									zIndex: 3
+								}, {
+									width: parseInt(item_w * zoom_k),
+									height: parseInt(item_h * zoom_k),
+									top: 10,
+									left: parseInt(items_w - item_w * zoom_k - 0.127 * items_w),
+									zIndex: 2
+								}, {
+									width: parseInt(item_w * zoom_k * zoom_k),
+									height: parseInt(item_h * Math.pow(zoom_k, 2)),
+									top: 20,
+									left: parseInt(items_w - item_w * Math.pow(zoom_k, 2)),
+									zIndex: 1
+								}]
+								new Vue({
+									el: '#indicator',
+									data: JSONtest,
+									compiled: function() {
+										new ZoomPic("styles", option);
+										let items_w = document.body.offsetWidth - 30;
+										document.getElementById("indicator").style.width = items_w;
+										let item = document.getElementsByTagName("i");
+										for (let i = 0; i < item.length; i++) {
+											item[i].style.width = Math.floor(items_w / item.length) + "px";
+										}
+									}
+								});
+
+							}
+						});
+
+					} else {
+						mui.alert("获取标签失败，请稍候再试");
+						stopload();
+					}
+				},
+				error: function(xhr, textStatus, errorThrown) {
+					mui.alert("网络连接失败，请稍候再试");
+					stopload();
+				}
+			});
 		})
-		mui('.style-list').on('tap', '.circle', function() {
-			selectstyle(this);
-			return;
+
+		var next = document.getElementsByClassName("next")[0];
+		var prev = document.getElementsByClassName("prev")[0];
+		/**
+		 * 
+		 * 禁止微信原生上下滚动
+		 */
+		var overscroll = function(el) {
+			el.addEventListener('touchstart', function() {
+				var top = el.scrollTop,
+					totalScroll = el.scrollHeight,
+					currentScroll = top + el.offsetHeight;
+				if (top === 0) {
+					el.scrollTop = 1;
+				} else if (currentScroll === totalScroll) {
+					el.scrollTop = top - 1;
+				}
+			});
+			el.addEventListener('touchmove', function(evt) {
+				if (el.offsetHeight < el.scrollHeight)
+					evt._isScroller = true;
+			});
+		}
+		overscroll(document.querySelector('#styles'));
+		document.body.addEventListener('touchmove', function(evt) {
+			if (!evt._isScroller) {
+				evt.preventDefault();
+			}
 		});
+
+		document.getElementById("styles").addEventListener("swipeleft", function() {
+			mui.trigger(next, 'click');
+		});
+		document.getElementById("styles").addEventListener("swiperight", function() {
+			mui.trigger(prev, 'click');
+		});
+
 		mui('#colorlist').on('tap', '.color', function() {
 			selectcolor(this);
 			return;
 		});
 		document.getElementById('next-step').addEventListener('tap', function() {
-			!stylename ? mui.alert('请选择风格', '微软装') : !colorselect.length ? mui.alert('请选择颜色', '微软装') : next();
+			!stylename ? mui.alert('请选择风格', '微软装') : !colorselect.length ? mui.alert('请选择颜色', '微软装') : nextstep();
 		});
 
-		function selectstyle(e) {
-			let arrobjBorthers = e.parentNode.getElementsByClassName("circle");
-			for (let i = 0; i < arrobjBorthers.length; i++) {
-				arrobjBorthers[i].getElementsByTagName("span")[0].style.backgroundColor = 'rgba(255,255,255,0.6)'
-			}
-			e.getElementsByTagName("span")[0].style.backgroundColor = 'rgba(255,255,255,0)'
-			let nSortId = e.className.split("grid-")[1] - 1;
-			stylename = stylelist[nSortId].name;
-			styleid = stylelist[nSortId].id;
-		}
-
 		function selectcolor(e) {
-			!e.style.border ? (e.style.border = '2px solid #0000EE', colorselect.push(e.innerHTML), colorselectid.push(e.id)) : (e.style.border = '', colorselect.removetheitem(e.innerHTML), colorselectid.removetheitem(e.id))
+			!e.style.boxShadow ? (e.style.boxShadow = '1px 1px 5px #444', colorselect.push(e.innerHTML), colorselectid.push(e.id)) : (e.style.boxShadow = '', colorselect.removetheitem(e.innerHTML), colorselectid.removetheitem(e.id))
 		}
 
 		function changecolor() {
 			let arrobjColor = document.getElementsByClassName("color");
 			for (let i = 0; i < arrobjColor.length; i++) {
 				arrobjColor[i].style.backgroundColor = arrobjColor[i].getAttribute('data');
+				arrobjColor[i].style.color = arrobjColor[i].getAttribute('data');
 			}
 		}
 
-		function next() {
+		function nextstep() {
 			const colorchildren = [];
 			const IC = JSON.parse(localStorage.IC);
 			IC.push({
@@ -167,6 +279,16 @@
 				url: "match-step3.html",
 				id: "match-step3"
 			});
+		}
+
+		function SingleSelection() {
+			let nSelectedSortId = document.getElementById("styles").getElementsByTagName("li")[2].getAttribute('data-id');
+			for (let j = 0; j < JSONtest.children.length; j++) {
+				document.getElementById("indicator-" + j).style.backgroundColor = "#fff";
+			}
+			document.getElementById("indicator-" + nSelectedSortId).style.backgroundColor = "#6ecce8";
+			styleid = JSONtest.children[nSelectedSortId].id;
+			stylename = JSONtest.children[nSelectedSortId].name;
 		}
 	</script>
 

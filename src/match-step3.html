@@ -19,10 +19,9 @@
 			<div class="loading-text"><img src="images/load.gif" width="25px">加载中，请稍候...</div>
 		</div>
 		<header class="mui-bar mui-bar-nav">
-			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
 			<a class="icon-left-nav mui-icon mui-pull-right skip" href="matching.html">跳过></a> </header>
 		<div class="mui-content">
-			<div class="title">你对什么感兴趣？</div>
+			<div class="title2">你对什么感兴趣？</div>
 
 			<div id="tag-list">
 				<div class="tagtype" v-for="tagtype in tags">
@@ -32,7 +31,7 @@
 					</div>
 				</div>
 			</div>
-			<div id="next-step" onclick="location.href='matching.html'">开启软装之旅！</div>
+			<div id="next-step">开启软装之旅！</div>
 		</div>
 	</body>
 	<script src="js/global.js"></script>
@@ -140,6 +139,9 @@
 		mui('#tag-list').on('tap', '.tag', function() {
 			selectatag(this.getAttribute('data-id'), this);
 			return;
+		});
+		document.getElementById('next-step').addEventListener('tap', function() {
+			location.href="matching.html";
 		});
 	</script>
 

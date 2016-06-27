@@ -3,44 +3,44 @@
 
 	<head>
 		<meta charset="UTF-8">
-		<meta name="viewport" content="initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+		<meta name="viewport" content="initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no">
 		<meta name="format-detection" content="telephone=no">
-		<meta content="email=no" name="format-detection" />
-		<link rel="stylesheet" href="css/mui.css" />
-		<link rel="stylesheet" href="css/app.css" />
-		<link rel="stylesheet" href="css/match.css" />
-		<link href="css/mui.picker.css" rel="stylesheet" />
-		<link href="css/mui.poppicker.css" rel="stylesheet" />
+		<meta content="email=no" name="format-detection">
+		<link rel="stylesheet" href="css/mui.css">
+		<link rel="stylesheet" href="css/app.css">
+		<link rel="stylesheet" href="css/match.css">
+		<link href="css/mui.picker.css" rel="stylesheet">
+		<link href="css/mui.poppicker.css" rel="stylesheet">
 		<title>微软装</title>
 	</head>
 	<style>
 		.mui-badge {
 			background-color: inherit;
 			color: #fff;
-			padding: 0;
+			padding: 0
 		}
 	</style>
 
-	<body onresize="javascript:adaptive();">
+	<body onresize="adaptive()">
 		<div id="load">
 			<div class="loading"></div>
 			<div class="loading-text"><img src="images/load.gif" width="25px">加载中，请稍候...</div>
-		</div>
-		<span id="close" class="close"><img src="images/close.jpg" width="40px" height="40px"></span>
+		</div><span id="close" class="close"><img src="images/close.jpg" width="40px" height="40px"></span>
 		<div class="mui-content">
-			<div class="title">请选择你家的</div>
-			<div class="choose-address">
-				<button id='pickcity' class="mui-btn mui-btn-block" type='button'><span id="province"></span><span id="city">所在城市</span><span id="county"></span></button>
+			<div class="address-select">
+				<div class="address-icon"><img src="images/match/location.png"></div>
+				<div class="address-title">请选择您所居住的城市</div>
+				<div class="choose-address"><button id="pickcity" class="mui-btn mui-btn-block" type="button"><span id="province"></span><span id="city">所在城市</span><span id="county"></span></button></div>
 			</div>
-
-			<div id="spacetype">
-				<div class="tagtype" v-for="tagtype in items">
-					<div class="tag-name">{{tagtype.name}}</div>
-					<div class="tags"><span class="sortid">{{$index}}</span>
-						<span class="tag" v-for="tag in tagtype.children" data-type="space" data-id="{{tag.id}}">{{tag.name}}<span class="mui-badge">x0</span></span>
-					</div>
-				</div>
+			<div class="title2">空间类型</div>
+			<div class="focus_Box" id="spaces"><span class="prev">&nbsp;</span> <span class="next">&nbsp;</span>
+				<ul>
+					<li v-for="space in children" data-id="{{$index}}">
+						<a href="#"><img width="340" height="400" v-bind:src="space.img"></a>
+					</li>
+				</ul>
 			</div>
+			<div class="space-indicator" id="indicator"><i id="indicator-{{$index}}" v-for="indicator in children">{{indicator.name}}<span class="spacenum">x0</span></i></div>
 			<div id="next-step">选好了，下一步></div>
 		</div>
 	</body>
@@ -49,188 +49,246 @@
 	<script src="js/mui.picker.js"></script>
 	<script src="js/mui.poppicker.js"></script>
 	<script src="js/vue.js"></script>
-	<script src="js/city.data.js"></script>
+	<script src="js/ZoomPic.js"></script>
 	<script>
-		"use strict";
-		var jsonSpaceList;
-		const arrSpaceSelect = [];
-		var selectobj = [];
-		var selectobjid = [];
-		var selected = 0;
-		var cityid;
-		const arrColorSet = [];
-
 		function GetRequest() {
-			var url = location.search;
-			var theRequest = new Object();
-			if (url.indexOf("?") != -1) {
-				var str = url.substr(1);
-				let arrStrs = str.split("&");
-				for (let i = 0; i < arrStrs.length; i++) {
-					theRequest[arrStrs[i].split("=")[0]] = unescape(arrStrs[i].split("=")[1]);
+			var e = location.search,
+				t = new Object;
+			if (e.indexOf("?") != -1)
+				for (var n = e.substr(1), i = n.split("&"), a = 0; a < i.length; a++) t[i[a].split("=")[0]] = unescape(i[a].split("=")[1]);
+			return t
+		}
+
+		function removeitem(e, t) {
+			var n = e.indexOf(t);
+			n > -1 && e.splice(n, 1)
+		}
+
+		function removeitembysortid(e, t) {
+			if (isNaN(t) || t > e.length) return !1;
+			for (var n = 0, i = 0; n < e.length; n++) e[n] != e[t] && (e[i++] = e[n]);
+			e.length -= 1
+		}
+
+		function nextstep() {
+			const e = [];
+			e.push({
+				id: 1,
+				name: "城市",
+				children: {
+					id: cityid,
+					name: document.getElementById("city").innerHTML
 				}
-			}
-			return theRequest;
-		}
-		if (!("layer" in GetRequest())) document.getElementById("close").style.display = 'none';
-
-		function removeitem(array, val) {
-			let index = array.indexOf(val);
-			if (index > -1) {
-				array.splice(index, 1);
-			}
-		};
-
-		function removeitembysortid(array, dx) {
-			if (isNaN(dx) || dx > array.length) {
-				return false;
-			}
-			for (let i = 0, n = 0; i < array.length; i++) {
-				if (array[i] != array[dx]) {
-					array[n++] = array[i]
-				}
-			}
-			array.length -= 1
-		};
-		mui.ajax(apiurl + 'tags/multi-children?name=空间类型', {
-			dataType: 'json',
-			type: 'get',
-			timeout: 6000,
-			success: function(data) {
-				if (data.success == true) {
-					new Vue({
-						el: '#spacetype',
-						data: jsonSpaceList = data.data
-					});
-					(adaptive(), changecolor(), stopload());
-				} else {
-					mui.alert("获取标签失败，请稍候再试");
-					stopload();
-				}
-			},
-			error: function(xhr, textStatus, errorThrown) {
-				mui.alert("网络连接失败，请稍候再试");
-				stopload();
-			}
-		});
-		(function($, doc) {
-			mui.init();
-			$.ready(function() {
-				var pickcity = new $.PopPicker({
-					layer: 1
-				});
-				pickcity.setData([{
-					value: '2',
-					text: '北京'
-				}, {
-					value: '3',
-					text: '三亚'
-				}, {
-					value: '4',
-					text: '海口'
-				}, {
-					value: '5',
-					text: '西双版纳'
-				}]);
-				var showbtn = doc.getElementById('pickcity');
-				showbtn.addEventListener('tap', function(event) {
-					pickcity.show(function(items) {
-						document.getElementById("city").innerHTML = (items[0] || {}).text;
-						cityid = (items[0] || {}).value;
-					});
-				}, false);
-			});
-		})(mui, document);
-		document.getElementById('close').addEventListener('tap', function() {
-			mui.back();
-		});
-		document.getElementById('next-step').addEventListener('tap', function() {
-			document.getElementById("city").innerHTML == "所在城市" ? mui.alert('请选择您的地址', '微软装') : !arrSpaceSelect.length ? mui.alert('请至少选择一种空间类型', '微软装') : next();
-		});
-		mui.ready(function() {
-			localStorage.removeItem('IC');
-		});
-
-		function adaptive() {
-			let tagtype = document.getElementsByClassName("tagtype");
-			let tags = document.getElementsByClassName("tags");
-			let tagname = document.getElementsByClassName("tag-name");
-			for (let i = 0; i < tagtype.length; i++) {
-				tagname[i].style.top = tags[i].offsetHeight / 2 - 15 + 'px';
-				tagtype[i].style.height = tags[i].offsetHeight + 'px';
-			}
-		}
-
-		function changecolor() {
-			let tagtype = document.getElementsByClassName("tagtype");
-			for (let i = 0; i < (jsonSpaceList.items.length); i++) {
-				arrColorSet.push(colorpallte[Math.floor(Math.random() * colorpallte.length)]);
-				tagtype[i].style.color = arrColorSet[i]
-				let arrobjTag = tagtype[i].getElementsByClassName("tag");
-				for (let j = 0; j < arrobjTag.length; j++) {
-					arrobjTag[j].style.border = '1px solid' + arrColorSet[i];
-				}
-			}
-		}
-		mui('body').on('tap', '.tag', function() {
-			let nId = this.getAttribute('data-id');
-			this.getAttribute('data-type') == 'tag' ? selectatag(nId, this) : (this.innerText.split("x")[0] == "卧室"?selectspace(nId, this, "x4"):selectspace(nId, this, "x1"));
-			return;
-		});
-
-		function selectatag(e, f) {
-			let objThis = f.parentNode;
-			let nSortId = objThis.getElementsByClassName("sortid")[0].innerHTML;
-			if (!selectobj[nSortId]) selected++;
-			selectobj[nSortId] = f.innerHTML;
-			selectobjid[nSortId] = e;
-			for (let i = 0; i < objThis.getElementsByClassName("tag").length; i++) {
-				objThis.getElementsByClassName("tag")[i].style.backgroundColor = "#fff";
-				objThis.getElementsByClassName("tag")[i].style.color = arrColorSet[nSortId];
-			}
-			f.style.color = '#fff';
-			f.style.backgroundColor = arrColorSet[nSortId];
-		}
-
-		function selectspace(e, f, g) {
-			switch (f.getElementsByClassName("mui-badge")[0].innerHTML) {
-				case "x0":
-					(f.style.color = '#fff', f.style.backgroundColor = f.style.borderColor,f.getElementsByClassName("mui-badge")[0].innerHTML = "x1", f.getElementsByClassName("mui-badge")[0].style.color = 'red',  arrSpaceSelect.push({"id":e,"name":f.innerText.split("x")[0],"num":1}));
-					break;
-				case g:
-					(f.style.color = f.style.backgroundColor, f.style.backgroundColor = 'rgb(255, 255, 255)', f.getElementsByClassName("mui-badge")[0].style.color = '#fff', f.getElementsByClassName("mui-badge")[0].innerHTML = "x0",removeitembysortid(arrSpaceSelect,findsortidinarr(e)));
-					break;
-				default:
-					f.getElementsByClassName("mui-badge")[0].innerHTML = "x" +(++arrSpaceSelect[findsortidinarr(e)].num);
-		}
-		}
-		function findsortidinarr(e){
-			for(let j=0;j<arrSpaceSelect.length;j++){
-				if(arrSpaceSelect[j].id == e) return j;
-			}
-		}
-		function next() {
-			const spacechildren = [];
-			const step1_info = [];
-			step1_info.push({
-				"id": 1,
-				"name": "城市",
-				"children": {
-					"id": cityid,
-					"name": document.getElementById("city").innerHTML
-				}
-			});
-			step1_info.push({
-				"id": 48,
-				"name": "空间类型",
-				"children": arrSpaceSelect
-			});
-			localStorage.IC = JSON.stringify(step1_info);
-			mui.openWindow({
+			}), e.push({
+				id: 48,
+				name: "空间类型",
+				children: arrSpaceSelect
+			}), localStorage.IC = JSON.stringify(e), mui.openWindow({
 				url: "match-step2.html",
 				id: "match-step2"
-			});
+			})
 		}
+
+		function selectspace(e, t) {
+			if (t) {
+				var n = JSONtest.children[e].id,
+					i = document.getElementsByClassName("spacenum")[e];
+				switch (i.innerHTML) {
+					case "x0":
+						i.innerHTML = "x1", i.style.display = "block", document.getElementById("indicator-" + e).style.backgroundColor = "#6ecce8", arrSpaceSelect.push({
+							id: n,
+							name: "卧室",
+							num: 1
+						});
+						break;
+					case "x4":
+						i.innerHTML = "x0", i.style.display = "none", document.getElementById("indicator-" + e).style.backgroundColor = "#fff", removeitembysortid(arrSpaceSelect, findsortidinarr(arrSpaceSelect, n));
+						break;
+					default:
+						i.innerHTML = "x" + ++arrSpaceSelect[findsortidinarr(arrSpaceSelect, n)].num
+				}
+			} else {
+				var a = JSONtest.children[e].id,
+					r = document.getElementsByClassName("spacenum")[e].innerHTML;
+				switch (r) {
+					case "x0":
+						document.getElementsByClassName("spacenum")[e].innerHTML = "x1", document.getElementById("indicator-" + e).style.backgroundColor = "#6ecce8", arrSpaceSelect.push({
+							id: a,
+							name: JSONtest.children[e].name,
+							num: 1
+						});
+						break;
+					default:
+						document.getElementsByClassName("spacenum")[e].innerHTML = "x0", document.getElementById("indicator-" + e).style.backgroundColor = "#fff", removeitembysortid(arrSpaceSelect, findsortidinarr(arrSpaceSelect, a))
+				}
+			}
+		}
+
+		function findsortidinarr(e, t) {
+			for (var n = 0; n < e.length; n++)
+				if (e[n].id == t) return n
+		}
+		stopload();
+		var jsonSpaceList;
+		const arrSpaceSelect = [];
+		var selectobj = [],
+			selectobjid = [],
+			selected = 0,
+			cityid, JSONtest = {
+				children: [{
+					id: 49,
+					root: 47,
+					lvl: 1,
+					name: "客厅",
+					hint: "",
+					img: "images/selectimg/客厅.png"
+				}, {
+					id: 50,
+					root: 47,
+					lvl: 1,
+					name: "餐厅",
+					hint: "",
+					img: "images/selectimg/餐厅.png"
+				}, {
+					id: 51,
+					root: 47,
+					lvl: 1,
+					name: "卧室",
+					hint: "",
+					img: "images/selectimg/卧室.png"
+				}, {
+					id: 52,
+					root: 47,
+					lvl: 1,
+					name: "休闲区",
+					hint: "",
+					img: "images/selectimg/休闲区.png"
+				}, {
+					id: 48,
+					root: 47,
+					lvl: 1,
+					name: "儿童房",
+					hint: "",
+					img: "images/selectimg/儿童房.png"
+				}]
+			};
+		const arrColorSet = [];
+		"layer" in GetRequest() || (document.getElementById("close").style.display = "none"), mui.ready(function() {
+			mui.ajax(apiurl + "tags/multi-children?name=空间类型", {
+				dataType: "json",
+				type: "get",
+				timeout: 6e3,
+				success: function(e) {
+					1 == e.success ? (new Vue({
+						el: "#spaces",
+						data: JSONtest,
+						compiled: function() {
+							var e = 1.179,
+								t = .9,
+								n = document.body.offsetWidth - 48,
+								i = .49 * n,
+								a = i * e;
+							document.getElementById("spaces").style.width = n + "px", document.getElementById("spaces").style.height = a + "px";
+							var r = [{
+								width: parseInt(i * Math.pow(t, 2)),
+								height: parseInt(a * Math.pow(t, 2)),
+								top: 20,
+								left: 0,
+								zIndex: 1
+							}, {
+								width: parseInt(i * t),
+								height: parseInt(a * t),
+								top: 10,
+								left: parseInt(.127 * n),
+								zIndex: 2
+							}, {
+								width: parseInt(i),
+								height: parseInt(a),
+								top: 0,
+								left: parseInt(.127 * n * 2),
+								zIndex: 3
+							}, {
+								width: parseInt(i * t),
+								height: parseInt(a * t),
+								top: 10,
+								left: parseInt(n - i * t - .127 * n),
+								zIndex: 2
+							}, {
+								width: parseInt(i * t * t),
+								height: parseInt(a * Math.pow(t, 2)),
+								top: 20,
+								left: parseInt(n - i * Math.pow(t, 2)),
+								zIndex: 1
+							}];
+							new ZoomPic("spaces", r)
+						}
+					}), new Vue({
+						el: "#indicator",
+						data: JSONtest,
+						compiled: function() {
+							var e = document.body.offsetWidth - 48;
+							document.getElementById("indicator").style.width = e;
+							for (var t = document.getElementsByTagName("i"), n = 0; n < t.length; n++) t[n].style.width = Math.floor(e / t.length) + "px"
+						}
+					})) : (mui.alert("获取标签失败，请稍候再试"), stopload())
+				},
+				error: function(e, t, n) {
+					mui.alert("网络连接失败，请稍候再试"), stopload()
+				}
+			})
+		});
+		var next = document.getElementsByClassName("next")[0],
+			prev = document.getElementsByClassName("prev")[0],
+			overscroll = function(e) {
+				e.addEventListener("touchstart", function() {
+					var t = e.scrollTop,
+						n = e.scrollHeight,
+						i = t + e.offsetHeight;
+					0 === t ? e.scrollTop = 1 : i === n && (e.scrollTop = t - 1)
+				}), e.addEventListener("touchmove", function(t) {
+					e.offsetHeight < e.scrollHeight && (t._isScroller = !0)
+				})
+			};
+		overscroll(document.querySelector("#spaces")), document.body.addEventListener("touchmove", function(e) {
+				e._isScroller || e.preventDefault()
+			}), document.getElementById("spaces").addEventListener("swipeleft", function() {
+				mui.trigger(next, "click")
+			}), document.getElementById("spaces").addEventListener("swiperight", function() {
+				mui.trigger(prev, "click")
+			}),
+			function(e, t) {
+				mui.init(), e.ready(function() {
+					var n = new e.PopPicker({
+						layer: 1
+					});
+					n.setData([{
+						value: "2",
+						text: "北京"
+					}, {
+						value: "3",
+						text: "三亚"
+					}, {
+						value: "4",
+						text: "海口"
+					}, {
+						value: "5",
+						text: "西双版纳"
+					}]);
+					var i = t.getElementById("pickcity");
+					i.addEventListener("tap", function(e) {
+						n.show(function(e) {
+							document.getElementById("city").innerHTML = (e[0] || {}).text, cityid = (e[0] || {}).value
+						})
+					}, !1)
+				})
+			}(mui, document), document.getElementById("close").addEventListener("tap", function() {
+				mui.back()
+			}), document.getElementById("next-step").addEventListener("tap", function() {
+				"所在城市" == document.getElementById("city").innerHTML ? mui.alert("请选择您的地址", "微软装") : arrSpaceSelect.length ? nextstep() : mui.alert("请至少选择一种空间类型", "微软装")
+			}), mui("body").on("tap", "li", function() {
+				var e = this.getAttribute("data-id");
+				return "卧室" == JSONtest.children[e].name ? selectspace(e, 1) : selectspace(e, 0)
+			})
 	</script>
 
 </html>

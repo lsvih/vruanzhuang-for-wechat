@@ -33,6 +33,7 @@
 			type: 'get',
 			timeout: 6000,
 			success: function(data) {
+				openid = data;
 				mui.ajax(apiurl + 'payments?access-token=' + strAccessToken, {
 					data: {
 						order_id: localStorage.temppayorderid,
@@ -43,7 +44,7 @@
 					timeout: 6000,
 					success: function(data) {
 						if (data.status == 201) {
-							mui.ajax(apiurl + 'payments/pay?id=' + data.data.id + '&open_id=' + data + '&access-token=' + strAccessToken, {
+							mui.ajax(apiurl + 'payments/pay?id=' + data.data.id + '&open_id=' + openid + '&access-token=' + strAccessToken, {
 								dataType: 'json',
 								type: 'get',
 								timeout: 6000,
