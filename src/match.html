@@ -220,15 +220,16 @@
 								left: parseInt(n - i * Math.pow(t, 2)),
 								zIndex: 1
 							}];
-							new ZoomPic("spaces", r)
-						}
-					}), new Vue({
-						el: "#indicator",
-						data: JSONtest,
-						compiled: function() {
-							var e = document.body.offsetWidth - 48;
-							document.getElementById("indicator").style.width = e;
-							for (var t = document.getElementsByTagName("i"), n = 0; n < t.length; n++) t[n].style.width = Math.floor(e / t.length) + "px"
+							new Vue({
+								el: "#indicator",
+								data: JSONtest,
+								compiled: function() {
+									var e = document.body.offsetWidth - 48;
+									document.getElementById("indicator").style.width = e;
+									for (let t = document.getElementsByTagName("i"), n = 0; n < t.length; n++) t[n].style.width = Math.floor(e / t.length) + "px"
+									new ZoomPic("spaces", r)
+								}
+							})
 						}
 					})) : (mui.alert("获取标签失败，请稍候再试"), stopload())
 				},
@@ -289,6 +290,14 @@
 				var e = this.getAttribute("data-id");
 				return "卧室" == JSONtest.children[e].name ? selectspace(e, 1) : selectspace(e, 0)
 			})
+
+		function SingleSelection() {
+			let nSelectedSortId = document.getElementById("spaces").getElementsByTagName("li")[2].getAttribute('data-id');
+			for (let j = 0; j < JSONtest.children.length; j++) {
+				document.getElementById("indicator-" + j).style.fontWeight = "normal";
+			}
+			document.getElementById("indicator-" + nSelectedSortId).style.fontWeight = "bold";
+		}
 	</script>
 
 </html>

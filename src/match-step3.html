@@ -3,146 +3,256 @@
 
 	<head>
 		<meta charset="UTF-8">
-		<meta name="viewport" content="initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+		<meta name="viewport" content="initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no">
 		<meta name="format-detection" content="telephone=no">
-		<meta content="email=no" name="format-detection" />
-		<link rel="stylesheet" href="css/mui.css" />
-		<link rel="stylesheet" href="css/app.css" />
-		<link rel="stylesheet" href="css/match.css" />
-
+		<meta content="email=no" name="format-detection">
+		<link rel="stylesheet" href="css/mui.css">
+		<link rel="stylesheet" href="css/app.css">
+		<link rel="stylesheet" href="css/match.css">
+		<link href="css/mui.picker.css" rel="stylesheet">
+		<link href="css/mui.poppicker.css" rel="stylesheet">
 		<title>微软装</title>
 	</head>
+	<style>
+		.mui-badge {
+			background-color: inherit;
+			color: #fff;
+			padding: 0
+		}
+	</style>
 
-	<body onresize="javascript:adaptive();">
+	<body onresize="adaptive()">
 		<div id="load">
 			<div class="loading"></div>
 			<div class="loading-text"><img src="images/load.gif" width="25px">加载中，请稍候...</div>
-		</div>
+		</div><span id="close" class="close"><img src="images/close.jpg" width="40px" height="40px"></span>
 		<header class="mui-bar mui-bar-nav">
-			<a class="icon-left-nav mui-icon mui-pull-right skip" href="matching.html">跳过></a> </header>
+			<a class="icon-left-nav mui-icon mui-pull-right skip" id="skip">跳过></a>
+		</header>
 		<div class="mui-content">
-			<div class="title2">你对什么感兴趣？</div>
-
-			<div id="tag-list">
-				<div class="tagtype" v-for="tagtype in tags">
-					<div class="tag-name">{{tagtype.p_tag_name}}</div>
-					<div class="tags"><span class="sortid">{{$index}}</span>
-						<span class="tag" v-for="tag in tagtype.tags" data-id="{{tag.tag_id}}">{{tag.tag_name}}</span>
-					</div>
-				</div>
+			<div class="title2">生活</div>
+			<div class="focus_Box" id="life"><span class="prev">&nbsp;</span> <span class="next">&nbsp;</span>
+				<ul>
+					<li v-for="life in children" data-id="{{$index}}">
+						<a href="#"><img width="340" height="400" v-bind:src="life.img"></a>
+					</li>
+				</ul>
 			</div>
-			<div id="next-step">开启软装之旅！</div>
+			<div class="space-indicator" id="indicator"><i id="indicator-{{$index}}" v-for="indicator in children">{{indicator.name}}<span class="spacenum">x0</span></i></div>
+			<div id="next-step">开启软装之旅</div>
 		</div>
 	</body>
 	<script src="js/global.js"></script>
 	<script src="js/mui.js"></script>
 	<script src="js/vue.js"></script>
+	<script src="js/ZoomPic.js"></script>
 	<script>
-		"use strict";
-		localStorage.tag = JSON.stringify({
-			"Total": 3,
-			"tags": [{
-				"p_tag_id": 1,
-				"p_tag_name": "书影音",
-				"tags": [{
-					"tag_id": 1,
-					"tag_name": "影视"
-				}, {
-					"tag_id": 2,
-					"tag_name": "阅读"
-				}, {
-					"tag_id": 3,
-					"tag_name": "音乐"
-				}]
-			}, {
-				"p_tag_id": 2,
-				"p_tag_name": "生活",
-				"tags": [{
-					"tag_id": 1,
-					"tag_name": "旅行"
-				}, {
-					"tag_id": 2,
-					"tag_name": "居家"
-				}, {
-					"tag_id": 3,
-					"tag_name": "美食"
-				}, {
-					"tag_id": 4,
-					"tag_name": "手作"
-				}, {
-					"tag_id": 5,
-					"tag_name": "运动健身"
-				}, {
-					"tag_id": 6,
-					"tag_name": "时尚"
-				}, {
-					"tag_id": 7,
-					"tag_name": "饮茶"
-				}]
-			}, {
-				"p_tag_id": 3,
-				"p_tag_name": "看世界",
-				"tags": [{
-					"tag_id": 1,
-					"tag_name": "社交"
-				}, {
-					"tag_id": 2,
-					"tag_name": "教育"
-				}, {
-					"tag_id": 3,
-					"tag_name": "科技"
-				}, {
-					"tag_id": 4,
-					"tag_name": "人文"
-				}]
-			}]
-		});
-		var arrobjTagType;
-		var jsonTagList = JSON.parse(localStorage.tag);
-		const colorset = [];
-		mui.ready(function() {
-			new Vue({
-				el: '#tag-list',
-				data: jsonTagList,
-				compiled: function() {
-					stopload();
-				}
+		function GetRequest() {
+			var e = location.search,
+				t = new Object;
+			if (e.indexOf("?") != -1)
+				for (var n = e.substr(1), i = n.split("&"), a = 0; a < i.length; a++) t[i[a].split("=")[0]] = unescape(i[a].split("=")[1]);
+			return t
+		}
+
+		function removeitem(e, t) {
+			var n = e.indexOf(t);
+			n > -1 && e.splice(n, 1)
+		}
+
+		function removeitembysortid(e, t) {
+			if (isNaN(t) || t > e.length) return !1;
+			for (var n = 0, i = 0; n < e.length; n++) e[n] != e[t] && (e[i++] = e[n]);
+			e.length -= 1
+		}
+
+		function nextstep() {
+			mui.openWindow({
+				url: "matching.html",
+				id: "matching"
 			});
-			arrobjTagType = document.getElementsByClassName("tagtype");
-			adaptive();
-			changecolor();
-		});
-
-		function adaptive() {
-			let arrobjTag = document.getElementsByClassName("tags");
-			for (let i = 0; i < arrobjTagType.length; i++) {
-				document.getElementsByClassName("tag-name")[i].style.top = arrobjTag[i].offsetHeight / 2 - 15 + 'px';
-				arrobjTagType[i].style.height = arrobjTag[i].offsetHeight + 'px';
-			}
 		}
 
-		function changecolor() {
-			for (let i = 0; i < jsonTagList.Total; i++) {
-				colorset.push(colorpallte[Math.floor(Math.random() * colorpallte.length)]);
-				arrobjTagType[i].style.color = colorset[i]
-				let arrobjTag = arrobjTagType[i].getElementsByClassName("tag");
-				for (let j = 0; j < arrobjTag.length; j++) {
-					arrobjTag[j].style.border = '1px solid' + colorset[i];
+		function selectspace(e, t) {
+
+			var a = JSONtest.children[e].id,
+				r = document.getElementsByClassName("spacenum")[e].innerHTML;
+			switch (r) {
+				case "x0":
+					document.getElementsByClassName("spacenum")[e].innerHTML = "x1", document.getElementById("indicator-" + e).style.backgroundColor = "#6ecce8", arrSpaceSelect.push({
+						id: a,
+						name: JSONtest.children[e].name,
+						num: 1
+					});
+					break;
+				default:
+					document.getElementsByClassName("spacenum")[e].innerHTML = "x0", document.getElementById("indicator-" + e).style.backgroundColor = "#fff", removeitembysortid(arrSpaceSelect, findsortidinarr(arrSpaceSelect, a))
+			}
+
+		}
+
+		function findsortidinarr(e, t) {
+			for (var n = 0; n < e.length; n++)
+				if (e[n].id == t) return n
+		}
+		stopload();
+		var jsonSpaceList;
+		const arrSpaceSelect = [];
+		var selectobj = [],
+			selectobjid = [],
+			selected = 0,
+			cityid, JSONtest = {
+				children: [{
+					id: 49,
+					root: 47,
+					lvl: 1,
+					name: "居家",
+					hint: "",
+					img: "images/selectimg/居家.png"
+				}, {
+					id: 50,
+					root: 47,
+					lvl: 1,
+					name: "美食",
+					hint: "",
+					img: "images/selectimg/美食.png"
+				}, {
+					id: 51,
+					root: 47,
+					lvl: 1,
+					name: "手作",
+					hint: "",
+					img: "images/selectimg/手作.png"
+				}, {
+					id: 52,
+					root: 47,
+					lvl: 1,
+					name: "旅行",
+					hint: "",
+					img: "images/selectimg/旅行.png"
+				}, {
+					id: 448,
+					root: 47,
+					lvl: 1,
+					name: "运动",
+					hint: "",
+					img: "images/selectimg/运动.png"
+				}, {
+					id: 418,
+					root: 47,
+					lvl: 1,
+					name: "时尚",
+					hint: "",
+					img: "images/selectimg/时尚.png"
+				}, {
+					id: 468,
+					root: 47,
+					lvl: 1,
+					name: "饮茶",
+					hint: "",
+					img: "images/selectimg/饮茶.png"
+				}]
+			};
+		const arrColorSet = [];
+		"layer" in GetRequest() || (document.getElementById("close").style.display = "none"), mui.ready(function() {
+			mui.ajax(apiurl + "tags/multi-children?name=装修色彩", {
+				dataType: "json",
+				type: "get",
+				timeout: 6e3,
+				success: function(e) {
+					1 == e.success ? (new Vue({
+						el: "#life",
+						data: JSONtest,
+						compiled: function() {
+							var e = 1.179,
+								t = .9,
+								n = document.body.offsetWidth - 48,
+								i = .49 * n,
+								a = i * e;
+							document.getElementById("life").style.width = n + "px", document.getElementById("life").style.height = a + "px";
+							var r = [{
+								width: parseInt(i * Math.pow(t, 2)),
+								height: parseInt(a * Math.pow(t, 2)),
+								top: 20,
+								left: 0,
+								zIndex: 1
+							}, {
+								width: parseInt(i * t),
+								height: parseInt(a * t),
+								top: 10,
+								left: parseInt(.127 * n),
+								zIndex: 2
+							}, {
+								width: parseInt(i),
+								height: parseInt(a),
+								top: 0,
+								left: parseInt(.127 * n * 2),
+								zIndex: 3
+							}, {
+								width: parseInt(i * t),
+								height: parseInt(a * t),
+								top: 10,
+								left: parseInt(n - i * t - .127 * n),
+								zIndex: 2
+							}, {
+								width: parseInt(i * t * t),
+								height: parseInt(a * Math.pow(t, 2)),
+								top: 20,
+								left: parseInt(n - i * Math.pow(t, 2)),
+								zIndex: 1
+							}];
+							new Vue({
+								el: "#indicator",
+								data: JSONtest,
+								compiled: function() {
+									var e = document.body.offsetWidth - 48;
+									document.getElementById("indicator").style.width = e;
+									for (let t = document.getElementsByTagName("i"), n = 0; n < t.length; n++) t[n].style.width = Math.floor(e / t.length) + "px"
+									new ZoomPic("life", r)
+								}
+							})
+						}
+					})) : (mui.alert("获取标签失败，请稍候再试"), stopload())
+				},
+				error: function(e, t, n) {
+					mui.alert("网络连接失败，请稍候再试"), stopload()
 				}
-			}
-		}
+			})
+		});
+		var next = document.getElementsByClassName("next")[0],
+			prev = document.getElementsByClassName("prev")[0],
+			overscroll = function(e) {
+				e.addEventListener("touchstart", function() {
+					var t = e.scrollTop,
+						n = e.scrollHeight,
+						i = t + e.offsetHeight;
+					0 === t ? e.scrollTop = 1 : i === n && (e.scrollTop = t - 1)
+				}), e.addEventListener("touchmove", function(t) {
+					e.offsetHeight < e.scrollHeight && (t._isScroller = !0)
+				})
+			};
+		overscroll(document.querySelector("#life")), document.body.addEventListener("touchmove", function(e) {
+			e._isScroller || e.preventDefault()
+		}), document.getElementById("life").addEventListener("swipeleft", function() {
+			mui.trigger(next, "click")
+		}), document.getElementById("life").addEventListener("swiperight", function() {
+			mui.trigger(prev, "click")
+		}), document.getElementById("next-step").addEventListener("tap", function() {
+			nextstep()
+		}),document.getElementById("skip").addEventListener("tap", function() {
+			nextstep()
+		}), mui("body").on("tap", "li", function() {
+			var e = this.getAttribute("data-id");
+			return selectspace(e)
+		})
 
-		function selectatag(e, f) {
-			let nSortId = f.parentNode.getElementsByClassName("sortid")[0].innerHTML;
-			!(f.style.color == 'rgb(255, 255, 255)') ? (f.style.color = '#fff', f.style.backgroundColor = colorset[nSortId]) : (f.style.color = colorset[nSortId], f.style.backgroundColor = '#fff')
+		function SingleSelection() {
+			let nSelectedSortId = document.getElementById("life").getElementsByTagName("li")[2].getAttribute('data-id');
+			for (let j = 0; j < JSONtest.children.length; j++) {
+				document.getElementById("indicator-" + j).style.fontWeight = "normal";
+			}
+			document.getElementById("indicator-" + nSelectedSortId).style.fontWeight = "bold";
 		}
-		mui('#tag-list').on('tap', '.tag', function() {
-			selectatag(this.getAttribute('data-id'), this);
-			return;
-		});
-		document.getElementById('next-step').addEventListener('tap', function() {
-			location.href="matching.html";
-		});
 	</script>
 
 </html>
