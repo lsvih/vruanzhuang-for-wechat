@@ -30,15 +30,15 @@
 			<div class="title">[<span id="title">{{name}}</span>]</div>
 
 			<div id="spaces" v-for="space in spaces">
-				<div v-if="spaces.space.cover_t_img">
+				<div v-if="space.cover_t_img">
 					<div class="divtitle spacename">{{ space.name }}</div>
 					<div class="innerdiv"><img class="coverimg" v-bind:src="space.cover_t_img|picurl '/smart_matching/uploads/imgs/thumbs/' 'm-'" data-preview-src="{{ space.cover_t_img|picurl '/smart_matching/uploads/imgs/' '' }}" data-preview-group="1" /></div>
 				</div>
-				<div v-if="spaces.space.design_t_img">
+				<div v-if="space.design_t_img">
 					<div class="divtitle">方案设计图</div>
 					<div class="innerdiv"><img class="design" v-bind:src="space.design_t_img|picurl '/smart_matching/uploads/imgs/thumbs/' 'm-'" data-preview-src="{{ space.design_t_img|picurl '/smart_matching/uploads/imgs/' '' }}" data-preview-group="1" /></div>
 				</div>
-				<div v-if="spaces.space.planar_t_img">
+				<div v-if="space.planar_t_img">
 					<div class="divtitle">平面图</div>
 					<div class="innerdiv"><img class="plan" v-bind:src="space.planar_t_img|picurl '/smart_matching/uploads/imgs/thumbs/' 'm-'" data-preview-src="{{ space.planar_t_img|picurl '/smart_matching/uploads/imgs/' '' }}" data-preview-group="1" /></div>
 				</div>
