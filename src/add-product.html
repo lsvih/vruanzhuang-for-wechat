@@ -161,12 +161,12 @@
 					});
 
 				} else {
-					mui.alert("获取标签失败，请稍候再试");
+					mui.alert("获取标签失败，请稍候再试","微软装");
 					stopload();
 				}
 			},
 			error: function(xhr, textStatus, errorThrown) {
-				mui.alert("网络连接失败，请稍候再试");
+				mui.alert("网络连接失败，请稍候再试","微软装");
 				stopload();
 			}
 		});
@@ -233,10 +233,10 @@
 					type: 'get',
 					timeout: 6000,
 					success: function(data) {
-						data.success == true ? (!data.data.items.length ? mui.alert("没有找到符合条件的单品!", "微软装") : (localStorage.tempproduct = JSON.stringify(data.data), location.href = "productlist.html?spacesortid=" + nSpaceSortId + "&lfilter=1")) : mui.alert("获取方案失败，请稍候再试");
+						data.success == true ? (!data.data.items.length ? mui.alert("没有找到符合条件的单品!", "微软装") : (localStorage.tempproduct = JSON.stringify(data.data), location.href = "productlist.html?spacesortid=" + nSpaceSortId + "&lfilter=1")) : mui.alert("获取方案失败，请稍候再试","微软装");
 					},
 					error: function(xhr, textStatus, errorThrown) {
-						mui.alert("网络连接失败，请稍候再试");
+						mui.alert("网络连接失败，请稍候再试","微软装");
 					}
 				});
 			}

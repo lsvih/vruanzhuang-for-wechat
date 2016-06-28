@@ -18,11 +18,12 @@
 	<body>
 		<div id="load">
 			<div class="loading"></div>
-			<div class="loading-text"><img src="images/load.gif" width="25px">加载中，请稍候...</div>
+			<div class="loading-text"><img src="images/load.gif" width="25px">支付中，请稍候...</div>
 		</div>
 	</body>
 	<script>
-		startload()
+		startload();
+		mui.init();
 		var openid;
 		var code = GetRequest()["code"];
 		mui.ajax(apiurl + 'users/get-openid?access-token=' + strAccessToken, {
@@ -57,46 +58,43 @@
 												id: "judge-order"
 											});
 										} else {
-											alert("付款失败，请重试");
-											mui.openWindow({
-												url: "myorder.html?type=2",
-												id: "myorder"
-											});
+											errormsg();
 										}
 									});
 								},
 								error: function(xhr, type, errorThrown, message) {
-									alert("网络连接失败，请稍候再试");
-									mui.openWindow({
-										url: "myorder.html?type=2",
-										id: "myorder"
-									});
-									return false;
-									stopload();
+									errormsg();
 								}
 							});
 						}
 					},
 					error: function(xhr, type, errorThrown, message) {
-						alert("网络连接失败，请稍候再试");
-						mui.openWindow({
-							url: "myorder.html?type=2",
-							id: "myorder"
-						});
-						stopload();
+						errormsg();
 					}
 				});
 			},
 			error: function(xhr, type, errorThrown, message) {
-				alert("网络连接失败，请稍候再试");
-				mui.openWindow({
-					url: "myorder.html?type=2",
-					id: "myorder"
-				});
-				return false;
-				stopload();
+				errormsg();
 			}
 		});
+
+		function errormsg() {
+			stopload();
+			var btnArray = ['返回','确定'];
+			mui.confirm('交易已取消，请到我的订单支付', '微软装', btnArray, function(e) {
+				if (e.index == 0) {
+					mui.openWindow({
+						url: "index.html",
+						id: "index"
+					});
+				} else {
+					mui.openWindow({
+						url: "myorder.html?type=2",
+						id: "myorder"
+					});
+				}
+			});
+		}
 	</script>
 
 </html>

@@ -17,7 +17,7 @@
 			<div class="loading"></div>
 			<div class="loading-text"><img src="images/load.gif" width="25px">加载中，请稍候...</div>
 		</div>
-		<div class="mui-content" style="padding-top: 0!important">
+		<div class="mui-content" style="padding-top: 0!important;display: none;">
 			<div class="title2">装修风格</div>
 			<div class="focus_Box" id="styles">
 				<span class="prev">&nbsp;</span>
@@ -107,11 +107,11 @@
 									left: parseInt(items_w - item_w * Math.pow(zoom_k, 2)),
 									zIndex: 1
 								}]
-								new ZoomPic("styles", option);
 								new Vue({
 									el: '#indicator',
 									data: JSONtest,
 									compiled: function() {
+										new ZoomPic("styles", option);
 										let items_w = document.body.offsetWidth - 30;
 										document.getElementById("indicator").style.width = items_w;
 										let item = document.getElementsByTagName("i");
@@ -139,6 +139,7 @@
 															}
 														}
 													});
+													document.getElementsByClassName("mui-content")[0].style.display = "block";
 													changecolor();
 													stopload();
 												} else {

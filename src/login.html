@@ -42,7 +42,7 @@
 		var lastpage;
 		var url = window.location.search;
 		var loc = url.substring(url.lastIndexOf('=') + 1, url.length);
-		loc == null || loc == "" ? lastpage = "index.html" : lastpage = loc;
+		loc == null || loc == "" || loc == "undefined" ? lastpage = "index.html" : lastpage = loc;
 
 		function login() {
 			var reg = /^0?1[3|4|5|8][0-9]\d{8}$/;

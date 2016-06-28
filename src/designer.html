@@ -54,12 +54,12 @@
 						document.getElementById("address").innerHTML = data.data.nation + "-" + data.data.city;
 						stopload();
 					} else {
-						mui.alert(data.message);
+						mui.alert(data.message,"微软装");
 						stopload();
 					}
 				},
 				error: function(xhr, type, errorThrown, message) {
-					mui.alert("网络连接失败，请稍候再试");
+					mui.alert("网络连接失败，请稍候再试","微软装");
 					stopload();
 				}
 			});

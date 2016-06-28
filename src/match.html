@@ -26,7 +26,7 @@
 			<div class="loading"></div>
 			<div class="loading-text"><img src="images/load.gif" width="25px">加载中，请稍候...</div>
 		</div><span id="close" class="close"><img src="images/close.jpg" width="40px" height="40px"></span>
-		<div class="mui-content">
+		<div class="mui-content" style="display: none;">
 			<div class="address-select">
 				<div class="address-icon"><img src="images/match/location.png"></div>
 				<div class="address-title">请选择您所居住的城市</div>
@@ -227,7 +227,8 @@
 									var e = document.body.offsetWidth - 48;
 									document.getElementById("indicator").style.width = e;
 									for (let t = document.getElementsByTagName("i"), n = 0; n < t.length; n++) t[n].style.width = Math.floor(e / t.length) + "px"
-									new ZoomPic("spaces", r)
+									document.getElementsByClassName("mui-content")[0].style.display = "block";
+									new ZoomPic("spaces", r);
 								}
 							})
 						}

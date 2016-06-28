@@ -23,7 +23,6 @@
 			<div class="loading-text"><img src="images/load.gif" width="25px">加载中，请稍候...</div>
 		</div>
 		<header class="mui-bar mui-bar-nav">
-			<a class="mui-icon mui-icon-left-nav mui-pull-left" onclick="history.go(-1)"></a>
 			<h1 class="mui-title">订单详情</h1>
 		</header>
 
@@ -66,8 +65,7 @@
 				<div class="blank"></div>
 			</ul>
 			<div class="infonum">合计：￥<span class="price info" id="thisallprice">...</span><br />运费：￥<span id="thisfr" class="sendprice info">...</span></div>
-		</div>
-		<div class="cancel innavfor2" onclick="cancelorder()">取消订单</div>
+	</div>
 		<div class="pay innavfor2 active" onclick="checkpay()">确认订单</div>
 	</body>
 	<script src="js/vue.js"></script>
@@ -209,37 +207,7 @@
 			});
 		}
 
-		function cancelorder() {
-			var btnArray = ['是', '否'];
-			mui.confirm('确认取消此订单吗？', '微软装', btnArray, function(e) {
-				if (e.index == 1) {
-					return false;
-				} else {
-					startload();
-					mui.ajax(apiurl + 'orders/' + jsonThisOrder.id + '?access-token=' + strAccessToken, {
-						dataType: 'json',
-						type: 'delete',
-						timeout: 6000,
-						success: function(data) {
-							if (data.status == 204) {
-								alert("订单已删除！");
-								mui.openWindow({
-									url: "myorder.html",
-									id: "myorder"
-								});
-							} else {
-								mui.alert("订单删除失败");
-								stopload();
-							}
-						},
-						error: function(xhr, type, errorThrown, message) {
-							mui.alert("网络连接失败，请稍候再试");
-							stopload();
-						}
-					});
-				}
-			})
-		}
+		
 
 		function delcart(e) {
 			let jsonCart = JSON.parse(localStorage.cart);

@@ -180,7 +180,7 @@
 			var nItemPadId = 'item' + GetQueryString();
 			document.getElementById(nOrderPadId).className = "mui-control-item mui-active";
 			document.getElementById(nItemPadId).className = "mui-control-content mui-active";
-			mui.ajax(apiurl + 'orders?access-token=' + strAccessToken + '&filter=user_id:' + nUserId + '&expand=orderSchemes.scheme,orderProducts.product', {
+			mui.ajax(apiurl + 'orders?access-token=' + strAccessToken + '&filter=user_id:' + nUserId + '&expand=orderSchemes.scheme,orderProducts.product&sort=-created_at', {
 				data: {
 					'per-page': 500000
 				},
@@ -371,7 +371,6 @@
 						timeout: 6000,
 						success: function(data) {
 							if (data.status == 204) {
-								alert("订单已删除！")
 								window.location.href = 'myorder.html'
 							} else {
 								mui.alert("订单删除失败");

@@ -30,7 +30,7 @@
 			<div class="mui-title">你对什么感兴趣？</div>
 			<a class="icon-left-nav mui-icon mui-pull-right skip" id="skip">跳过></a>
 		</header>
-		<div class="mui-content">
+		<div class="mui-content" style="display: none;">
 			<div class="title2">生活</div>
 			<div class="focus_Box" id="life"><span class="prev">&nbsp;</span> <span class="next">&nbsp;</span>
 				<ul>
@@ -209,6 +209,7 @@
 									var e = document.body.offsetWidth - 48;
 									document.getElementById("indicator").style.width = e;
 									for (let t = document.getElementsByTagName("i"), n = 0; n < t.length; n++) t[n].style.width = Math.floor(e / t.length) + "px"
+									document.getElementsByClassName("mui-content")[0].style.display = "block";
 									new ZoomPic("life", r)
 								}
 							})
