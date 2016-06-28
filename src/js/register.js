@@ -34,7 +34,7 @@ window.onload=function(){
 				alert("请输入正确的手机号码");
 				return false;
 			};
-	      	mui.ajax(appurl + '/users/verify-code', {
+	      	mui.ajax(apiurl + 'users/verify-code', {
 				data: {
 					mobile:mobile
 				}, 

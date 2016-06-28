@@ -14,8 +14,7 @@
 
 		<title>微软装</title>
 	</head>
-
-	<body onresize="javascript:adaptive();">
+	<body>
 		<div id="mask"></div>
 		<div id="load">
 			<div class="loading"></div>
@@ -82,11 +81,11 @@
 				<div v-for="spaces in schemeSpaces">
 					<div v-if="spaces.space.cover_t_img">
 						<div class="divtitle spacename">{{ spaces.space.name }}</div>
-						<div class="innerdiv"><img class="coverimg" v-bind:src="spaces.space.cover_t_img|picurl '/smart_matching/uploads/imgs/thumbs/' 's-'" data-preview-src="{{ spaces.space.cover_t_img|picurl '/smart_matching/uploads/imgs/' '' }}" data-preview-group="1" /></div>
+						<div class="innerdiv"><img class="coverimg" v-bind:src="spaces.space.cover_t_img|picurl '/smart_matching/uploads/imgs/thumbs/' 'm-'" v-bind:data-preview-src="spaces.space.cover_t_img|picurl '/smart_matching/uploads/imgs/' ''" data-preview-group="1" /></div>
 					</div>
 					<div v-if="spaces.space.designer.fullname">
 						<div class="designer" data-id="{{ spaces.space.designer.id }}">
-							<div class="designer-img"><img class="coverimg" v-bind:src="spaces.space.designer.head_t_img|picurl '/smart_matching/uploads/imgs/thumbs/' 's-'"></div>
+							<div class="designer-img"><img class="coverimg" v-bind:src="spaces.space.designer.head_t_img|picurl '/smart_matching/uploads/imgs/thumbs/' 'm-'"></div>
 							<div class="designer-info">
 								<div class="designer-content">设计师</div>
 								<div class="designer-name">{{spaces.space.designer.fullname}}</div>
@@ -95,15 +94,15 @@
 					</div>
 					<div v-if="spaces.space.design_t_img">
 						<div class="divtitle">方案设计图</div>
-						<div class="innerdiv"><img class="design" v-bind:src="spaces.space.design_t_img|picurl '/smart_matching/uploads/imgs/thumbs/' 's-'" data-preview-src="{{ spaces.space.design_t_img|picurl '/smart_matching/uploads/imgs/' '' }}" data-preview-group="1" /></div>
+						<div class="innerdiv"><img class="design" v-bind:src="spaces.space.design_t_img|picurl '/smart_matching/uploads/imgs/thumbs/' 'm-'" v-bind:data-preview-src="spaces.space.design_t_img|picurl '/smart_matching/uploads/imgs/' ''" data-preview-group="1" /></div>
 					</div>
 					<div v-if="spaces.space.planar_t_img">
 						<div class="divtitle">平面图</div>
-						<div class="innerdiv"><img class="plan" v-bind:src="spaces.space.planar_t_img|picurl '/smart_matching/uploads/imgs/thumbs/' 's-'" data-preview-src="{{ spaces.space.planar_t_img|picurl '/smart_matching/uploads/imgs/' '' }}" data-preview-group="1" /></div>
+						<div class="innerdiv"><img class="plan" v-bind:src="spaces.space.planar_t_img|picurl '/smart_matching/uploads/imgs/thumbs/' 'm-'" v-bind:data-preview-src="spaces.space.planar_t_img|picurl '/smart_matching/uploads/imgs/' ''" data-preview-group="1" /></div>
 					</div>
 					<div class="divtitle">配饰清单</div>
 					<div class="goods" v-for="products in spaces.space.spaceProducts">
-						<img class="productsimgs" data-id="{{ products.product.id }}" v-bind:src="products.product.cover_t_imgs |picurl '/smart_matching/uploads/imgs/thumbs/' 's-'">
+						<img class="productsimgs" data-id="{{ products.product.id }}" v-bind:src="products.product.cover_t_imgs |picurl '/smart_matching/uploads/imgs/thumbs/' 'm-'">
 						<p><span class="productsnames">{{ products.product.name }}</span> x <span class="productsnums">{{ products.product_num }}</span></p>
 						<p><span class="productsunitprice">{{ products.product.amount/100 }}</span>元</p>
 						<div class="line"></div>
@@ -144,8 +143,8 @@
 				return serverurl + url + picsize + value
 			})
 			getschemes();
+			
 			adaptive();
-			mui.previewImage();
 		})
 
 		function getschemes() {
@@ -156,7 +155,6 @@
 				success: function(data) {
 					if (data.success == true) {
 						jsonschemes = data.data;
-						setschemes();
 						getspacedata();
 						adaptive();
 					} else {
@@ -176,6 +174,7 @@
 			for (let i = 0; i < arrImageList.length; i++) {
 				document.getElementById(arrImageList[i]).getElementsByTagName("img")[0].src = serverurl + '/smart_matching/uploads/imgs/thumbs/m-' + jsonschemes[arrImageList[i] + '_t_img'];
 			}
+			
 		}
 
 		function getspacedata() {
@@ -200,8 +199,10 @@
 								}
 								document.getElementById("allnum").innerHTML = tempallnum;
 								document.getElementById("allprice").innerHTML = tempallprice;
-								stopload()
+								stopload();
 								makecatalog();
+								mui.previewImage();
+								setschemes();
 							}
 						})
 					} else {
@@ -309,50 +310,50 @@
 			}
 			return customscheme;
 		}
-		document.getElementById('cart').addEventListener('tap', function() {
-			mui.openWindow({
-				url: "cart.html",
-				id: "cart"
-			});
-			return;
-		});
-		document.getElementById('intelligent').addEventListener('tap', function() {
-			mui.openWindow({
-				url: "match.html?layer",
-				id: "match"
-			});
-			return;
-		});
-		document.getElementById('home').addEventListener('tap', function() {
-			mui.openWindow({
-				url: "index.html",
-				id: "index"
-			});
-			return;
-		});
-		mui('body').on('tap', '.productsimgs', function() {
-			mui.openWindow({
-				url: "product.html?id=" + this.getAttribute('data-id'),
-				id: "product"
-			});
-			return;
-		});
-		mui('body').on('tap', '.designer', function() {
-			mui.openWindow({
-				url: "designer.html?id=" + this.getAttribute('data-id'),
-				id: "designer"
-			});
-			return;
-		});
-		mui('#potlist').on('tap', 'li', function() {
-			scroller(this.innerHTML, 600)
-		});
-		document.getElementById('catalog').addEventListener('tap', function() {
-			catalogOpen();
-		});
-		document.getElementById('mask').addEventListener('tap', function() {
-			catalogClose();
-		});
+		(document.getElementById('cart').addEventListener('tap', function() {
+				mui.openWindow({
+					url: "cart.html",
+					id: "cart"
+				});
+				return;
+			}),
+			document.getElementById('intelligent').addEventListener('tap', function() {
+				mui.openWindow({
+					url: "match.html?layer",
+					id: "match"
+				});
+				return;
+			}),
+			document.getElementById('home').addEventListener('tap', function() {
+				mui.openWindow({
+					url: "index.html",
+					id: "index"
+				});
+				return;
+			}),
+			mui('body').on('tap', '.productsimgs', function() {
+				mui.openWindow({
+					url: "product.html?id=" + this.getAttribute('data-id'),
+					id: "product"
+				});
+				return;
+			}),
+			mui('body').on('tap', '.designer', function() {
+				mui.openWindow({
+					url: "designer.html?id=" + this.getAttribute('data-id'),
+					id: "designer"
+				});
+				return;
+			}),
+			mui('#potlist').on('tap', 'li', function() {
+				scroller(this.innerHTML, 600)
+			}),
+			document.getElementById('catalog').addEventListener('tap', function() {
+				catalogOpen();
+			}),
+			document.getElementById('mask').addEventListener('tap', function() {
+				catalogClose();
+			}));
 
 		function catalogOpen() {
 			let el = document.getElementById("mask");

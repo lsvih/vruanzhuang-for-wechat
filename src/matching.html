@@ -42,10 +42,19 @@
 	<script src="js/mui.js"></script>
 	<script>
 		"use strict";
-		if (!localStorage.IC) mui.openWindow({
-			url: "match.html",
-			id: "match"
+		var timestamp;
+		mui.ready(function() {
+			timestamp = parseInt(new Date().getTime() / 1000);
+			if (localStorage.IC) {
+				IC_data();
+			} else {
+				mui.openWindow({
+					url: "match.html",
+					id: "match"
+				});
+			}
 		});
+
 		c.width = 200;
 		c.height = 200;
 		var w = c.width;
@@ -113,11 +122,6 @@
 				}
 			}
 		}
-		var timestamp;
-		mui.ready(function() {
-			timestamp = parseInt(new Date().getTime() / 1000);
-			IC_data();
-		});
 
 		function IC_data() {
 			let data = localStorage.IC;

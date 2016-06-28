@@ -27,17 +27,17 @@
 		</header>
 		<div id="catalog"><img src="images/app-logo.png" width="50px" height="50px"></div>
 		<div class="mui-content" id="简介">
-			<div id="cover" class="innerdiv"><img v-bind:src="cover_t_img|picurl '/smart_matching/uploads/imgs/thumbs/' 's-'" data-preview-src="{{cover_t_img|picurl '/smart_matching/uploads/imgs/' '' }}" data-preview-group="1" /></div>
+			<div id="cover" class="innerdiv"><img v-bind:src="cover_t_img|picurl '/smart_matching/uploads/imgs/thumbs/' 'm-'" data-preview-src="{{cover_t_img|picurl '/smart_matching/uploads/imgs/' '' }}" data-preview-group="1" /></div>
 			<div class="title">[<span id="title">{{name}}</span>]</div>
 
 			<div id="spaces" v-for="spaces in schemeSpaces">
 				<div v-if="spaces.space.cover_t_img">
 					<div class="divtitle spacename">{{ spaces.space.name }}</div>
-					<div class="innerdiv"><img class="coverimg" v-bind:src="spaces.space.cover_t_img|picurl '/smart_matching/uploads/imgs/thumbs/' 's-'" data-preview-src="{{spaces.space.cover_t_img|picurl '/smart_matching/uploads/imgs/' '' }}" data-preview-group="1" /></div>
+					<div class="innerdiv"><img class="coverimg" v-bind:src="spaces.space.cover_t_img|picurl '/smart_matching/uploads/imgs/thumbs/' 'm-'" data-preview-src="{{spaces.space.cover_t_img|picurl '/smart_matching/uploads/imgs/' '' }}" data-preview-group="1" /></div>
 				</div>
 				<div v-if="spaces.space.designer.fullname">
 					<div class="designer" data-id="{{ spaces.space.designer.id }}">
-						<div class="designer-img"><img class="coverimg" v-bind:src="spaces.space.designer.head_t_img|picurl '/smart_matching/uploads/imgs/thumbs/' 's-'"></div>
+						<div class="designer-img"><img class="coverimg" v-bind:src="spaces.space.designer.head_t_img|picurl '/smart_matching/uploads/imgs/thumbs/' 'm-'"></div>
 						<div class="designer-info">
 							<div class="designer-content">设计师</div>
 							<div class="designer-name">{{spaces.space.designer.fullname}}</div>
@@ -46,7 +46,7 @@
 				</div>
 				<div v-if="spaces.space.design_t_img">
 					<div class="divtitle">方案设计图</div>
-					<div class="innerdiv"><img class="design" v-bind:src="spaces.space.design_t_img|picurl '/smart_matching/uploads/imgs/thumbs/' 's-'" data-preview-src="{{ spaces.space.design_t_img|picurl '/smart_matching/uploads/imgs/' '' }}" data-preview-group="1" /></div>
+					<div class="innerdiv"><img class="design" v-bind:src="spaces.space.design_t_img|picurl '/smart_matching/uploads/imgs/thumbs/' 'm-'" data-preview-src="{{ spaces.space.design_t_img|picurl '/smart_matching/uploads/imgs/' '' }}" data-preview-group="1" /></div>
 				</div>
 				<div v-if="spaces.space.planar_t_img">
 					<div class="divtitle">平面图</div>

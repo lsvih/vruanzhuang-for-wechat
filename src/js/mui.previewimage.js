@@ -1,7 +1,11 @@
+/**
+ * @author phillyx
+ * @link   http://www.cnblogs.com/phillyx/p/5164231.html
+ */
 (function($, window) {
 
 	var template = '<div id="{{id}}" class="mui-slider mui-preview-image mui-fullscreen"><div class="mui-preview-header">{{header}}</div><div class="mui-slider-group"></div><div class="mui-preview-footer mui-hidden">{{footer}}</div><div class="mui-preview-loading"><span class="mui-spinner mui-spinner-white"></span></div></div>';
-	var itemTemplate = '<div class="mui-slider-item mui-zoom-wrapper {{className}}"><div class="mui-zoom-scroller"><img src="{{src}}" data-preview-lazyload="{{lazyload}}" style="{{style}}" class="mui-zoom"></div></div>';
+	var itemTemplate = '<div class="mui-slider-item mui-zoom-wrapper {{className}}"><div class="mui-zoom-scroller"><img src="{{src}}" data-preview-lazyload="{{lazyload}}" style="{{style}}" class="mui-zoom"><div class="mui-slider-img-content">{{content}}</div></div></div>'; //新增图片说明
 	var defaultGroupName = '__DEFAULT';
 	var div = document.createElement('div');
 	var imgId = 0;
@@ -33,6 +37,23 @@
 			this.element.querySelector($.classSelector('.preview-footer')).classList.remove($.className('hidden'));
 		}
 		this.addImages();
+		this.groupsLength=this.getGroupsLength();
+	};
+	/**
+	 *@description 获取当前预览分组长度
+	 */
+	proto.getGroupsLength = function() {
+		var imgs = document.querySelectorAll("img[data-preview-src][data-preview-group]");
+		var tmpGroup;
+		var len = 0;
+		$.each(imgs, function(index, item) {
+			var grp = item.getAttribute('data-preview-group');
+			if (!tmpGroup || tmpGroup != grp) {
+				tmpGroup = grp;
+				len += 1;
+			}
+		});
+		return len || 1;
 	};
 	proto.initEvent = function() {
 		var self = this;
@@ -150,7 +171,9 @@
 			var offset = $.offset(img);
 			itemData.sTop = offset.top;
 			itemData.sLeft = offset.left;
-			itemData.sScale = Math.max(itemData.sWidth / window.innerWidth, itemData.sHeight / window.innerHeight);
+			//缩放判断，解决预加载图片时，图片过大，和当前显示图片重叠的问题
+			var scale = Math.max(itemData.sWidth / window.innerWidth, itemData.sHeight / window.innerHeight);
+			itemData.sScale = scale > 1 ? 0.977 : scale;
 		}
 		imgEl.style.webkitTransform = 'translate3d(0,0,0) scale(' + itemData.sScale + ')';
 	};
@@ -306,6 +329,8 @@
 				style = '-webkit-transform:translate3d(0,0,0) scale(' + itemData.sScale + ');transform:translate3d(0,0,0) scale(' + itemData.sScale + ')';
 			}
 			itemStr = itemTemplate.replace('{{src}}', itemData.src).replace('{{lazyload}}', itemData.lazyload).replace('{{style}}', style);
+			//TODO 添加文字说明
+			itemStr = itemStr.replace('{{content}}', itemData.el.getAttribute('data-content') || '');
 			if (from === index) {
 				currentIndex = i;
 				className = $.className('active');
@@ -369,13 +394,20 @@
 		for (var i = 0, len = zoomers.length; i < len; i++) {
 			$(zoomers[i]).zoom().destory();
 		}
-		//		$(this.element).slider().destory();
+		this.groupsLength > 1 && $(this.element).slider().destroy();
 		//		this.empty();
 	};
 	proto.isShown = function() {
 		return this.element.classList.contains($.className('preview-in'));
 	};
-
+	/**
+	 *@description 释放当前对象
+	 */
+	proto.dispose = function() {
+		var prevdom = document.getElementById("__MUI_PREVIEWIMAGE");
+		prevdom && prevdom.parentNode.removeChild(prevdom);
+		previewImageApi = null;
+	};
 	var previewImageApi = null;
 	$.previewImage = function(options) {
 		if (!previewImageApi) {

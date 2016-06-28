@@ -50,33 +50,17 @@
 		"use strict";
 		var JSONtest = {
 			"children": [{
-				"name": "田园",
-				"id": 20,
-				"img": "images/selectimg/田园.png"
-			}, {
 				"name": "现代",
 				"id": 17,
 				"img": "images/selectimg/现代.png"
 			}, {
+				"name": "东方",
+				"id": 19,
+				"img": "images/selectimg/东方.png"
+			}, {
 				"name": "欧式",
 				"id": 18,
 				"img": "images/selectimg/欧式.png"
-			}, {
-				"name": "中式",
-				"id": 19,
-				"img": "images/selectimg/中式.png"
-			}, {
-				"name": "地中海",
-				"id": 23,
-				"img": "images/selectimg/地中海.png"
-			}, {
-				"name": "美式",
-				"id": 22,
-				"img": "images/selectimg/美式.png"
-			}, {
-				"name": "新古典",
-				"id": 23,
-				"img": "images/selectimg/新古典.png"
 			}]
 		};
 		var colorselect = [];
@@ -86,38 +70,7 @@
 		var styleid;
 		var styleid;
 		mui.ready(function() {
-			mui.ajax(apiurl + 'tags/multi-children?name=装修色彩', {
-				dataType: 'json',
-				type: 'get',
-				timeout: 6000,
-				success: function(data) {
-					if (data.success == true) {
-						new Vue({
-							el: '#colorlist',
-							data: {
-								'colors': data.data.items[0].children
-							},
-							compiled: function() {
-								let items_w = document.body.offsetWidth - 8;
-								let item = document.getElementsByClassName("color");
-								for (let i = 0; i < item.length; i++) {
-									item[i].style.width = (items_w - (item.length + 2) * 6) / item.length + "px";
-									item[i].style.height = (items_w - (item.length + 2) * 6) / item.length + "px";
-								}
-								stopload();
-							}
-						});
-						changecolor();
-					} else {
-						mui.alert("获取标签失败，请稍候再试");
-						stopload();
-					}
-				},
-				error: function(xhr, textStatus, errorThrown) {
-					mui.alert("网络连接失败，请稍候再试");
-					stopload();
-				}
-			});
+
 			mui.ajax(apiurl + 'tags/multi-children?name=装修风格', {
 				dataType: 'json',
 				type: 'get',
@@ -142,22 +95,10 @@
 									left: 0,
 									zIndex: 1
 								}, {
-									width: parseInt(item_w * zoom_k),
-									height: parseInt(item_h * zoom_k),
-									top: 10,
-									left: parseInt(0.127 * items_w),
-									zIndex: 2
-								}, {
 									width: parseInt(item_w),
 									height: parseInt(item_h),
 									top: 0,
 									left: parseInt(0.127 * items_w * 2),
-									zIndex: 3
-								}, {
-									width: parseInt(item_w * zoom_k),
-									height: parseInt(item_h * zoom_k),
-									top: 10,
-									left: parseInt(items_w - item_w * zoom_k - 0.127 * items_w),
 									zIndex: 2
 								}, {
 									width: parseInt(item_w * zoom_k * zoom_k),
@@ -166,17 +107,49 @@
 									left: parseInt(items_w - item_w * Math.pow(zoom_k, 2)),
 									zIndex: 1
 								}]
+								new ZoomPic("styles", option);
 								new Vue({
 									el: '#indicator',
 									data: JSONtest,
 									compiled: function() {
-										new ZoomPic("styles", option);
 										let items_w = document.body.offsetWidth - 30;
 										document.getElementById("indicator").style.width = items_w;
 										let item = document.getElementsByTagName("i");
 										for (let i = 0; i < item.length; i++) {
 											item[i].style.width = Math.floor(items_w / item.length) + "px";
 										}
+
+										mui.ajax(apiurl + 'tags/multi-children?name=装修色彩', {
+											dataType: 'json',
+											type: 'get',
+											timeout: 6000,
+											success: function(data) {
+												if (data.success == true) {
+													new Vue({
+														el: '#colorlist',
+														data: {
+															'colors': data.data.items[0].children
+														},
+														compiled: function() {
+															let items_w = document.body.offsetWidth - 8;
+															let item = document.getElementsByClassName("color");
+															for (let i = 0; i < item.length; i++) {
+																item[i].style.width = (items_w - (item.length + 2) * 6) / item.length + "px";
+																item[i].style.height = (items_w - (item.length + 2) * 6) / item.length + "px";
+															}
+														}
+													});
+													changecolor();
+													stopload();
+												} else {
+													mui.alert("获取标签失败，请稍候再试");
+												}
+											},
+											error: function(xhr, textStatus, errorThrown) {
+												mui.alert("网络连接失败，请稍候再试");
+											}
+										});
+
 									}
 								});
 
@@ -185,12 +158,10 @@
 
 					} else {
 						mui.alert("获取标签失败，请稍候再试");
-						stopload();
 					}
 				},
 				error: function(xhr, textStatus, errorThrown) {
 					mui.alert("网络连接失败，请稍候再试");
-					stopload();
 				}
 			});
 		})
@@ -281,7 +252,7 @@
 		}
 
 		function SingleSelection() {
-			let nSelectedSortId = document.getElementById("styles").getElementsByTagName("li")[2].getAttribute('data-id');
+			let nSelectedSortId = document.getElementById("styles").getElementsByTagName("li")[1].getAttribute('data-id');
 			for (let j = 0; j < JSONtest.children.length; j++) {
 				document.getElementById("indicator-" + j).style.backgroundColor = "#fff";
 			}

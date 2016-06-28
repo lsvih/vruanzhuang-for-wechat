@@ -44,7 +44,7 @@
 					window.location.href = 'index.html'
 				};
 			}
-			("IntelligentCollocation" in GetRequest()) ? ((JSON.parse(localStorage.schemes).length) ? (setTimeout(lazyload(), adaptive(), 300), stopload(), addtapevent()) : (setTimeout(lazyload(), 300), adaptive(), stopload())) : getschemes();
+			("IntelligentCollocation" in GetRequest()) ? ((JSON.parse(localStorage.schemes).length) ? (setTimeout(lazyload(), 300), addtapevent()) : setTimeout(lazyload(), 300),stopload()) : getschemes();
 		});
 
 		function getschemes() {
@@ -112,6 +112,8 @@
 				});
 				adaptive();
 			})(mui);
+			adaptive();
+			stopload();
 		}
 
 		function adaptive() {
